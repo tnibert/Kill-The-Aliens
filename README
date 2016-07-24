@@ -1,0 +1,19 @@
+Dependencies:
+Python 2.7 (32 bit) - www.python.org
+pygame - www.pygame.org
+
+To run:
+On Windows
+- Double click on killthealiens.py
+On Linux
+- from terminal type "python killthealiens.py" without the quotes
+
+Controls:
+Space - shoot
+Left and right arrow keys - go left or right
+Escape - exit game
+
+Released GPL by Iron Lotus Studios
+
+Disclaimer:
+Some artwork obtained from unknown sources.  If your artwork is featured in the game and you would like credit or take issue, please email docz2a@gmail.com.
