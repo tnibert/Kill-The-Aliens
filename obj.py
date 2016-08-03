@@ -14,6 +14,7 @@ EXTIMELAPSE = 250
 #saucerimg = pygame.image.load("saucera.png")
 #bulletimg = pygame.image.load("bullet.png")
 
+#divide an image into frames
 def toframes(img, numframes, xstep):
 	#img to divide up, number of frames to generate, step size on x axis to split on
 	frames = []	#list of images
@@ -26,6 +27,7 @@ def toframes(img, numframes, xstep):
 
 explosion = toframes(pygame.image.load("explode.png"), 5, 120)
 
+#all sprites inherit from this class
 class MoveableObject(pygame.sprite.Sprite):
 	def __init__(self, x, y, img):
 		pygame.sprite.Sprite.__init__(self)
@@ -43,7 +45,7 @@ class MoveableObject(pygame.sprite.Sprite):
 		self.pos = (self.x, self.y)
 		self.rect.x = self.x
 		self.rect.y = self.y
-	def explode(self, time):
+	def explode(self, time):		#yes, everything can explode
 		self.timestack.append(time)
 		self.speed = 0
 		if(len(self.timestack) < 2):
@@ -115,10 +117,12 @@ class Boss(MoveableObject):
 		MoveableObject.__init__(self, x, y, img)
 		self.health = 2000
 		self.inittime = time
+
 		#state indicator for boss
 		#0 is still, 1 is aimless moving
 		#2 is chase ship, 3 is fire at ship
 		self.mode = 0
+
 		#counts number of steps in a given direction
 		self.step = 0
 		self.maxstep = 4
@@ -164,6 +168,9 @@ class Boss(MoveableObject):
 			elif(test > 0):
 				self.mode = 0
 				self.alreadygoing = 0
+
+		#MODE 3 HAS NOT BEEN IMPLEMENTED
+
 		
 		#check for screen boundaries
 		if(self.y+self.height > foe.y-60): 

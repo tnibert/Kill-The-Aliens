@@ -64,6 +64,7 @@ endtime = 0
 changeover = 0	#for scroll change over
 ychng = 0
 
+#for more precise keyboard input
 goright = False
 goleft = False
 
@@ -130,7 +131,7 @@ while(endgame == 0):
 
 	ship.updatepos()
 
-	if(BEASTMODE == 3):
+	if(BEASTMODE == 3):		#if boss is out
 		if(boss.infirerange(ship) > 0):
 			if(random.randrange(0,10) == 1):
 				bullets.append(boss.fire(bulletimg, obj.LEFT))
@@ -196,7 +197,7 @@ while(endgame == 0):
 					deadindex = saucers.index(saucer)
 					dietest = 1
 				bullet.explode(time)
-				#saucers.remove(saucer)		#this removes te actual object from the list
+				#saucers.remove(saucer)		#this removes the actual object from the list
 				score += 5		
 
 	#this is so that we don't mess up the previous for iteration
@@ -254,9 +255,13 @@ while(endgame == 0):
 	healthlbl = myfont.render("Health: " + str(ship.health), 1, (255,255,0))
 	scorelbl = myfont.render("Score: " + str(score), 1, (255,255,0))
 	bosslbl = myfont.render("Boss Health: " + str(boss.health), 1, (255,255,0))	
+
+
 	#render images
+
 	screen.fill(BLACK)
 	
+	#for seamless vertical scrolling
 	if(changeover == 0):
 		screen.blit(bg, (0,0), (0, 2000-obj.SCREENH-bgoffset, obj.SCREENW, 2000-bgoffset))
 	elif(changeover == 1):
