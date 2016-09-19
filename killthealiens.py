@@ -39,6 +39,7 @@ for x in range(0,3):
 boss = obj.Boss(100, -1200, bossimg,0)
 
 #create boss explosions
+#maybe move this later in the code and don't create it in memory until we need it
 boom = []
 boom.append(obj.MoveableObject(0, 0, pygame.Surface((1, 1))))
 
@@ -67,6 +68,8 @@ ychng = 0
 #for more precise keyboard input
 goright = False
 goleft = False
+goup = False
+godown = False
 
 #print saucers
 deadindex = -10
@@ -94,8 +97,7 @@ while(endgame == 0):
 	time += ticktime
 
 	#add more saucers to increase difficulty as time goes on
-	#maybe we could combine this making number of saucers a function of time
-	#boom, it is done
+	#number of saucers is a function of time
 	if(len(saucers)-3 < time/12000 and BEASTMODE == 0):
 		#print len(saucers)
 		#print time/6000
@@ -104,7 +106,7 @@ while(endgame == 0):
 		#saucers.append(obj.Enemy(random.randrange(0, obj.SCREENW), random.randrange(-200, -50), saucerimg))
 
 	#ENTER THE BOSS
-	if(len(saucers) > 10):		#change that number for max saucers on screen
+	if(len(saucers) > 10):		#change that number for max saucers on screen - default 10
 		BEASTMODE = 1
 		#del saucers[:]		#this removes the whole list
 
@@ -113,21 +115,35 @@ while(endgame == 0):
 		if event.type == pygame.QUIT: endgame = 1
 		if not hasattr(event, 'key'): continue
 		if event.key == pygame.K_ESCAPE: endgame = 1
+
 		if(event.type == pygame.KEYDOWN):
 			if (event.key == pygame.K_LEFT and ship.x >= 0): 
 				goleft = True
 			elif (event.key == pygame.K_RIGHT and ship.x+ship.width <= obj.SCREENW): 
 				goright = True
+			elif (event.key == pygame.K_UP and ship.y >= 0):
+				goup = True
+			elif (event.key == pygame.K_DOWN and ship.y+ship.height <= obj.SCREENH):
+				godown = True
+
 		if(event.type == pygame.KEYUP):
 			if (event.key == pygame.K_LEFT):
 				goleft = False
 			elif (event.key == pygame.K_RIGHT):
 				goright = False
+			elif (event.key == pygame.K_UP):
+				goup = False
+			elif (event.key == pygame.K_DOWN):
+				godown = False
+
 		if (event.key == pygame.K_SPACE and ship.active): 
 			bullets.append(ship.fire(bulletimg))
 
+	#these and border checks are redundant with the above
 	if(goright == True and ship.x+ship.width <= obj.SCREENW): ship.x += 5
 	elif(goleft == True and ship.x >= 0): ship.x -= 5
+	if(goup == True and ship.y >= 0): ship.y -= 5
+	elif(godown == True and ship.y+ship.height <= obj.SCREENH): ship.y += 5
 
 	ship.updatepos()
 
@@ -148,7 +164,7 @@ while(endgame == 0):
 		#if killed: 
 			#print killed
 			#print saucers
-
+	#this may be movable to the next iteration through the saucers
 	for saucer in saucers:
 		dietest = saucer.move(BEASTMODE)
 		if dietest == 1: 
@@ -177,15 +193,22 @@ while(endgame == 0):
 		if(-1 < bullet.exploding < 4): bullet.explode(time)
 		if(bullet.active == False): bullets.remove(bullet)
 
+	#maybe it would be best to have a section just to handle explosions across the board
+	#perhaps an explosion object, eg just kill the sprite and have explosion obj take over
+
 	#print "Boss Health: " + str(boss.health)
 	#just for kicks
 	#inefficient collision detection
 	#but it works for now
 	for saucer in saucers:
-		if(obj.collide(saucer, ship)):
+		if(obj.collide(saucer, ship) and saucer.exploding == -1):
 			ship.health -= 1
-			saucer.respawn()
+			saucer.explode(time)
+			#saucer.respawn()
 			#if ship.health <= 0: endgame = 0	#change to 2 for kill
+		elif(-1 < saucer.exploding < 4): saucer.explode(time)
+		#elif(saucer.exploding == 4): saucer.active = False
+
 		for bullet in bullets:
 			if(obj.collide(saucer, bullet)):
 				bullet.x = saucer.x
@@ -198,9 +221,11 @@ while(endgame == 0):
 					dietest = 1
 				bullet.explode(time)
 				#saucers.remove(saucer)		#this removes the actual object from the list
-				score += 5		
+				score += 5
+		if(saucer.active == False): saucer.respawn()
 
 	#this is so that we don't mess up the previous for iteration
+	#remove saucers from array
 	if(dietest == 1):
 		saucers.pop(deadindex)
 		dietest = 0
@@ -250,6 +275,10 @@ while(endgame == 0):
 	#if boss is displayed
 	if(4 > BEASTMODE >= 2):
 		boss.move(ship, time)
+		#if ship collides with boss, lose life
+		if(obj.collide(ship, boss)):
+			print "boss collision"
+			ship.health -= 1	#evaluation of death is earlier in the code
 
 	#text rendering
 	healthlbl = myfont.render("Health: " + str(ship.health), 1, (255,255,0))

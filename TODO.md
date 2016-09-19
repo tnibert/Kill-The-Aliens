@@ -5,4 +5,4 @@ This is the list of project goals to be implemented:
 3. Improve game art, especially start and end screens
 4. Add in high score save and display functionality
 
-These will be described more in the issues section
+These are described more in the issues section
