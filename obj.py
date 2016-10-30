@@ -77,6 +77,19 @@ class Player(MoveableObject):
 	def die(self):
 		#print "player dead"
 		self.active = False
+	#new method, test
+	def respawn(self, x, y):
+		self.active = True
+		self.x = x
+		self.y = y
+
+#so, for the player to explode
+#make die() method decrement health
+#make all areas that currently decrement health call die() instead
+#and make them all check for explosion happening
+#make self.active == False trigger explosion unless explosion already happening
+#once we are exploding and frame has reached last explosion frame
+#	respawn() ship at start coordinates
 
 class Enemy(MoveableObject):
 	def __init__(self, x, y, img):

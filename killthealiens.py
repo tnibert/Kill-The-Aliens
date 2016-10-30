@@ -106,7 +106,7 @@ while(endgame == 0):
 		#saucers.append(obj.Enemy(random.randrange(0, obj.SCREENW), random.randrange(-200, -50), saucerimg))
 
 	#ENTER THE BOSS
-	if(len(saucers) > 10):		#change that number for max saucers on screen - default 10
+	if(len(saucers) > 3):		#change that number for max saucers on screen - default 10
 		BEASTMODE = 1
 		#del saucers[:]		#this removes the whole list
 
@@ -139,7 +139,7 @@ while(endgame == 0):
 		if (event.key == pygame.K_SPACE and ship.active): 
 			bullets.append(ship.fire(bulletimg))
 
-	#these and border checks are redundant with the above
+	#for smoothness and border checks
 	if(goright == True and ship.x+ship.width <= obj.SCREENW): ship.x += 5
 	elif(goleft == True and ship.x >= 0): ship.x -= 5
 	if(goup == True and ship.y >= 0): ship.y -= 5
