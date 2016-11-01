@@ -64,6 +64,8 @@ class MoveableObject(pygame.sprite.Sprite):
 			#self.image.fill(BLACK)
 			self.image = explosion[len(explosion)-1]
 			self.active = False
+			return True		#we're done
+		return False
 		#then return to main for cleanup
 		#print self.active
 		#print self.timestack
@@ -72,20 +74,26 @@ class Player(MoveableObject):
 	def __init__(self, img):
 		MoveableObject.__init__(self, SCREENW/2, 450, img)
 		self.health = 3
+		self.spawnX = self.x
+		self.spawnY = self.y
 	def fire(self, img):
 		return Bullet(self.x+(self.image.get_width()/2), self.y-10, img, UP)
 	def die(self):
 		#print "player dead"
-		self.active = False
+		if self.active == True:
+			self.active = False
+			self.health -= 1
 	#new method, test
-	def respawn(self, x, y):
+	def respawn(self, img):
 		self.active = True
-		self.x = x
-		self.y = y
+		self.x = self.spawnX
+		self.y = self.spawnY
+		self.updatepos()
+		self.image = img
 
 #so, for the player to explode
-#make die() method decrement health
-#make all areas that currently decrement health call die() instead
+#make die() method decrement health*
+#make all areas that currently decrement health call die() instead*
 #and make them all check for explosion happening
 #make self.active == False trigger explosion unless explosion already happening
 #once we are exploding and frame has reached last explosion frame

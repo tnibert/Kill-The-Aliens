@@ -182,7 +182,7 @@ while(endgame == 0):
 		#-60 to go a little off screen, for high up explosions
 		if(bullet.y < -60 or bullet.y > obj.SCREENH): bullet.active = False
 		if(obj.collide(ship, bullet)):
-			ship.health -= 1
+			ship.die()
 			bullet.active = False
 		elif(BEASTMODE == 3 and obj.collide(boss, bullet)): 
 			boss.health -= 5
@@ -202,7 +202,7 @@ while(endgame == 0):
 	#but it works for now
 	for saucer in saucers:
 		if(obj.collide(saucer, ship) and saucer.exploding == -1):
-			ship.health -= 1
+			ship.die()
 			saucer.explode(time)
 			#saucer.respawn()
 			#if ship.health <= 0: endgame = 0	#change to 2 for kill
@@ -237,10 +237,14 @@ while(endgame == 0):
 	#for player death
 	if(ship.health <= 0): 
 		ship.die()
+		if(endtime == 0): endtime = time	#moved up from next if clause
 	if(ship.active == False):
-		ship.explode(time)
-		if(endtime == 0):
-			endtime = time
+		doneExploding = ship.explode(time)
+		if(doneExploding):
+			ship.respawn(shipimg)
+
+#		if(endtime == 0):
+#			endtime = time
 	#for time delay after death
 	if(time >= endtime + 4000 and endtime != 0):
 		#print "game over"
@@ -278,7 +282,7 @@ while(endgame == 0):
 		#if ship collides with boss, lose life
 		if(obj.collide(ship, boss)):
 			print "boss collision"
-			ship.health -= 1	#evaluation of death is earlier in the code
+			ship.die()	#evaluation of death is earlier in the code
 
 	#text rendering
 	healthlbl = myfont.render("Health: " + str(ship.health), 1, (255,255,0))
