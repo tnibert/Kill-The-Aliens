@@ -41,7 +41,7 @@ class MoveableObject(pygame.sprite.Sprite):
 		self.exploding = -1
 		self.timestack = []
 		self.active = True
-	def updatepos(self):	#this lets us play nice with pygame
+	def updatepos(self):	#this lets us play nice with pygame, collision detection
 		self.pos = (self.x, self.y)
 		self.rect.x = self.x
 		self.rect.y = self.y
@@ -79,17 +79,18 @@ class Player(MoveableObject):
 	def fire(self, img):
 		return Bullet(self.x+(self.image.get_width()/2), self.y-10, img, UP)
 	def die(self):
-		#print "player dead"
+		print "player dead"
 		if self.active == True:
 			self.active = False
 			self.health -= 1
 	#new method, test
 	def respawn(self, img):
+		self.exploding = -1
 		self.active = True
 		self.x = self.spawnX
 		self.y = self.spawnY
-		self.updatepos()
 		self.image = img
+		self.updatepos()
 
 #so, for the player to explode
 #make die() method decrement health*
@@ -130,6 +131,7 @@ class Enemy(MoveableObject):
 		#print self.rect
 		return 0
 	def respawn(self):
+		self.active = True
 		self.__init__(random.randrange(0, SCREENW), random.randrange(-200,-50), self.image)
 		
 

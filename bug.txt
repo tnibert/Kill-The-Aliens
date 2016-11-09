@@ -1,0 +1,4 @@
+so the game is detecting collides where there aren't any...
+why didn't we explode on subsequent collisions? - done
+saucers going invisible...? the image isn't resetting
+	so the saucers are designed to respawn when shot, no logic to properly respawn when collided with?

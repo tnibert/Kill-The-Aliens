@@ -207,7 +207,9 @@ while(endgame == 0):
 			#saucer.respawn()
 			#if ship.health <= 0: endgame = 0	#change to 2 for kill
 		elif(-1 < saucer.exploding < 4): saucer.explode(time)
-		#elif(saucer.exploding == 4): saucer.active = False
+		elif(saucer.exploding == 4):	#if we are finished exploding, reset
+			saucer.image = saucerimg
+			saucer.exploding = -1
 
 		for bullet in bullets:
 			if(obj.collide(saucer, bullet)):
@@ -235,9 +237,9 @@ while(endgame == 0):
 			boss.inittime = time
 
 	#for player death
-	if(ship.health <= 0): 
-		ship.die()
-		if(endtime == 0): endtime = time	#moved up from next if clause
+	#if(ship.health <= 0): 
+	#	ship.die()
+	#	if(endtime == 0): endtime = time	#moved up from next if clause
 	if(ship.active == False):
 		doneExploding = ship.explode(time)
 		if(doneExploding):
