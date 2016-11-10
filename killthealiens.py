@@ -106,7 +106,7 @@ while(endgame == 0):
 		#saucers.append(obj.Enemy(random.randrange(0, obj.SCREENW), random.randrange(-200, -50), saucerimg))
 
 	#ENTER THE BOSS
-	if(len(saucers) > 3):		#change that number for max saucers on screen - default 10
+	if(len(saucers) > 6):		#change that number for max saucers on screen - default 10
 		BEASTMODE = 1
 		#del saucers[:]		#this removes the whole list
 
@@ -206,10 +206,17 @@ while(endgame == 0):
 			saucer.explode(time)
 			#saucer.respawn()
 			#if ship.health <= 0: endgame = 0	#change to 2 for kill
-		elif(-1 < saucer.exploding < 4): saucer.explode(time)
+		elif(-1 < saucer.exploding < 4): 
+			saucer.explode(time)
+		#the following won't evaluate to true...
 		elif(saucer.exploding == 4):	#if we are finished exploding, reset
+			saucer.respawn()
 			saucer.image = saucerimg
 			saucer.exploding = -1
+			saucer.active = True
+			print "done exploding"
+		
+		#print saucer.exploding
 
 		for bullet in bullets:
 			if(obj.collide(saucer, bullet)):
