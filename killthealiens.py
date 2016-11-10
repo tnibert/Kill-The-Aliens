@@ -262,7 +262,7 @@ while(endgame == 0):
 		#print "game over"
 		endgame = 2
 
-	#if boss got killed make sonic style boss death explosion
+	#if boss got killed make Sonic style boss death explosion
 	#explode is called multiple times over several main loops to advance the explosion frame
 	if(BEASTMODE == 4):
 		for splat in boom:
@@ -275,7 +275,7 @@ while(endgame == 0):
 		if(boom[-1].exploding == 2 and len(boom) < 8):
 			boom.append(obj.MoveableObject(random.randrange(boss.x, boss.x+boss.width-obj.explosion[0].get_width()), random.randrange(boss.y, boss.y+boss.height-obj.explosion[0].get_height()), pygame.Surface((1,1))))
 		#if boss is done exploding
-		if(len(boom) == 8 and boom[-1].exploding == len(obj.explosion)-1):
+		if(len(boom) == 8 and boom[-1].exploding == len(obj.explosion)):
 			BEASTMODE = 5
 			score += 1000
 			endtime = time

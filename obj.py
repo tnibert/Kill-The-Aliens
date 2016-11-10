@@ -9,7 +9,7 @@ UP = 2
 DOWN = 3
 BLACK = (0,0,0)
 EXTIMELAPSE = 250
-BOSSHEALTH = 2000
+BOSSHEALTH = 10				#default 2000
 
 #for that singleton efficiency
 #saucerimg = pygame.image.load("saucera.png")
@@ -93,11 +93,12 @@ class Player(MoveableObject):
 		if(self.health <= 0):
 			self.x = -2000
 			self.y = -2000
+			self.speed = 0
 		else:
 			self.x = self.spawnX
 			self.y = self.spawnY
-		self.image = img
-		self.speed = 5
+			self.speed = 5
+			self.image = img
 		self.updatepos()
 
 #so, for the player to explode
