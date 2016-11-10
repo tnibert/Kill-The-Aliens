@@ -60,7 +60,7 @@ class MoveableObject(pygame.sprite.Sprite):
 		if(self.exploding < len(explosion)-1 and difftime > EXTIMELAPSE):
 			self.exploding += 1
 			self.image = explosion[self.exploding]
-		if(self.exploding >= len(explosion)): 
+		if(self.exploding >= len(explosion)-1): 
 			#self.image.fill(BLACK)
 			self.exploding += 1
 			self.image = explosion[len(explosion)-1]

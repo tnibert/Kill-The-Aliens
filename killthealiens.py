@@ -207,14 +207,13 @@ while(endgame == 0):
 			#saucer.respawn()
 			#if ship.health <= 0: endgame = 0	#change to 2 for kill
 		elif(-1 < saucer.exploding < 4): 
-			saucer.explode(time)
-		#the following won't evaluate to true...
-		elif(saucer.exploding == 4):	#if we are finished exploding, reset
-			saucer.respawn()
-			saucer.image = saucerimg
-			saucer.exploding = -1
-			saucer.active = True
-			print "done exploding"
+			if(saucer.explode(time)):
+				#if we are finished exploding, reset
+				saucer.respawn()
+				saucer.image = saucerimg
+				saucer.exploding = -1
+				saucer.active = True
+				#print "done exploding"
 		
 		#print saucer.exploding
 
@@ -249,6 +248,7 @@ while(endgame == 0):
 	#	if(endtime == 0): endtime = time	#moved up from next if clause
 	if(ship.active == False):
 		doneExploding = ship.explode(time)
+		print doneExploding
 		if(doneExploding):
 			ship.respawn(shipimg)
 
