@@ -1,8 +1,24 @@
-This is the list of project goals to be implemented:
+Project Steps:
 
-1. Improve boss AI
-2. Add power ups, e.g. more bullets fired at once, force field, etc
-3. Improve game art, especially start and end screens
-4. Add in high score save and display functionality
+0.8
+- Vertical movement
 
-These are described more in the issues section
+0.9
+- improved art
+- power ups and space mines
+	- increased speed
+	- more bullets
+	- timed force field
+	- decreased speed
+	- bomb
+
+1.0
+- improved boss AI
+- high score save and display functionality
+
+
+Workflow:
+
+All new features and bug fixes developed in separate branch or fork
+Pull request initiated
+Review and merge
