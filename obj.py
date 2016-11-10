@@ -90,8 +90,12 @@ class Player(MoveableObject):
 	def respawn(self, img):
 		self.exploding = -1
 		self.active = True
-		self.x = self.spawnX
-		self.y = self.spawnY
+		if(self.health <= 0):
+			self.x = -2000
+			self.y = -2000
+		else:
+			self.x = self.spawnX
+			self.y = self.spawnY
 		self.image = img
 		self.speed = 5
 		self.updatepos()

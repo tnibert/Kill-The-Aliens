@@ -55,6 +55,9 @@ endgame = 0
 #3 means boss is out, 4 means dying, 5 means dead
 BEASTMODE = 0
 
+#most saucers that can be in play before boss comes out
+MAXENEMIES = 3
+
 BLACK = (0,0,0)
 blacksquare.fill(BLACK)
 
@@ -106,7 +109,7 @@ while(endgame == 0):
 		#saucers.append(obj.Enemy(random.randrange(0, obj.SCREENW), random.randrange(-200, -50), saucerimg))
 
 	#ENTER THE BOSS
-	if(len(saucers) > 6):		#change that number for max saucers on screen - default 10
+	if(len(saucers) > MAXENEMIES):		#change that number for max saucers on screen - default 10
 		BEASTMODE = 1
 		#del saucers[:]		#this removes the whole list
 
@@ -242,10 +245,10 @@ while(endgame == 0):
 			BEASTMODE = 2
 			boss.inittime = time
 
-	#for player death
-	#if(ship.health <= 0): 
-	#	ship.die()
-	#	if(endtime == 0): endtime = time	#moved up from next if clause
+	#for final player death
+	if(ship.health <= 0 and endtime == 0): 
+		endtime = time
+
 	if(ship.active == False):
 		doneExploding = ship.explode(time)
 		print doneExploding
