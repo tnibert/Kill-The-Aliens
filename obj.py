@@ -77,6 +77,7 @@ class Player(MoveableObject):
 		self.health = 3
 		self.spawnX = self.x
 		self.spawnY = self.y
+		self.speed = 5
 	def fire(self, img):
 		return Bullet(self.x+(self.image.get_width()/2), self.y-10, img, UP)
 	def die(self):
@@ -91,6 +92,7 @@ class Player(MoveableObject):
 		self.x = self.spawnX
 		self.y = self.spawnY
 		self.image = img
+		self.speed = 5
 		self.updatepos()
 
 #so, for the player to explode

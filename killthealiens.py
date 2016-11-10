@@ -140,10 +140,10 @@ while(endgame == 0):
 			bullets.append(ship.fire(bulletimg))
 
 	#for smoothness and border checks
-	if(goright == True and ship.x+ship.width <= obj.SCREENW): ship.x += 5
-	elif(goleft == True and ship.x >= 0): ship.x -= 5
-	if(goup == True and ship.y >= 0): ship.y -= 5
-	elif(godown == True and ship.y+ship.height <= obj.SCREENH): ship.y += 5
+	if(goright == True and ship.x+ship.width <= obj.SCREENW): ship.x += ship.speed
+	elif(goleft == True and ship.x >= 0): ship.x -= ship.speed
+	if(goup == True and ship.y >= 0): ship.y -= ship.speed
+	elif(godown == True and ship.y+ship.height <= obj.SCREENH): ship.y += ship.speed
 
 	ship.updatepos()
 
