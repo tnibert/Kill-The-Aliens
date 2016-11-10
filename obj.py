@@ -9,7 +9,7 @@ UP = 2
 DOWN = 3
 BLACK = (0,0,0)
 EXTIMELAPSE = 250
-BOSSHEALTH = 10				#default 2000
+BOSSHEALTH = 2000				#default 2000
 
 #for that singleton efficiency
 #saucerimg = pygame.image.load("saucera.png")
@@ -82,7 +82,7 @@ class Player(MoveableObject):
 	def fire(self, img):
 		return Bullet(self.x+(self.image.get_width()/2), self.y-10, img, UP)
 	def die(self):
-		print "player dead"
+		#print "player dead"
 		if self.active == True:
 			self.active = False
 			self.health -= 1

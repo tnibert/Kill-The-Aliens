@@ -56,7 +56,7 @@ endgame = 0
 BEASTMODE = 0
 
 #most saucers that can be in play before boss comes out
-MAXENEMIES = 3
+MAXENEMIES = 10			#default 10
 
 BLACK = (0,0,0)
 blacksquare.fill(BLACK)
@@ -251,7 +251,7 @@ while(endgame == 0):
 
 	if(ship.active == False):
 		doneExploding = ship.explode(time)
-		print doneExploding
+		#print doneExploding
 		if(doneExploding):
 			ship.respawn(shipimg)
 
@@ -279,7 +279,7 @@ while(endgame == 0):
 			BEASTMODE = 5
 			score += 1000
 			endtime = time
-			print "BEASTMODE 5"
+			#print "BEASTMODE 5"
 
 	#if(boom[7].exploding == 4):
 	#	endtime = time
@@ -293,7 +293,7 @@ while(endgame == 0):
 		boss.move(ship, time)
 		#if ship collides with boss, lose life
 		if(obj.collide(ship, boss)):
-			print "boss collision"
+			#print "boss collision"
 			ship.die()	#evaluation of death is earlier in the code
 
 	#text rendering
