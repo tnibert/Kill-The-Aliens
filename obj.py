@@ -9,6 +9,7 @@ UP = 2
 DOWN = 3
 BLACK = (0,0,0)
 EXTIMELAPSE = 250
+BOSSHEALTH = 2000
 
 #for that singleton efficiency
 #saucerimg = pygame.image.load("saucera.png")
@@ -141,7 +142,7 @@ class Enemy(MoveableObject):
 class Boss(MoveableObject):
 	def __init__(self, x, y, img, time):
 		MoveableObject.__init__(self, x, y, img)
-		self.health = 2000
+		self.health = BOSSHEALTH
 		self.inittime = time
 
 		#state indicator for boss
