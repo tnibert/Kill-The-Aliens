@@ -226,6 +226,7 @@ while(endgame == 0):
 
 	#this is so that we don't mess up the previous for iteration
 	#remove saucers from array
+	#I wonder if that bug is caused because only one saucer can die an iteration...
 	if(dietest == 1):
 		saucers.pop(deadindex)
 		dietest = 0
