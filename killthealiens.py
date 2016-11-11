@@ -55,6 +55,9 @@ endgame = 0
 #3 means boss is out, 4 means dying, 5 means dead
 BEASTMODE = 0
 
+#most saucers that can be in play before boss comes out
+MAXENEMIES = 10			#default 10
+
 BLACK = (0,0,0)
 blacksquare.fill(BLACK)
 
@@ -106,7 +109,7 @@ while(endgame == 0):
 		#saucers.append(obj.Enemy(random.randrange(0, obj.SCREENW), random.randrange(-200, -50), saucerimg))
 
 	#ENTER THE BOSS
-	if(len(saucers) > 10):		#change that number for max saucers on screen - default 10
+	if(len(saucers) > MAXENEMIES):		#change that number for max saucers on screen - default 10
 		BEASTMODE = 1
 		#del saucers[:]		#this removes the whole list
 
@@ -139,11 +142,11 @@ while(endgame == 0):
 		if (event.key == pygame.K_SPACE and ship.active): 
 			bullets.append(ship.fire(bulletimg))
 
-	#these and border checks are redundant with the above
-	if(goright == True and ship.x+ship.width <= obj.SCREENW): ship.x += 5
-	elif(goleft == True and ship.x >= 0): ship.x -= 5
-	if(goup == True and ship.y >= 0): ship.y -= 5
-	elif(godown == True and ship.y+ship.height <= obj.SCREENH): ship.y += 5
+	#for smoothness and border checks
+	if(goright == True and ship.x+ship.width <= obj.SCREENW): ship.x += ship.speed
+	elif(goleft == True and ship.x >= 0): ship.x -= ship.speed
+	if(goup == True and ship.y >= 0): ship.y -= ship.speed
+	elif(godown == True and ship.y+ship.height <= obj.SCREENH): ship.y += ship.speed
 
 	ship.updatepos()
 
@@ -182,7 +185,7 @@ while(endgame == 0):
 		#-60 to go a little off screen, for high up explosions
 		if(bullet.y < -60 or bullet.y > obj.SCREENH): bullet.active = False
 		if(obj.collide(ship, bullet)):
-			ship.health -= 1
+			ship.die()
 			bullet.active = False
 		elif(BEASTMODE == 3 and obj.collide(boss, bullet)): 
 			boss.health -= 5
@@ -202,12 +205,20 @@ while(endgame == 0):
 	#but it works for now
 	for saucer in saucers:
 		if(obj.collide(saucer, ship) and saucer.exploding == -1):
-			ship.health -= 1
+			ship.die()
 			saucer.explode(time)
 			#saucer.respawn()
 			#if ship.health <= 0: endgame = 0	#change to 2 for kill
-		elif(-1 < saucer.exploding < 4): saucer.explode(time)
-		#elif(saucer.exploding == 4): saucer.active = False
+		elif(-1 < saucer.exploding < 4): 
+			if(saucer.explode(time)):
+				#if we are finished exploding, reset
+				saucer.respawn()
+				saucer.image = saucerimg
+				saucer.exploding = -1
+				saucer.active = True
+				#print "done exploding"
+		
+		#print saucer.exploding
 
 		for bullet in bullets:
 			if(obj.collide(saucer, bullet)):
@@ -234,19 +245,24 @@ while(endgame == 0):
 			BEASTMODE = 2
 			boss.inittime = time
 
-	#for player death
-	if(ship.health <= 0): 
-		ship.die()
+	#for final player death
+	if(ship.health <= 0 and endtime == 0): 
+		endtime = time
+
 	if(ship.active == False):
-		ship.explode(time)
-		if(endtime == 0):
-			endtime = time
+		doneExploding = ship.explode(time)
+		#print doneExploding
+		if(doneExploding):
+			ship.respawn(shipimg)
+
+#		if(endtime == 0):
+#			endtime = time
 	#for time delay after death
 	if(time >= endtime + 4000 and endtime != 0):
 		#print "game over"
 		endgame = 2
 
-	#if boss got killed make sonic style boss death explosion
+	#if boss got killed make Sonic style boss death explosion
 	#explode is called multiple times over several main loops to advance the explosion frame
 	if(BEASTMODE == 4):
 		for splat in boom:
@@ -259,11 +275,11 @@ while(endgame == 0):
 		if(boom[-1].exploding == 2 and len(boom) < 8):
 			boom.append(obj.MoveableObject(random.randrange(boss.x, boss.x+boss.width-obj.explosion[0].get_width()), random.randrange(boss.y, boss.y+boss.height-obj.explosion[0].get_height()), pygame.Surface((1,1))))
 		#if boss is done exploding
-		if(len(boom) == 8 and boom[-1].exploding == len(obj.explosion)-1):
+		if(len(boom) == 8 and boom[-1].exploding == len(obj.explosion)):
 			BEASTMODE = 5
 			score += 1000
 			endtime = time
-			print "BEASTMODE 5"
+			#print "BEASTMODE 5"
 
 	#if(boom[7].exploding == 4):
 	#	endtime = time
@@ -277,8 +293,8 @@ while(endgame == 0):
 		boss.move(ship, time)
 		#if ship collides with boss, lose life
 		if(obj.collide(ship, boss)):
-			print "boss collision"
-			ship.health -= 1	#evaluation of death is earlier in the code
+			#print "boss collision"
+			ship.die()	#evaluation of death is earlier in the code
 
 	#text rendering
 	healthlbl = myfont.render("Health: " + str(ship.health), 1, (255,255,0))

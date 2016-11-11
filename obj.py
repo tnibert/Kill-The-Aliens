@@ -9,6 +9,7 @@ UP = 2
 DOWN = 3
 BLACK = (0,0,0)
 EXTIMELAPSE = 250
+BOSSHEALTH = 2000				#default 2000
 
 #for that singleton efficiency
 #saucerimg = pygame.image.load("saucera.png")
@@ -41,7 +42,7 @@ class MoveableObject(pygame.sprite.Sprite):
 		self.exploding = -1
 		self.timestack = []
 		self.active = True
-	def updatepos(self):	#this lets us play nice with pygame
+	def updatepos(self):	#this lets us play nice with pygame, collision detection
 		self.pos = (self.x, self.y)
 		self.rect.x = self.x
 		self.rect.y = self.y
@@ -62,8 +63,11 @@ class MoveableObject(pygame.sprite.Sprite):
 			self.image = explosion[self.exploding]
 		if(self.exploding >= len(explosion)-1): 
 			#self.image.fill(BLACK)
+			self.exploding += 1
 			self.image = explosion[len(explosion)-1]
 			self.active = False
+			return True		#we're done
+		return False
 		#then return to main for cleanup
 		#print self.active
 		#print self.timestack
@@ -72,11 +76,38 @@ class Player(MoveableObject):
 	def __init__(self, img):
 		MoveableObject.__init__(self, SCREENW/2, 450, img)
 		self.health = 3
+		self.spawnX = self.x
+		self.spawnY = self.y
+		self.speed = 5
 	def fire(self, img):
 		return Bullet(self.x+(self.image.get_width()/2), self.y-10, img, UP)
 	def die(self):
 		#print "player dead"
-		self.active = False
+		if self.active == True:
+			self.active = False
+			self.health -= 1
+	#new method, test
+	def respawn(self, img):
+		self.exploding = -1
+		self.active = True
+		if(self.health <= 0):
+			self.x = -2000
+			self.y = -2000
+			self.speed = 0
+		else:
+			self.x = self.spawnX
+			self.y = self.spawnY
+			self.speed = 5
+			self.image = img
+		self.updatepos()
+
+#so, for the player to explode
+#make die() method decrement health*
+#make all areas that currently decrement health call die() instead*
+#and make them all check for explosion happening
+#make self.active == False trigger explosion unless explosion already happening
+#once we are exploding and frame has reached last explosion frame
+#	respawn() ship at start coordinates
 
 class Enemy(MoveableObject):
 	def __init__(self, x, y, img):
@@ -109,13 +140,14 @@ class Enemy(MoveableObject):
 		#print self.rect
 		return 0
 	def respawn(self):
+		self.active = True
 		self.__init__(random.randrange(0, SCREENW), random.randrange(-200,-50), self.image)
 		
 
 class Boss(MoveableObject):
 	def __init__(self, x, y, img, time):
 		MoveableObject.__init__(self, x, y, img)
-		self.health = 2000
+		self.health = BOSSHEALTH
 		self.inittime = time
 
 		#state indicator for boss
