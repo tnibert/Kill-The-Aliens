@@ -56,7 +56,7 @@ endgame = 0
 BEASTMODE = 0
 
 #most saucers that can be in play before boss comes out
-MAXENEMIES = 10			#default 10
+MAXENEMIES = 3			#default 10
 
 BLACK = (0,0,0)
 blacksquare.fill(BLACK)
@@ -152,9 +152,9 @@ while(endgame == 0):
 
 	if(BEASTMODE == 3):		#if boss is out
 		if(boss.infirerange(ship) > 0):
-			if(random.randrange(0,10) == 1):
+			if(random.randrange(0,10) == 1 and ship.exploding == -1):	#and if ship is not exploding
 				bullets.append(boss.fire(bulletimg, obj.LEFT))
-			if(random.randrange(0,10) == 1):
+			if(random.randrange(0,10) == 1 and ship.exploding == -1):
 				bullets.append(boss.fire(bulletimg, obj.RIGHT))
 		#elif(random.randrange(0,20) == 1):
 		#	bullets.append(boss.fire(bulletimg, obj.LEFT))
