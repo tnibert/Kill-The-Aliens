@@ -56,7 +56,7 @@ endgame = 0
 BEASTMODE = 0
 
 #most saucers that can be in play before boss comes out
-MAXENEMIES = 3			#default 10
+MAXENEMIES = 10			#default 10
 
 BLACK = (0,0,0)
 blacksquare.fill(BLACK)
