@@ -72,6 +72,30 @@ class MoveableObject(pygame.sprite.Sprite):
 		#print self.active
 		#print self.timestack
 
+#even good power ups may explode, but rarely
+
+#power ups and downs, to be inherited from
+class StatusModifier(MoveableObject):
+	def __init__(self, img):
+		MoveableObject.__init__(self, rand() % SCREENW, -100, img)
+	def payload(self, target):
+		pass
+	def move(self):
+		pass
+		#create movement trigonometrically like in Panzer Deathmatch
+
+#+1 life
+class OneUp(StatusModifier)
+
+#bomb booby trap, -1 life
+class Bomb(StatusModifier)
+
+#double background and ship speed, need a way to undo after time
+class SpeedUp(StatusModifier)
+
+#shoot from 3 locations, need a way to undo after time
+class MoreGuns(StatusModifier)
+
 class Player(MoveableObject):
 	def __init__(self, img):
 		MoveableObject.__init__(self, SCREENW/2, 450, img)
