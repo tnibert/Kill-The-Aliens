@@ -79,10 +79,16 @@ class MoveableObject(pygame.sprite.Sprite):
 class StatusModifier(MoveableObject):
 	def __init__(self, img):
 		MoveableObject.__init__(self, random.randrange(0, SCREENW), -100, img)
+		self.degreeangle = 180
+		self.speed = 3
 	def payload(self, target):
+		print("This payload is empty...")
 		pass
 	def move(self):
-		self.y += 7
+		self.x -= (math.degrees(math.sin(math.radians(self.degreeangle)))*self.speed)/40
+		self.y -= (math.degrees(math.cos(math.radians(self.degreeangle)))*self.speed)/40
+		self.updatepos()
+		print "x = " + str(self.x) + ", y = " + str(self.y)
 		#create movement trigonometrically like in Panzer Deathmatch
 
 #+1 life
