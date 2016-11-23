@@ -85,16 +85,32 @@ class StatusModifier(MoveableObject):
 		#create movement trigonometrically like in Panzer Deathmatch
 
 #+1 life
-class OneUp(StatusModifier)
+class OneUp(StatusModifier):
+	def payload(self, target):
+		#add some sort of happy animation
+		target.health += 1
 
 #bomb booby trap, -1 life
-class Bomb(StatusModifier)
+#we'll have to make sure that the payload does not happen multiple times
+class Bomb(StatusModifier):
+	def payload(self, target):
+		target.health -= 1
+		target.die()		#initiate explosion
 
 #double background and ship speed, need a way to undo after time
 class SpeedUp(StatusModifier)
-
+	def payload(self, target):
+		target.speed *= 2
+		#somehow make map move at double speed
+	def reversepayload(self, target):
+		target.speed /= 2
+		
 #shoot from 3 locations, need a way to undo after time
-class MoreGuns(StatusModifier)
+class MoreGuns(StatusModifier):
+	def payload(self, target):
+		pass
+	def reversepayload(self, target):
+		pass
 
 class Player(MoveableObject):
 	def __init__(self, img):
