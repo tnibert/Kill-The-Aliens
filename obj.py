@@ -1,5 +1,6 @@
 import pygame
 import random
+import math
 
 SCREENH = 600
 SCREENW = 640
@@ -77,11 +78,11 @@ class MoveableObject(pygame.sprite.Sprite):
 #power ups and downs, to be inherited from
 class StatusModifier(MoveableObject):
 	def __init__(self, img):
-		MoveableObject.__init__(self, rand() % SCREENW, -100, img)
+		MoveableObject.__init__(self, random.randrange(0, SCREENW), -100, img)
 	def payload(self, target):
 		pass
 	def move(self):
-		pass
+		self.y += 7
 		#create movement trigonometrically like in Panzer Deathmatch
 
 #+1 life
@@ -98,7 +99,7 @@ class Bomb(StatusModifier):
 		target.die()		#initiate explosion
 
 #double background and ship speed, need a way to undo after time
-class SpeedUp(StatusModifier)
+class SpeedUp(StatusModifier):
 	def payload(self, target):
 		target.speed *= 2
 		#somehow make map move at double speed

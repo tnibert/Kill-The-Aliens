@@ -19,6 +19,7 @@ shipimg = pygame.image.load("spaceshipa.png")
 saucerimg = pygame.image.load("saucera.png")
 bulletimg = pygame.image.load("bullet.png").convert()
 bossimg = pygame.image.load("invader.png")
+oneupimg = pygame.image.load("neon.png")
 
 #actually transparent square
 blacksquare = pygame.Surface((obj.explosion[0].get_width()-15, obj.explosion[0].get_height()-15), pygame.SRCALPHA, 32)
@@ -30,6 +31,9 @@ saucers = []
 bullets = []
 #gone = False
 #killed = pygame.sprite.Group()
+
+#test power up
+addlife = obj.OneUp(oneupimg)
 
 #create enemies
 for x in range(0,3):
@@ -235,6 +239,9 @@ while(endgame == 0):
 				score += 5
 		if(saucer.active == False): saucer.respawn()
 
+	#handle power up movement
+	addlife.move()
+
 	#this is so that we don't mess up the previous for iteration
 	#remove saucers from array
 	#I wonder if that bug is caused because only one saucer can die an iteration...
@@ -317,9 +324,13 @@ while(endgame == 0):
 		screen.blit(bg, (0, ychng), (0, 0, obj.SCREENW, obj.SCREENH - ychng))
 
 	if(BEASTMODE >= 2): screen.blit(boss.image, (boss.x, boss.y))
-	screen.blit(ship.image, (ship.x, ship.y))
+	screen.blit(ship.image, (ship.x, ship.y))	#this should probably be rendered last for overlap reasons
 	for saucer in saucers:
 		screen.blit(saucer.image, (saucer.x, saucer.y))
+
+	#power up rendering
+	screen.blit(addlife.image, (addlife.x, addlife.y))
+
 	for bullet in bullets:
 		screen.blit(bullet.image, (bullet.x, bullet.y))
 	if(BEASTMODE >= 4): 
