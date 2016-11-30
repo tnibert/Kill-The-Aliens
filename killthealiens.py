@@ -29,11 +29,12 @@ ship = obj.Player(shipimg)
 #sprite groups
 saucers = []
 bullets = []
+statmods =[]	#for power ups and booby traps
 #gone = False
 #killed = pygame.sprite.Group()
 
 #test power up
-addlife = obj.OneUp(oneupimg)
+statmods.append(obj.OneUp(oneupimg))
 
 #create enemies
 for x in range(0,3):
@@ -239,8 +240,15 @@ while(endgame == 0):
 				score += 5
 		if(saucer.active == False): saucer.respawn()
 
-	#handle power up movement
-	addlife.move()
+	#handle status modifiers
+	modRMindex = []
+	for mod in statmods:
+		if(obj.collide(ship, mod)): 
+			mod.payload(ship)
+			modRMindex.append(statmods.index(mod))
+		mod.move()
+	#remove obtained status modifiers
+	for index in modRMindex: statmods.pop(index)
 
 	#this is so that we don't mess up the previous for iteration
 	#remove saucers from array
@@ -329,7 +337,8 @@ while(endgame == 0):
 		screen.blit(saucer.image, (saucer.x, saucer.y))
 
 	#power up rendering
-	screen.blit(addlife.image, (addlife.x, addlife.y))
+	for mod in statmods:
+		screen.blit(mod.image, (mod.x, mod.y))
 
 	for bullet in bullets:
 		screen.blit(bullet.image, (bullet.x, bullet.y))
