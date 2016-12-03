@@ -123,7 +123,7 @@ while(endgame == 0):
 	#determine if we should have a status modifier
 	#so apparently there's no switch/case in python >_>
 	#choose a random number, determine which powerup based on number, if not 1 - 4 just continue on w/ no stat mod
-	for case in obj.switch(random.randrange(0, 100)):
+	for case in obj.switch(random.randrange(0, 3000)):
 		if case(1): 
 			statmods.append(obj.OneUp(oneupimg))
 		elif case(2): 

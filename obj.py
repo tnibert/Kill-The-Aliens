@@ -11,6 +11,7 @@ DOWN = 3
 BLACK = (0,0,0)
 EXTIMELAPSE = 250
 BOSSHEALTH = 2000				#default 2000
+PLAYERHEALTH = 3				#default 3
 
 #for that singleton efficiency
 #saucerimg = pygame.image.load("saucera.png")
@@ -132,7 +133,6 @@ class OneUp(StatusModifier):
 #we'll have to make sure that the payload does not happen multiple times
 class Bomb(StatusModifier):
 	def payload(self, target):
-		target.health -= 1
 		target.die()		#initiate explosion
 
 #double background and ship speed, need a way to undo after time
@@ -154,7 +154,7 @@ class MoreGuns(StatusModifier):
 class Player(MoveableObject):
 	def __init__(self, img):
 		MoveableObject.__init__(self, SCREENW/2, 450, img)
-		self.health = 3
+		self.health = PLAYERHEALTH
 		self.spawnX = self.x
 		self.spawnY = self.y
 		self.speed = 5
