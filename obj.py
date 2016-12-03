@@ -73,6 +73,29 @@ class MoveableObject(pygame.sprite.Sprite):
 		#print self.active
 		#print self.timestack
 
+#from activestate cookbook recipe
+#made a nice algorithm, then realized python has no switch/case
+class switch(object):
+	def __init__(self, value):
+		self.value = value
+		self.fall = False
+
+	def __iter__(self):
+		"""Return the match method once, then stop"""
+		yield self.match
+		raise StopIteration
+
+	def match(self, *args):
+		"""Indicate whether or not to enter a case suite"""
+		if self.fall or not args:
+			return True
+		elif self.value in args:
+			self.fall = True
+			return True
+		else:
+			return False
+	
+
 #even good power ups may explode, but rarely
 
 #power ups and downs, to be inherited from
@@ -123,6 +146,7 @@ class SpeedUp(StatusModifier):
 #shoot from 3 locations, need a way to undo after time
 class MoreGuns(StatusModifier):
 	def payload(self, target):
+		print "MOAR GUNS"
 		pass
 	def reversepayload(self, target):
 		pass

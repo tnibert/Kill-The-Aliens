@@ -19,7 +19,14 @@ shipimg = pygame.image.load("spaceshipa.png")
 saucerimg = pygame.image.load("saucera.png")
 bulletimg = pygame.image.load("bullet.png").convert()
 bossimg = pygame.image.load("invader.png")
+
+#status modifier images
+#using same image for now, to change
 oneupimg = pygame.image.load("neon.png")
+bombimg = pygame.image.load("neon.png")
+speedupimg = pygame.image.load("neon.png")
+moregunsimg = pygame.image.load("neon.png")
+
 
 #actually transparent square
 blacksquare = pygame.Surface((obj.explosion[0].get_width()-15, obj.explosion[0].get_height()-15), pygame.SRCALPHA, 32)
@@ -34,7 +41,7 @@ statmods =[]	#for power ups and booby traps
 #killed = pygame.sprite.Group()
 
 #test power up
-statmods.append(obj.OneUp(oneupimg))
+#statmods.append(obj.OneUp(oneupimg))
 
 #create enemies
 for x in range(0,3):
@@ -112,6 +119,19 @@ while(endgame == 0):
 		saucers.append(obj.Enemy(random.randrange(0, obj.SCREENW), random.randrange(-200, -50), saucerimg))
 	#if(time >= 8000 and len(saucers) < 5):
 		#saucers.append(obj.Enemy(random.randrange(0, obj.SCREENW), random.randrange(-200, -50), saucerimg))
+
+	#determine if we should have a status modifier
+	#so apparently there's no switch/case in python >_>
+	#choose a random number, determine which powerup based on number, if not 1 - 4 just continue on w/ no stat mod
+	for case in obj.switch(random.randrange(0, 100)):
+		if case(1): 
+			statmods.append(obj.OneUp(oneupimg))
+		elif case(2): 
+			statmods.append(obj.Bomb(bombimg))
+		elif case(3): 
+			statmods.append(obj.SpeedUp(speedupimg))
+		elif case(4): 
+			statmods.append(obj.MoreGuns(moregunsimg))
 
 	#ENTER THE BOSS
 	if(len(saucers) > MAXENEMIES):		#change that number for max saucers on screen - default 10
