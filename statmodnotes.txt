@@ -1,0 +1,15 @@
+general bugs:
+- saucer stuck on explosion, replicated several times at this point
+- don't respawn over saucer
+
+steps to go:
+- speed up map movement for speedup statmod
+- implement time tracking and powerup reversal
++ new art for statmods
+- possibly limit number of statmods available on screen
+- create animation upon positive statmod change
+
+status modifier implementation bugs:
+- ship explosion in random places
+- one up not increasing health
++ need to remove statmods after they leave screen 
