@@ -7,6 +7,9 @@ import random
 
 pygame.init()
 
+#speed of map scrolling
+SCROLLSPEED = 2
+
 #set up window
 screen = pygame.display.set_mode((obj.SCREENW, obj.SCREENH), pygame.DOUBLEBUF)
 pygame.display.set_caption("KILL THE ALIENS")
@@ -110,6 +113,7 @@ while(intro == 1):
 while(endgame == 0):
 	ticktime = clock.tick(FPS)		#update time in milliseconds
 	time += ticktime
+	speedupstarttime = -1
 
 	#add more saucers to increase difficulty as time goes on
 	#number of saucers is a function of time
@@ -123,15 +127,21 @@ while(endgame == 0):
 	#determine if we should have a status modifier
 	#so apparently there's no switch/case in python >_>
 	#choose a random number, determine which powerup based on number, if not 1 - 4 just continue on w/ no stat mod
-	for case in obj.switch(random.randrange(0, 1000)): #figure out the right number for this, maybe 2500
+	for case in obj.switch(random.randrange(0, 500)): #figure out the right number for this, maybe 2500
 		if case(1): 
 			statmods.append(obj.OneUp(oneupimg))
-		elif case(2): 
-			statmods.append(obj.Bomb(bombimg))
+		#elif case(2): 
+		#	statmods.append(obj.Bomb(bombimg))
 		elif case(3): 
 			statmods.append(obj.SpeedUp(speedupimg))
-		elif case(4): 
-			statmods.append(obj.MoreGuns(moregunsimg))
+			#so, hopefully we can keep the modifications to killthealiens.py as small as possible
+			#time tracking, speed up  map movement
+			#CURRENT WORKING SECTION, MUST CREATE CODE AREA TO UNDO THE FOLLOWING MODS
+			speedupstarttime = time
+			SCROLLSPEED *= 2	#this must change back both on time limit and player death
+		#elif case(4): 
+		#	statmods.append(obj.MoreGuns(moregunsimg))
+			#moregunsstarttime = time
 
 	#ENTER THE BOSS
 	if(len(saucers) > MAXENEMIES):		#change that number for max saucers on screen - default 10
@@ -335,6 +345,12 @@ while(endgame == 0):
 			#print "boss collision"
 			ship.die()	#evaluation of death is earlier in the code
 
+	#power up (speed) deactivation
+	if((time - speedupstarttime) > 15000 and speedupstarttime != -1):
+		ship.speed /= 2
+		SCROLLSPEED /= 2
+		speedupstarttime = -1
+
 	#text rendering
 	healthlbl = myfont.render("Health: " + str(ship.health), 1, (255,255,0))
 	scorelbl = myfont.render("Score: " + str(score), 1, (255,255,0))
@@ -389,14 +405,19 @@ while(endgame == 0):
 		bgoffset = 0
 		changeover = 0
 		ychng = 0
-	else: bgoffset+=2
+	else: bgoffset+=SCROLLSPEED
 
 	if(2000 >= bgoffset > 2000-obj.SCREENH):
-		ychng += 2
+		ychng += SCROLLSPEED
 		changeover = 1
 	#print "time: " + str(time)
 	#print "health: " + str(ship.health)
 	#print "score: " + str(score)
+
+	#debug messages
+	print "ship speed = " + str(ship.speed)
+	print "SCROLLSPEED = " + str(SCROLLSPEED)
+
 #end game loop
 
 #display end screens

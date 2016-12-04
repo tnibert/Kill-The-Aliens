@@ -329,7 +329,7 @@ class Bullet(MoveableObject):
 		MoveableObject.__init__(self, x, y, img)
 		self.dir = dir
 		#self.active = True
-		self.speed = 10
+		self.speed = 11		#was 10, is now 11 for statmod speed up
 	def move(self):
 		# dir 0 for up, anything else for down
 		if(self.dir == UP): self.y -= self.speed
