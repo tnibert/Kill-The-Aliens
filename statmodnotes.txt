@@ -11,5 +11,7 @@ steps to go:
 
 status modifier implementation bugs:
 - ship explosion in random places
+	- connected to getting speed power up, we are running into our own bullet again
 - one up not increasing health
+	- seems to be working
 + need to remove statmods after they leave screen 

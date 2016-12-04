@@ -161,7 +161,7 @@ class Player(MoveableObject):
 	def fire(self, img):
 		return Bullet(self.x+(self.image.get_width()/2), self.y-10, img, UP)
 	def die(self):
-		#print "player dead"
+		print "player dead"
 		if self.active == True:
 			self.active = False
 			self.health -= 1
@@ -337,4 +337,9 @@ class Bullet(MoveableObject):
 		self.updatepos()
 
 def collide(spr1, spr2):
-	return pygame.sprite.collide_rect(spr1, spr2)
+	if(pygame.sprite.collide_rect(spr1, spr2)):
+		print("spr1 type = " + str(type(spr1)) + " x = " + str(spr1.x) + " y = " + str(spr1.y))
+		print("spr2 type = " + str(type(spr2)) + " x = " + str(spr2.x) + " y = " + str(spr2.y))
+		print " " 
+		return True
+	return False

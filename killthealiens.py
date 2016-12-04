@@ -271,6 +271,7 @@ while(endgame == 0):
 			modRMindex.append(statmods.index(mod))
 	#remove obtained status modifiers
 	for index in modRMindex: statmods.pop(index)
+	modRMindex = []
 
 	#this is so that we don't mess up the previous for iteration
 	#remove saucers from array
