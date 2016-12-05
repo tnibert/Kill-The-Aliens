@@ -6,6 +6,8 @@ steps to go:
 - speed up map movement for speedup statmod
 - implement additional bullets for moreguns powerup
 **- implement time tracking and powerup reversal
+	- how to check if ship had died?
+		- if ship.exploding == particular frame
 + new art for statmods
 - possibly limit number of statmods available on screen
 - create animation upon positive statmod change

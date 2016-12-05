@@ -107,7 +107,7 @@ class StatusModifier(MoveableObject):
 		self.speed = 3
 	def payload(self, target):
 		print("This payload is empty...")
-		pass
+		return 0
 	def move(self):
 		#screen edge checking
 		if(self.x > SCREENW-self.width and self.degreeangle > 180): 
@@ -128,26 +128,29 @@ class OneUp(StatusModifier):
 	def payload(self, target):
 		#add some sort of happy animation
 		target.health += 1
+		return 0
 
 #bomb booby trap, -1 life
 #we'll have to make sure that the payload does not happen multiple times
 class Bomb(StatusModifier):
 	def payload(self, target):
 		target.die()		#initiate explosion
+		return 0
 
 #double background and ship speed, need a way to undo after time
 class SpeedUp(StatusModifier):
 	def payload(self, target):
 		target.speed *= 2
 		#somehow make map move at double speed
-	def reversepayload(self, target):
+		return 1
+	def reversepayload(self, target):	#this doesn't make sense because we are removing the power up when it is obtained
 		target.speed /= 2
 		
 #shoot from 3 locations, need a way to undo after time
 class MoreGuns(StatusModifier):
 	def payload(self, target):
 		print "MOAR GUNS"
-		pass
+		return 2
 	def reversepayload(self, target):
 		pass
 

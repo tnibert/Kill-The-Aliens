@@ -8,6 +8,7 @@ import random
 pygame.init()
 
 #speed of map scrolling
+NORMSCROLLSPEED = 2
 SCROLLSPEED = 2
 
 #set up window
@@ -137,8 +138,8 @@ while(endgame == 0):
 			#so, hopefully we can keep the modifications to killthealiens.py as small as possible
 			#time tracking, speed up  map movement
 			#CURRENT WORKING SECTION, MUST CREATE CODE AREA TO UNDO THE FOLLOWING MODS
-			speedupstarttime = time
-			SCROLLSPEED *= 2	#this must change back both on time limit and player death
+			#speedupstarttime = time
+			#SCROLLSPEED = 6	#this must change back both on time limit and player death
 		#elif case(4): 
 		#	statmods.append(obj.MoreGuns(moregunsimg))
 			#moregunsstarttime = time
@@ -274,7 +275,10 @@ while(endgame == 0):
 	modRMindex = []
 	for mod in statmods:
 		if(obj.collide(ship, mod)):	#if we collect the modifier
-			mod.payload(ship)
+			modID = mod.payload(ship)
+			if modID == 1:
+				speedupstarttime = time
+				SCROLLSPEED = 6
 			modRMindex.append(statmods.index(mod))
 		mod.move()
 		if(mod.y > obj.SCREENH):	#if the modifier goes off screen
@@ -303,6 +307,7 @@ while(endgame == 0):
 		#print doneExploding
 		if(doneExploding):
 			ship.respawn(shipimg)
+			SCROLLSPEED = NORMSCROLLSPEED
 
 #		if(endtime == 0):
 #			endtime = time
@@ -346,9 +351,10 @@ while(endgame == 0):
 			ship.die()	#evaluation of death is earlier in the code
 
 	#power up (speed) deactivation
-	if((time - speedupstarttime) > 15000 and speedupstarttime != -1):
+	if(speedupstarttime > 0 and ((time - speedupstarttime) > 15000)):	#or ship exploding
+		print "Speed Reset"
 		ship.speed /= 2
-		SCROLLSPEED /= 2
+		SCROLLSPEED = NORMSCROLLSPEED
 		speedupstarttime = -1
 
 	#text rendering
