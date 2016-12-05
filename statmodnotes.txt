@@ -5,6 +5,7 @@ general bugs:
 steps to go:
 + speed up map movement for speedup statmod
 *- implement additional bullets for moreguns powerup
+	- bamf mode for ship
 + implement time tracking and powerup reversal
 + new art for statmods
 - possibly limit number of statmods available on screen

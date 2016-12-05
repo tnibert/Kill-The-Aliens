@@ -12,6 +12,7 @@ NORMSCROLLSPEED = 2
 SCROLLSPEED = 2
 
 speedupstarttime = -1
+moregunsstarttime = -1
 
 #set up window
 screen = pygame.display.set_mode((obj.SCREENW, obj.SCREENH), pygame.DOUBLEBUF)
@@ -141,8 +142,8 @@ while(endgame == 0):
 			#CURRENT WORKING SECTION, MUST CREATE CODE AREA TO UNDO THE FOLLOWING MODS
 			#speedupstarttime = time
 			#SCROLLSPEED = 6	#this must change back both on time limit and player death
-		#elif case(4): 
-		#	statmods.append(obj.MoreGuns(moregunsimg))
+		elif case(4): 
+			statmods.append(obj.MoreGuns(moregunsimg))
 			#moregunsstarttime = time
 
 	#ENTER THE BOSS
@@ -178,6 +179,9 @@ while(endgame == 0):
 
 		if (event.key == pygame.K_SPACE and ship.active): 
 			bullets.append(ship.fire(bulletimg))
+			if(ship.bamfmode):
+				bullets.append(ship.fire(bulletimg, obj.LEFT))
+				bullets.append(ship.fire(bulletimg, obj.RIGHT))
 
 	#for smoothness and border checks
 	if(goright == True and ship.x+ship.width <= obj.SCREENW): ship.x += ship.speed
@@ -280,6 +284,8 @@ while(endgame == 0):
 			if modID == 1:
 				speedupstarttime = time
 				SCROLLSPEED = 7
+			elif modID == 2:
+				moregunsstarttime = time
 			modRMindex.append(statmods.index(mod))
 		mod.move()
 		if(mod.y > obj.SCREENH):	#if the modifier goes off screen
