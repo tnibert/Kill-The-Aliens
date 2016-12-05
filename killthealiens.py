@@ -11,6 +11,8 @@ pygame.init()
 NORMSCROLLSPEED = 2
 SCROLLSPEED = 2
 
+speedupstarttime = -1
+
 #set up window
 screen = pygame.display.set_mode((obj.SCREENW, obj.SCREENH), pygame.DOUBLEBUF)
 pygame.display.set_caption("KILL THE ALIENS")
@@ -114,7 +116,6 @@ while(intro == 1):
 while(endgame == 0):
 	ticktime = clock.tick(FPS)		#update time in milliseconds
 	time += ticktime
-	speedupstarttime = -1
 
 	#add more saucers to increase difficulty as time goes on
 	#number of saucers is a function of time
@@ -278,7 +279,7 @@ while(endgame == 0):
 			modID = mod.payload(ship)
 			if modID == 1:
 				speedupstarttime = time
-				SCROLLSPEED = 6
+				SCROLLSPEED = 7
 			modRMindex.append(statmods.index(mod))
 		mod.move()
 		if(mod.y > obj.SCREENH):	#if the modifier goes off screen
@@ -351,9 +352,12 @@ while(endgame == 0):
 			ship.die()	#evaluation of death is earlier in the code
 
 	#power up (speed) deactivation
+	print time
+	print speedupstarttime
+	print time - speedupstarttime
 	if(speedupstarttime > 0 and ((time - speedupstarttime) > 15000)):	#or ship exploding
 		print "Speed Reset"
-		ship.speed /= 2
+		ship.speed = 5
 		SCROLLSPEED = NORMSCROLLSPEED
 		speedupstarttime = -1
 

@@ -140,19 +140,14 @@ class Bomb(StatusModifier):
 #double background and ship speed, need a way to undo after time
 class SpeedUp(StatusModifier):
 	def payload(self, target):
-		target.speed *= 2
-		#somehow make map move at double speed
+		target.speed = 10
 		return 1
-	def reversepayload(self, target):	#this doesn't make sense because we are removing the power up when it is obtained
-		target.speed /= 2
 		
 #shoot from 3 locations, need a way to undo after time
 class MoreGuns(StatusModifier):
 	def payload(self, target):
 		print "MOAR GUNS"
 		return 2
-	def reversepayload(self, target):
-		pass
 
 class Player(MoveableObject):
 	def __init__(self, img):
@@ -332,7 +327,7 @@ class Bullet(MoveableObject):
 		MoveableObject.__init__(self, x, y, img)
 		self.dir = dir
 		#self.active = True
-		self.speed = 11		#was 10, is now 11 for statmod speed up
+		self.speed = 13		#was 10, is now 13 for statmod speed up
 	def move(self):
 		# dir 0 for up, anything else for down
 		if(self.dir == UP): self.y -= self.speed
@@ -340,9 +335,9 @@ class Bullet(MoveableObject):
 		self.updatepos()
 
 def collide(spr1, spr2):
-	if(pygame.sprite.collide_rect(spr1, spr2)):
-		print("spr1 type = " + str(type(spr1)) + " x = " + str(spr1.x) + " y = " + str(spr1.y))
-		print("spr2 type = " + str(type(spr2)) + " x = " + str(spr2.x) + " y = " + str(spr2.y))
-		print " " 
-		return True
-	return False
+	return pygame.sprite.collide_rect(spr1, spr2)
+		#print("spr1 type = " + str(type(spr1)) + " x = " + str(spr1.x) + " y = " + str(spr1.y))
+		#print("spr2 type = " + str(type(spr2)) + " x = " + str(spr2.x) + " y = " + str(spr2.y))
+		#print " " 
+		#return True
+	#return False

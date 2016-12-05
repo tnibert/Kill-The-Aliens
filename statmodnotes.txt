@@ -3,11 +3,9 @@ general bugs:
 - don't respawn over saucer
 
 steps to go:
-- speed up map movement for speedup statmod
-- implement additional bullets for moreguns powerup
-**- implement time tracking and powerup reversal
-	- how to check if ship had died?
-		- if ship.exploding == particular frame
++ speed up map movement for speedup statmod
+*- implement additional bullets for moreguns powerup
++ implement time tracking and powerup reversal
 + new art for statmods
 - possibly limit number of statmods available on screen
 - create animation upon positive statmod change
@@ -16,6 +14,7 @@ status modifier implementation bugs:
 - ship explosion in random places
 	- connected to getting speed power up, we are running into our own bullet again
 	- perhaps increase bullet speed with ship speed
+	- seems to be fixed by changing bullet speed to 13
 - one up not increasing health
 	- seems to be working
 + need to remove statmods after they leave screen 
