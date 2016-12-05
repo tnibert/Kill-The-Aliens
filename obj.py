@@ -160,11 +160,11 @@ class Player(MoveableObject):
 		self.bamfmode = False
 	def fire(self, img, turret=UP):
 		if turret == UP:
-			return Bullet(self.x+(self.image.get_width()/2), self.y-10, img, UP)
+			return Bullet(self.x+(self.image.get_width()/2), self.y - 10, img, UP)
 		if turret == LEFT:
-			return Bullet(self.x, self.y-10, img, UP)
+			return Bullet(self.x+15, self.y + 40, img, UP)
 		if turret == RIGHT:
-			return Bullet(self.x+self.image.get_width(), self.y - 10, img, UP)
+			return Bullet(self.x+self.image.get_width()-15, self.y + 40, img, UP)
 		#so, in order to implement bamf mode, we need bullets to come out from side turrets
 		#but currently our fire method can only return one bullet
 		#so we either return a list of bullets when we fire (a cool bit of modification to the game loop)

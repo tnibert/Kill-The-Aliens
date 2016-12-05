@@ -225,7 +225,7 @@ while(endgame == 0):
 		bullet.move()
 		#-60 to go a little off screen, for high up explosions
 		if(bullet.y < -60 or bullet.y > obj.SCREENH): bullet.active = False
-		if(obj.collide(ship, bullet)):
+		if(obj.collide(ship, bullet) and bullet.dir != obj.UP):
 			ship.die()
 			bullet.active = False
 		elif(BEASTMODE == 3 and obj.collide(boss, bullet)): 
@@ -358,14 +358,19 @@ while(endgame == 0):
 			ship.die()	#evaluation of death is earlier in the code
 
 	#power up (speed) deactivation
-	print time
-	print speedupstarttime
-	print time - speedupstarttime
+	#print time
+	#print speedupstarttime
+	#print time - speedupstarttime
 	if(speedupstarttime > 0 and ((time - speedupstarttime) > 15000)):	#or ship exploding
 		print "Speed Reset"
 		ship.speed = 5
 		SCROLLSPEED = NORMSCROLLSPEED
 		speedupstarttime = -1
+	#more guns deactivation
+	if(moregunsstarttime > 0 and ((time - moregunsstarttime) > 15000)):
+		print "Gun Reset"
+		ship.bamfmode = False
+		moregunsstarttime = -1
 
 	#text rendering
 	healthlbl = myfont.render("Health: " + str(ship.health), 1, (255,255,0))
@@ -431,8 +436,8 @@ while(endgame == 0):
 	#print "score: " + str(score)
 
 	#debug messages
-	print "ship speed = " + str(ship.speed)
-	print "SCROLLSPEED = " + str(SCROLLSPEED)
+	#print "ship speed = " + str(ship.speed)
+	#print "SCROLLSPEED = " + str(SCROLLSPEED)
 
 #end game loop
 
