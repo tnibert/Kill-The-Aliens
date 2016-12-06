@@ -133,11 +133,11 @@ while(endgame == 0):
 	for case in obj.switch(random.randrange(0, 2500)): #figure out the right number for this, maybe 2500
 		if case(1): 
 			statmods.append(obj.OneUp(oneupimg))
-		elif case(2): 
+		elif case(90): 
 			statmods.append(obj.Bomb(bombimg))
-		elif case(3) or case(5):	#to make it more likely 
+		elif case(1337) or case(219):	#to make it more likely 
 			statmods.append(obj.SpeedUp(speedupimg))
-		elif case(4) or case(6): 
+		elif case(511) or case(2000): 
 			statmods.append(obj.MoreGuns(moregunsimg))
 			#moregunsstarttime = time
 
