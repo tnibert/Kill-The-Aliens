@@ -129,20 +129,15 @@ while(endgame == 0):
 
 	#determine if we should have a status modifier
 	#so apparently there's no switch/case in python >_>
-	#choose a random number, determine which powerup based on number, if not 1 - 4 just continue on w/ no stat mod
-	for case in obj.switch(random.randrange(0, 500)): #figure out the right number for this, maybe 2500
+	#choose a random number, determine which powerup based on number, if not 1 - 6 just continue on w/ no stat mod
+	for case in obj.switch(random.randrange(0, 2500)): #figure out the right number for this, maybe 2500
 		if case(1): 
 			statmods.append(obj.OneUp(oneupimg))
-		#elif case(2): 
-		#	statmods.append(obj.Bomb(bombimg))
-		elif case(3): 
+		elif case(2): 
+			statmods.append(obj.Bomb(bombimg))
+		elif case(3) or case(5):	#to make it more likely 
 			statmods.append(obj.SpeedUp(speedupimg))
-			#so, hopefully we can keep the modifications to killthealiens.py as small as possible
-			#time tracking, speed up  map movement
-			#CURRENT WORKING SECTION, MUST CREATE CODE AREA TO UNDO THE FOLLOWING MODS
-			#speedupstarttime = time
-			#SCROLLSPEED = 6	#this must change back both on time limit and player death
-		elif case(4): 
+		elif case(4) or case(6): 
 			statmods.append(obj.MoreGuns(moregunsimg))
 			#moregunsstarttime = time
 
@@ -315,6 +310,7 @@ while(endgame == 0):
 		if(doneExploding):
 			ship.respawn(shipimg)
 			SCROLLSPEED = NORMSCROLLSPEED
+			ship.bamfmode = False
 
 #		if(endtime == 0):
 #			endtime = time
@@ -362,13 +358,13 @@ while(endgame == 0):
 	#print speedupstarttime
 	#print time - speedupstarttime
 	if(speedupstarttime > 0 and ((time - speedupstarttime) > 15000)):	#or ship exploding
-		print "Speed Reset"
+		#print "Speed Reset"
 		ship.speed = 5
 		SCROLLSPEED = NORMSCROLLSPEED
 		speedupstarttime = -1
 	#more guns deactivation
 	if(moregunsstarttime > 0 and ((time - moregunsstarttime) > 15000)):
-		print "Gun Reset"
+		#print "Gun Reset"
 		ship.bamfmode = False
 		moregunsstarttime = -1
 

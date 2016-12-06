@@ -4,19 +4,14 @@ general bugs:
 
 steps to go:
 + speed up map movement for speedup statmod
-*- implement additional bullets for moreguns powerup
-	- bamf mode for ship
++ implement additional bullets for moreguns powerup
 + implement time tracking and powerup reversal
 + new art for statmods
 - possibly limit number of statmods available on screen
 - create animation upon positive statmod change
-- must reset more guns on death
-
-status modifier implementation bugs:
-- ship explosion in random places
-	- connected to getting speed power up, we are running into our own bullet again
-	- perhaps increase bullet speed with ship speed
-	- seems to be fixed by changing bullet speed to 13
-- one up not increasing health
-	- seems to be working
-+ need to remove statmods after they leave screen 
++ must reset more guns on death
+- work out probabilities
+- improve art for statmods
++ remove debug messages
+- random engine does not have enough entropy
+- adjust trajectory angles on the fly for non linear movement

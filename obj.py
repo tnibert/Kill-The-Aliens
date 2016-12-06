@@ -146,7 +146,7 @@ class SpeedUp(StatusModifier):
 #shoot from 3 locations, need a way to undo after time
 class MoreGuns(StatusModifier):
 	def payload(self, target):
-		print "MOAR GUNS"
+		#print "MOAR GUNS"
 		target.bamfmode = True
 		return 2
 
