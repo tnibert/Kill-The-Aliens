@@ -22,10 +22,10 @@ pygame.display.set_caption("KILL THE ALIENS")
 myfont = pygame.font.SysFont("monospace", 15)
 
 #create singleton images for efficiency
-shipimg = pygame.image.load("spaceshipa.png")
-saucerimg = pygame.image.load("saucera.png")
-bulletimg = pygame.image.load("bullet.png").convert()
-bossimg = pygame.image.load("invader.png")
+shipimg = pygame.image.load("spaceship1.png")
+saucerimg = pygame.image.load("saucer1.png")
+bulletimg = pygame.image.load("bullet1.png").convert()
+bossimg = pygame.image.load("invader1.png")
 
 #status modifier images
 #using same image for now, to change
@@ -63,7 +63,7 @@ boom = []
 boom.append(obj.MoveableObject(0, 0, pygame.Surface((1, 1))))
 
 clock = pygame.time.Clock()
-bg = pygame.image.load("map.png").convert()
+bg = pygame.image.load("map1.png").convert()
 bgoffset = 0
 FPS = 30
 
@@ -97,7 +97,7 @@ godown = False
 deadindex = -10
 
 intro = 1
-introscreen = pygame.image.load("intro.png")
+introscreen = pygame.image.load("intro1.png")
 
 #opening screen
 while(intro == 1):
@@ -439,9 +439,9 @@ while(endgame == 0):
 
 #display end screens
 if(BEASTMODE == 5):
-	disp = pygame.image.load("victory.png")
+	disp = pygame.image.load("victory1.png")
 else:
-	disp = pygame.image.load("dead.png")
+	disp = pygame.image.load("dead1.png")
 
 #add loop to get input, continue to high scores, etc
 cont = 0

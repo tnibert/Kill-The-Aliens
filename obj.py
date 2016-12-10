@@ -13,10 +13,6 @@ EXTIMELAPSE = 250
 BOSSHEALTH = 2000				#default 2000
 PLAYERHEALTH = 3				#default 3
 
-#for that singleton efficiency
-#saucerimg = pygame.image.load("saucera.png")
-#bulletimg = pygame.image.load("bullet.png")
-
 #divide an image into frames
 def toframes(img, numframes, xstep):
 	#img to divide up, number of frames to generate, step size on x axis to split on
@@ -28,7 +24,7 @@ def toframes(img, numframes, xstep):
 		frames.append(workimg.copy())
 	return frames
 
-explosion = toframes(pygame.image.load("explode.png"), 5, 120)
+explosion = toframes(pygame.image.load("explode1.png"), 5, 120)
 
 #all sprites inherit from this class
 class MoveableObject(pygame.sprite.Sprite):
