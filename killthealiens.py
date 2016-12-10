@@ -7,6 +7,13 @@ import random
 
 pygame.init()
 
+#speed of map scrolling
+NORMSCROLLSPEED = 2
+SCROLLSPEED = 2
+
+speedupstarttime = -1
+moregunsstarttime = -1
+
 #set up window
 screen = pygame.display.set_mode((obj.SCREENW, obj.SCREENH), pygame.DOUBLEBUF)
 pygame.display.set_caption("KILL THE ALIENS")
@@ -20,6 +27,14 @@ saucerimg = pygame.image.load("saucera.png")
 bulletimg = pygame.image.load("bullet.png").convert()
 bossimg = pygame.image.load("invader.png")
 
+#status modifier images
+#using same image for now, to change
+oneupimg = pygame.image.load("plus102.png")
+bombimg = pygame.image.load("bomb.png")
+speedupimg = pygame.image.load("speed.png")
+moregunsimg = pygame.image.load("guns.png")
+
+
 #actually transparent square
 blacksquare = pygame.Surface((obj.explosion[0].get_width()-15, obj.explosion[0].get_height()-15), pygame.SRCALPHA, 32)
 
@@ -28,8 +43,12 @@ ship = obj.Player(shipimg)
 #sprite groups
 saucers = []
 bullets = []
+statmods =[]	#for power ups and booby traps
 #gone = False
 #killed = pygame.sprite.Group()
+
+#test power up
+#statmods.append(obj.OneUp(oneupimg))
 
 #create enemies
 for x in range(0,3):
@@ -108,6 +127,20 @@ while(endgame == 0):
 	#if(time >= 8000 and len(saucers) < 5):
 		#saucers.append(obj.Enemy(random.randrange(0, obj.SCREENW), random.randrange(-200, -50), saucerimg))
 
+	#determine if we should have a status modifier
+	#so apparently there's no switch/case in python >_>
+	#choose a random number, determine which powerup based on number, if not 1 - 6 just continue on w/ no stat mod
+	for case in obj.switch(random.randrange(0, 2201)): #figure out the right number for this, maybe 2201
+		if case(1): 
+			statmods.append(obj.OneUp(oneupimg))
+		elif case(90): 
+			statmods.append(obj.Bomb(bombimg))
+		elif case(1337) or case(219):	#to make it more likely 
+			statmods.append(obj.SpeedUp(speedupimg))
+		elif case(511) or case(2000): 
+			statmods.append(obj.MoreGuns(moregunsimg))
+			#moregunsstarttime = time
+
 	#ENTER THE BOSS
 	if(len(saucers) > MAXENEMIES):		#change that number for max saucers on screen - default 10
 		BEASTMODE = 1
@@ -141,6 +174,9 @@ while(endgame == 0):
 
 		if (event.key == pygame.K_SPACE and ship.active): 
 			bullets.append(ship.fire(bulletimg))
+			if(ship.bamfmode):
+				bullets.append(ship.fire(bulletimg, obj.LEFT))
+				bullets.append(ship.fire(bulletimg, obj.RIGHT))
 
 	#for smoothness and border checks
 	if(goright == True and ship.x+ship.width <= obj.SCREENW): ship.x += ship.speed
@@ -184,7 +220,7 @@ while(endgame == 0):
 		bullet.move()
 		#-60 to go a little off screen, for high up explosions
 		if(bullet.y < -60 or bullet.y > obj.SCREENH): bullet.active = False
-		if(obj.collide(ship, bullet)):
+		if(obj.collide(ship, bullet) and bullet.dir != obj.UP):
 			ship.die()
 			bullet.active = False
 		elif(BEASTMODE == 3 and obj.collide(boss, bullet)): 
@@ -235,6 +271,24 @@ while(endgame == 0):
 				score += 5
 		if(saucer.active == False): saucer.respawn()
 
+	#handle status modifiers
+	modRMindex = []
+	for mod in statmods:
+		if(obj.collide(ship, mod)):	#if we collect the modifier
+			modID = mod.payload(ship)
+			if modID == 1:
+				speedupstarttime = time
+				SCROLLSPEED = 7
+			elif modID == 2:
+				moregunsstarttime = time
+			modRMindex.append(statmods.index(mod))
+		mod.move()
+		if(mod.y > obj.SCREENH):	#if the modifier goes off screen
+			modRMindex.append(statmods.index(mod))
+	#remove obtained status modifiers
+	for index in modRMindex: statmods.pop(index)
+	modRMindex = []
+
 	#this is so that we don't mess up the previous for iteration
 	#remove saucers from array
 	#I wonder if that bug is caused because only one saucer can die an iteration...
@@ -255,6 +309,8 @@ while(endgame == 0):
 		#print doneExploding
 		if(doneExploding):
 			ship.respawn(shipimg)
+			SCROLLSPEED = NORMSCROLLSPEED
+			ship.bamfmode = False
 
 #		if(endtime == 0):
 #			endtime = time
@@ -297,6 +353,21 @@ while(endgame == 0):
 			#print "boss collision"
 			ship.die()	#evaluation of death is earlier in the code
 
+	#power up (speed) deactivation
+	#print time
+	#print speedupstarttime
+	#print time - speedupstarttime
+	if(speedupstarttime > 0 and ((time - speedupstarttime) > 15000)):	#or ship exploding
+		#print "Speed Reset"
+		ship.speed = 5
+		SCROLLSPEED = NORMSCROLLSPEED
+		speedupstarttime = -1
+	#more guns deactivation
+	if(moregunsstarttime > 0 and ((time - moregunsstarttime) > 15000)):
+		#print "Gun Reset"
+		ship.bamfmode = False
+		moregunsstarttime = -1
+
 	#text rendering
 	healthlbl = myfont.render("Health: " + str(ship.health), 1, (255,255,0))
 	scorelbl = myfont.render("Score: " + str(score), 1, (255,255,0))
@@ -317,9 +388,14 @@ while(endgame == 0):
 		screen.blit(bg, (0, ychng), (0, 0, obj.SCREENW, obj.SCREENH - ychng))
 
 	if(BEASTMODE >= 2): screen.blit(boss.image, (boss.x, boss.y))
-	screen.blit(ship.image, (ship.x, ship.y))
+	screen.blit(ship.image, (ship.x, ship.y))	#this should probably be rendered last for overlap reasons
 	for saucer in saucers:
 		screen.blit(saucer.image, (saucer.x, saucer.y))
+
+	#power up rendering
+	for mod in statmods:
+		screen.blit(mod.image, (mod.x, mod.y))
+
 	for bullet in bullets:
 		screen.blit(bullet.image, (bullet.x, bullet.y))
 	if(BEASTMODE >= 4): 
@@ -346,14 +422,19 @@ while(endgame == 0):
 		bgoffset = 0
 		changeover = 0
 		ychng = 0
-	else: bgoffset+=2
+	else: bgoffset+=SCROLLSPEED
 
 	if(2000 >= bgoffset > 2000-obj.SCREENH):
-		ychng += 2
+		ychng += SCROLLSPEED
 		changeover = 1
 	#print "time: " + str(time)
 	#print "health: " + str(ship.health)
 	#print "score: " + str(score)
+
+	#debug messages
+	#print "ship speed = " + str(ship.speed)
+	#print "SCROLLSPEED = " + str(SCROLLSPEED)
+
 #end game loop
 
 #display end screens

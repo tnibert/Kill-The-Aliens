@@ -1,0 +1,21 @@
+general bugs:
+- saucer stuck on explosion, replicated several times at this point
+- don't respawn over saucer
+- we need a serious boss AI overhaul
+
+steps to go:
++ speed up map movement for speedup statmod
++ implement additional bullets for moreguns powerup
++ implement time tracking and powerup reversal
++ new art for statmods
+- possibly limit number of statmods available on screen
+- create animation upon positive statmod change
++ must reset more guns on death
+- work out probabilities
+- improve art for statmods
++ remove debug messages
+- random engine does not have enough entropy
+- adjust trajectory angles on the fly for non linear movement
+
++ has been implented
+- to be implemented

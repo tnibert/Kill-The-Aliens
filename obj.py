@@ -1,5 +1,6 @@
 import pygame
 import random
+import math
 
 SCREENH = 600
 SCREENW = 640
@@ -10,6 +11,7 @@ DOWN = 3
 BLACK = (0,0,0)
 EXTIMELAPSE = 250
 BOSSHEALTH = 2000				#default 2000
+PLAYERHEALTH = 3				#default 3
 
 #for that singleton efficiency
 #saucerimg = pygame.image.load("saucera.png")
@@ -72,21 +74,108 @@ class MoveableObject(pygame.sprite.Sprite):
 		#print self.active
 		#print self.timestack
 
+#from activestate cookbook recipe
+#made a nice algorithm, then realized python has no switch/case
+class switch(object):
+	def __init__(self, value):
+		self.value = value
+		self.fall = False
+
+	def __iter__(self):
+		"""Return the match method once, then stop"""
+		yield self.match
+		raise StopIteration
+
+	def match(self, *args):
+		"""Indicate whether or not to enter a case suite"""
+		if self.fall or not args:
+			return True
+		elif self.value in args:
+			self.fall = True
+			return True
+		else:
+			return False
+	
+
+#even good power ups may explode, but rarely
+
+#power ups and downs, to be inherited from
+class StatusModifier(MoveableObject):
+	def __init__(self, img):
+		MoveableObject.__init__(self, random.randrange(0, SCREENW), -100, img)
+		self.degreeangle = random.randrange(100, 260)	#angle randomly ranges from 100 degrees to 260, 0 degrees is vertical axis
+		self.speed = 3
+	def payload(self, target):
+		print("This payload is empty...")
+		return 0
+	def move(self):
+		#screen edge checking
+
+		if((self.x > SCREENW-self.width and self.degreeangle > 180) or random.randrange(0, 2000)==1467): 
+			self.degreeangle = random.randrange(100, 160) #270 - (self.degreeangle - 90)
+			#print "turn left"
+		elif((self.x < 0 and self.degreeangle < 180) or random.randrange(0,2000)==200): 
+			self.degreeangle = random.randrange(200,260) #90 + (270 - self.degreeangle) 
+			#print "turn right"
+
+		self.x -= (math.degrees(math.sin(math.radians(self.degreeangle)))*self.speed)/40
+		self.y -= (math.degrees(math.cos(math.radians(self.degreeangle)))*self.speed)/40
+		self.updatepos()
+		#print "x = " + str(self.x) + ", y = " + str(self.y)
+		#create movement trigonometrically like in Panzer Deathmatch
+
+#+1 life
+class OneUp(StatusModifier):
+	def payload(self, target):
+		#add some sort of happy animation
+		target.health += 1
+		return 0
+
+#bomb booby trap, -1 life
+#we'll have to make sure that the payload does not happen multiple times
+class Bomb(StatusModifier):
+	def payload(self, target):
+		target.die()		#initiate explosion
+		return 0
+
+#double background and ship speed, need a way to undo after time
+class SpeedUp(StatusModifier):
+	def payload(self, target):
+		target.speed = 10
+		return 1
+		
+#shoot from 3 locations, need a way to undo after time
+class MoreGuns(StatusModifier):
+	def payload(self, target):
+		#print "MOAR GUNS"
+		target.bamfmode = True
+		return 2
+
 class Player(MoveableObject):
 	def __init__(self, img):
 		MoveableObject.__init__(self, SCREENW/2, 450, img)
-		self.health = 3
+		self.health = PLAYERHEALTH
 		self.spawnX = self.x
 		self.spawnY = self.y
 		self.speed = 5
-	def fire(self, img):
-		return Bullet(self.x+(self.image.get_width()/2), self.y-10, img, UP)
+		self.bamfmode = False
+	def fire(self, img, turret=UP):
+		if turret == UP:
+			return Bullet(self.x+(self.image.get_width()/2), self.y - 10, img, UP)
+		if turret == LEFT:
+			return Bullet(self.x+15, self.y + 40, img, UP)
+		if turret == RIGHT:
+			return Bullet(self.x+self.image.get_width()-15, self.y + 40, img, UP)
+		#so, in order to implement bamf mode, we need bullets to come out from side turrets
+		#but currently our fire method can only return one bullet
+		#so we either return a list of bullets when we fire (a cool bit of modification to the game loop)
+		#or we can check in the game loop and if bamfmode call fire two more times, I think this is better
+		#we should also add something in the main loop that prevents a bullet moving upward from harming the ship
 	def die(self):
-		#print "player dead"
+		print "player dead"
 		if self.active == True:
 			self.active = False
 			self.health -= 1
-	#new method, test
 	def respawn(self, img):
 		self.exploding = -1
 		self.active = True
@@ -250,7 +339,7 @@ class Bullet(MoveableObject):
 		MoveableObject.__init__(self, x, y, img)
 		self.dir = dir
 		#self.active = True
-		self.speed = 10
+		self.speed = 13		#was 10, is now 13 for statmod speed up
 	def move(self):
 		# dir 0 for up, anything else for down
 		if(self.dir == UP): self.y -= self.speed
@@ -259,3 +348,8 @@ class Bullet(MoveableObject):
 
 def collide(spr1, spr2):
 	return pygame.sprite.collide_rect(spr1, spr2)
+		#print("spr1 type = " + str(type(spr1)) + " x = " + str(spr1.x) + " y = " + str(spr1.y))
+		#print("spr2 type = " + str(type(spr2)) + " x = " + str(spr2.x) + " y = " + str(spr2.y))
+		#print " " 
+		#return True
+	#return False
