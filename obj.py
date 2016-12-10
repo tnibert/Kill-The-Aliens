@@ -110,11 +110,12 @@ class StatusModifier(MoveableObject):
 		return 0
 	def move(self):
 		#screen edge checking
-		if(self.x > SCREENW-self.width and self.degreeangle > 180): 
-			self.degreeangle = 270 - (self.degreeangle - 90)
+
+		if((self.x > SCREENW-self.width and self.degreeangle > 180) or random.randrange(0, 2000)==1467): 
+			self.degreeangle = random.randrange(100, 160) #270 - (self.degreeangle - 90)
 			#print "turn left"
-		elif(self.x < 0 and self.degreeangle < 180): 
-			self.degreeangle = 90 + (270 - self.degreeangle) 
+		elif((self.x < 0 and self.degreeangle < 180) or random.randrange(0,2000)==200): 
+			self.degreeangle = random.randrange(200,260) #90 + (270 - self.degreeangle) 
 			#print "turn right"
 
 		self.x -= (math.degrees(math.sin(math.radians(self.degreeangle)))*self.speed)/40
