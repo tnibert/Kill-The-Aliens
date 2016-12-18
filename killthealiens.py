@@ -25,7 +25,7 @@ myfont = pygame.font.SysFont("monospace", 15)
 shipimg = pygame.image.load("spaceship1.png")
 saucerimg = pygame.image.load("saucer1.png")
 bulletimg = pygame.image.load("bullet1.png").convert()
-bossimg = pygame.image.load("invader1.png")
+bossimg = pygame.image.load("invader2.png")
 
 #status modifier images
 #using same image for now, to change
