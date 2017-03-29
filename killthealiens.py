@@ -5,6 +5,8 @@ import sys
 import obj
 import random
 
+#well, we added music but it makes the game hang :\
+
 pygame.init()
 
 #speed of map scrolling
@@ -34,6 +36,8 @@ bombimg = pygame.image.load("bomb.png")
 speedupimg = pygame.image.load("speed.png")
 moregunsimg = pygame.image.load("guns.png")
 
+#load up music
+pygame.mixer.music.load("spectre.mp3");
 
 #actually transparent square
 blacksquare = pygame.Surface((obj.explosion[0].get_width()-15, obj.explosion[0].get_height()-15), pygame.SRCALPHA, 32)
@@ -111,6 +115,8 @@ while(intro == 1):
 		if event.type == pygame.KEYDOWN:
 			if (event.key == pygame.K_RETURN): intro = 0
 
+#start music on endless loop
+pygame.mixer.music.play(-1)
 
 #begin main game loop
 #this should have all been put in a function T_T
