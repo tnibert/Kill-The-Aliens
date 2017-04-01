@@ -7,6 +7,11 @@ import random
 
 #well, we added music but it makes the game hang :\
 
+#these two lines before pygame.init() fix hang problem slightly, but don't completely fix
+#may have to somehow run mixer in a separate process
+pygame.mixer.pre_init(44100, -16, 2, 512)
+pygame.mixer.init()
+
 pygame.init()
 
 #speed of map scrolling
