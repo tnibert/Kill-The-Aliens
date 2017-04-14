@@ -168,7 +168,7 @@ class Player(MoveableObject):
 		#or we can check in the game loop and if bamfmode call fire two more times, I think this is better
 		#we should also add something in the main loop that prevents a bullet moving upward from harming the ship
 	def die(self):
-		print "player dead"
+		print ("player dead")
 		if self.active == True:
 			self.active = False
 			self.health -= 1
