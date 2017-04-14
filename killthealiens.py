@@ -5,7 +5,7 @@ import sys
 import obj
 import random
 
-pygame.init()
+pygame.init() #hi
 
 #speed of map scrolling
 NORMSCROLLSPEED = 2
