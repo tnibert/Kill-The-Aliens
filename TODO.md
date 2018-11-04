@@ -8,9 +8,10 @@ Project Steps:
 - power ups and space mines
 	- increased speed
 	- more bullets
-	- timed force field
+	- timed force field (backlogged)
 	- decreased speed
 	- bomb
+- Windows build
 
 1.0
 - improved boss AI
