@@ -1,15 +1,14 @@
 from constants import EXTIMELAPSE
 from loadstaticres import explosion
-import pygame
+from gameobject import GameObject
 
 
 # all sprites inherit from this class
-class MoveableObject(pygame.sprite.Sprite):
+class MoveableObject(GameObject):
     def __init__(self, x, y, img):
-        pygame.sprite.Sprite.__init__(self)
+        GameObject.__init__(self, img)
         self.x = x
         self.y = y
-        self.image = img
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         self.rect = self.image.get_rect()
