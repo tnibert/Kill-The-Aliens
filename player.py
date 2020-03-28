@@ -1,16 +1,68 @@
 from moveableobject import MoveableObject
 from bullet import Bullet
-from constants import SCREENW, PLAYERHEALTH, UP, LEFT, RIGHT
+from constants import SCREENW, SCREENH, PLAYERHEALTH, UP, LEFT, RIGHT
+import pygame
 
 
 class Player(MoveableObject):
-    def __init__(self, img):
+    def __init__(self, img, eventqueue):
         MoveableObject.__init__(self, SCREENW / 2, 450, img)
         self.health = PLAYERHEALTH
         self.spawnX = self.x
         self.spawnY = self.y
         self.speed = 5
+        # bamf mode - shoot three bullets at a time
         self.bamfmode = False
+
+        # for more precise keyboard input
+        self.goright = False
+        self.goleft = False
+        self.goup = False
+        self.godown = False
+
+        # for processing input events
+        self.eventqueue = eventqueue
+
+    def update(self):
+        # todo: multiple speed by a time interval to not lock speed to frame rate
+        # user input
+        while not self.eventqueue.empty():
+            event = self.eventqueue.get_nowait()
+
+            if not hasattr(event, 'key'):
+                continue
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT and self.x >= 0:
+                    self.goleft = True
+                elif event.key == pygame.K_RIGHT and self.x + self.width <= SCREENW:
+                    self.goright = True
+                elif event.key == pygame.K_UP and self.y >= 0:
+                    self.goup = True
+                elif event.key == pygame.K_DOWN and self.y + self.height <= SCREENH:
+                    self.godown = True
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT:
+                    self.goleft = False
+                elif event.key == pygame.K_RIGHT:
+                    self.goright = False
+                elif event.key == pygame.K_UP:
+                    self.goup = False
+                elif event.key == pygame.K_DOWN:
+                    self.godown = False
+
+        # for smoothness and border checks
+        if self.goright == True and self.x + self.width <= SCREENW:
+            self.x += self.speed
+        elif self.goleft == True and self.x >= 0:
+            self.x -= self.speed
+        if self.goup == True and self.y >= 0:
+            self.y -= self.speed
+        elif self.godown == True and self.y + self.height <= SCREENH:
+            self.y += self.speed
+
+        self.updatepos()
 
     def fire(self, img, turret=UP):
         if turret == UP:

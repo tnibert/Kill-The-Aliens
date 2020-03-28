@@ -8,12 +8,17 @@ from boss import Boss
 from utilfuncs import switch, toframes, collide
 from constants import *
 from loadstaticres import *
+from queue import Queue
 import pygame
 import sys
 import random
 
-# well, we added music but it makes the game hang :\
 
+# queues for input events
+player_input_queue = Queue()
+game_mgmt_queue = Queue()
+
+# well, we added music but it makes the game hang :\
 # these two lines before pygame.init() fix hang problem slightly, but don't completely fix
 # may have to somehow run mixer in a separate process
 pygame.mixer.pre_init(44100, -16, 2, 512)
@@ -36,14 +41,13 @@ bulletimg = bulletimg.convert()     # todo: change name
 myfont = pygame.font.SysFont("monospace", 15)
 
 # load up music
-pygame.mixer.music.load(BG_MUSIC_FNAME);
+pygame.mixer.music.load(BG_MUSIC_FNAME)
 
 # actually transparent square
-blacksquare = pygame.Surface((explosion[0].get_width() - 15, explosion[0].get_height() - 15), pygame.SRCALPHA,
-                             32)
+blacksquare = pygame.Surface((explosion[0].get_width() - 15, explosion[0].get_height() - 15), pygame.SRCALPHA, 32)
 
 # set up game objects
-ship = Player(shipimg)
+ship = Player(shipimg, player_input_queue)
 # sprite groups
 saucers = []
 bullets = []
@@ -91,12 +95,6 @@ endtime = 0
 changeover = 0  # for scroll change over
 ychng = 0
 
-# for more precise keyboard input
-goright = False
-goleft = False
-goup = False
-godown = False
-
 # print saucers
 deadindex = -10
 
@@ -112,7 +110,7 @@ while intro == 1:
             sys.exit()
         if not hasattr(event, 'key'): continue
         if event.type == pygame.KEYDOWN:
-            if (event.key == pygame.K_RETURN): intro = 0
+            if event.key == pygame.K_RETURN: intro = 0
 
 # start music on endless loop
 pygame.mixer.music.play(-1)
@@ -151,49 +149,19 @@ while endgame == 0:
         BEASTMODE = 1
     # del saucers[:]		#this removes the whole list
 
-    # user input
     for event in pygame.event.get():
         if event.type == pygame.QUIT: endgame = 1
-        if not hasattr(event, 'key'): continue
-        if event.key == pygame.K_ESCAPE: endgame = 1
-
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT and ship.x >= 0:
-                goleft = True
-            elif event.key == pygame.K_RIGHT and ship.x + ship.width <= SCREENW:
-                goright = True
-            elif event.key == pygame.K_UP and ship.y >= 0:
-                goup = True
-            elif event.key == pygame.K_DOWN and ship.y + ship.height <= SCREENH:
-                godown = True
-
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT:
-                goleft = False
-            elif event.key == pygame.K_RIGHT:
-                goright = False
-            elif event.key == pygame.K_UP:
-                goup = False
-            elif event.key == pygame.K_DOWN:
-                godown = False
-
-        if event.key == pygame.K_SPACE and ship.active:
+        elif not hasattr(event, 'key'): continue
+        elif event.key == pygame.K_ESCAPE: endgame = 1
+        elif event.key == pygame.K_SPACE and ship.active:
             bullets.append(ship.fire(bulletimg))
             if ship.bamfmode:
                 bullets.append(ship.fire(bulletimg, LEFT))
                 bullets.append(ship.fire(bulletimg, RIGHT))
+        elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
+            player_input_queue.put(event)
 
-    # for smoothness and border checks
-    if goright == True and ship.x + ship.width <= SCREENW:
-        ship.x += ship.speed
-    elif goleft == True and ship.x >= 0:
-        ship.x -= ship.speed
-    if goup == True and ship.y >= 0:
-        ship.y -= ship.speed
-    elif godown == True and ship.y + ship.height <= SCREENH:
-        ship.y += ship.speed
-
-    ship.updatepos()
+    ship.update()
 
     if BEASTMODE == 3:  # if boss is out
         if boss.infirerange(ship) > 0:
