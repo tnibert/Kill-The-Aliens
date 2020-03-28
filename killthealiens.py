@@ -87,9 +87,6 @@ endgame = 0
 # 3 means boss is out, 4 means dying, 5 means dead
 BEASTMODE = 0
 
-# most saucers that can be in play before boss comes out
-MAXENEMIES = 10  # default 10
-
 BLACK = (0, 0, 0)
 blacksquare.fill(BLACK)
 
