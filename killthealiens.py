@@ -56,12 +56,8 @@ gamescene.attach(ship)
 # sprite groups
 saucers = []
 bullets = []
-statmods = []  # for power ups and booby traps
 # gone = False
 # killed = pygame.sprite.Group()
-
-# test power up
-# statmods.append(OneUp(oneupimg))
 
 # create enemies
 for x in range(0, 3):
@@ -136,14 +132,18 @@ while endgame == 0:
     # so apparently there's no switch/case in python >_>
     # choose a random number, determine which powerup based on number, if not 1 - 6 just continue on w/ no stat mod
     for case in switch(random.randrange(0, 2201)):  # figure out the right number for this, maybe 2201
+        statmod = None
         if case(1):
-            statmods.append(OneUp(oneupimg))
+            statmod = OneUp(oneupimg)
         elif case(90):
-            statmods.append(Bomb(bombimg))
+            statmod = Bomb(bombimg)
         elif case(1337) or case(219):  # to make it more likely
-            statmods.append(SpeedUp(speedupimg))
+            statmod = SpeedUp(speedupimg)
         elif case(511) or case(2000):
-            statmods.append(MoreGuns(moregunsimg))
+            statmod = MoreGuns(moregunsimg)
+        if statmod is not None:
+            statmod.subscribe(ship.receive_signals)
+            gamescene.attach(statmod)
         # moregunsstarttime = time
 
     # ENTER THE BOSS
@@ -247,23 +247,18 @@ while endgame == 0:
                 score += 5
         if saucer.active == False: saucer.respawn()
 
+    # todo: add the map as a subscriber for scroll speed change
     # handle status modifiers
-    modRMindex = []
-    for mod in statmods:
-        if collide(ship, mod):  # if we collect the modifier
-            modID = mod.payload(ship)
-            if modID == 1:
-                speedupstarttime = time
-                SCROLLSPEED = 7
-            elif modID == 2:
-                moregunsstarttime = time
-            modRMindex.append(statmods.index(mod))
-        mod.move()
-        if mod.y > SCREENH:  # if the modifier goes off screen
-            modRMindex.append(statmods.index(mod))
-    # remove obtained status modifiers
-    for index in modRMindex: statmods.pop(index)
-    modRMindex = []
+    # modRMindex = []
+    # for mod in statmods:
+    #     if collide(ship, mod):  # if we collect the modifier
+    #         modID = mod.payload(ship)
+    #         if modID == 1:
+    #             speedupstarttime = time
+    #             SCROLLSPEED = 7
+    #         elif modID == 2:
+    #             moregunsstarttime = time
+    #         modRMindex.append(statmods.index(mod))
 
     # this is so that we don't mess up the previous for iteration
     # remove saucers from array
@@ -370,10 +365,6 @@ while endgame == 0:
 
     for saucer in saucers:
         screen.blit(saucer.image, (saucer.x, saucer.y))
-
-    # power up rendering
-    for mod in statmods:
-        screen.blit(mod.image, (mod.x, mod.y))
 
     gamescene.draw_cycle()
 

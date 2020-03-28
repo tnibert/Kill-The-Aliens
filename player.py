@@ -1,6 +1,7 @@
 from moveableobject import MoveableObject
 from bullet import Bullet
 from constants import SCREENW, SCREENH, PLAYERHEALTH, UP, LEFT, RIGHT
+from statusmodifiers import StatusModifier
 import pygame
 
 
@@ -86,7 +87,7 @@ class Player(MoveableObject):
     def respawn(self, img):
         self.exploding = -1
         self.active = True
-        if (self.health <= 0):
+        if self.health <= 0:
             self.x = -2000
             self.y = -2000
             self.speed = 0
@@ -96,3 +97,10 @@ class Player(MoveableObject):
             self.speed = 5
             self.image = img
         self.updatepos()
+
+    def receive_signals(self, event):
+        print("player received {} from {}".format(event.name, type(event.source)))
+        if event.name == "collision" and isinstance(event.source, StatusModifier):
+            # todo: apply time out for payloads on speed and extra guns
+            print("applying payload")
+            event.source.payload(self)

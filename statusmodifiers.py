@@ -1,5 +1,6 @@
 from moveableobject import MoveableObject
-from constants import SCREENW
+from observe import Event
+from constants import SCREENW, SCREENH
 import math
 import random
 
@@ -13,8 +14,7 @@ class StatusModifier(MoveableObject):
         self.speed = 3
 
     def payload(self, target):
-        print("This payload is empty...")
-        return 0
+        self.notify(Event("remove"))
 
     def move(self):
         # screen edge checking
@@ -33,12 +33,18 @@ class StatusModifier(MoveableObject):
     # print "x = " + str(self.x) + ", y = " + str(self.y)
     # create movement trigonometrically like in Panzer Deathmatch
 
+    def update(self):
+        self.move()
+        if self.y > SCREENH:
+            self.notify(Event("remove"))
+
 
 # +1 life
 class OneUp(StatusModifier):
     def payload(self, target):
         # add some sort of happy animation
         target.health += 1
+        super().payload(target)
         return 0
 
 
@@ -47,6 +53,7 @@ class OneUp(StatusModifier):
 class Bomb(StatusModifier):
     def payload(self, target):
         target.die()  # initiate explosion
+        super().payload(target)
         return 0
 
 
@@ -54,6 +61,7 @@ class Bomb(StatusModifier):
 class SpeedUp(StatusModifier):
     def payload(self, target):
         target.speed = 10
+        super().payload(target)
         return 1
 
 
@@ -62,4 +70,5 @@ class MoreGuns(StatusModifier):
     def payload(self, target):
         # print "MOAR GUNS"
         target.bamfmode = True
+        super().payload(target)
         return 2
