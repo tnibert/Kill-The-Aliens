@@ -62,6 +62,13 @@ class Boss(MoveableObject):
                 self.dir = RIGHT
                 self.alreadygoing = 1
             elif test > 0:
+                #Traceback (most recent call last):
+                # File "/home/tim/code/Kill-The-Aliens/killthealiens.py", line 374, in <module>
+                #   boss.move(ship, time)
+                # File "/home/tim/code/Kill-The-Aliens/boss.py", line 64, in move
+                #   elif test > 0:
+                #TypeError: '>' not supported between instances of 'NoneType' and 'int'
+                # wtf?
                 self.mode = 0
                 self.alreadygoing = 0
 
