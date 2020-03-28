@@ -8,6 +8,7 @@ from boss import Boss
 from utilfuncs import switch, toframes, collide
 from constants import *
 from loadstaticres import *
+from scene import Scene
 from queue import Queue
 import pygame
 import sys
@@ -33,6 +34,8 @@ moregunsstarttime = -1
 screen = pygame.display.set_mode((SCREENW, SCREENH), pygame.DOUBLEBUF)
 pygame.display.set_caption("KILL THE ALIENS")
 
+gamescene = Scene(game_mgmt_queue, screen)
+
 # image conversions
 map_bg = background.convert()
 bulletimg = bulletimg.convert()     # todo: change name
@@ -48,6 +51,8 @@ blacksquare = pygame.Surface((explosion[0].get_width() - 15, explosion[0].get_he
 
 # set up game objects
 ship = Player(shipimg, player_input_queue)
+gamescene.attach(ship)
+
 # sprite groups
 saucers = []
 bullets = []
@@ -161,7 +166,7 @@ while endgame == 0:
         elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
             player_input_queue.put(event)
 
-    ship.update()
+    gamescene.update_cycle()
 
     if BEASTMODE == 3:  # if boss is out
         if boss.infirerange(ship) > 0:
@@ -365,13 +370,15 @@ while endgame == 0:
         screen.blit(map_bg, (0, ychng), (0, 0, SCREENW, SCREENH - ychng))
 
     if BEASTMODE >= 2: screen.blit(boss.image, (boss.x, boss.y))
-    screen.blit(ship.image, (ship.x, ship.y))  # this should probably be rendered last for overlap reasons
+
     for saucer in saucers:
         screen.blit(saucer.image, (saucer.x, saucer.y))
 
     # power up rendering
     for mod in statmods:
         screen.blit(mod.image, (mod.x, mod.y))
+
+    gamescene.draw_cycle()
 
     for bullet in bullets:
         screen.blit(bullet.image, (bullet.x, bullet.y))
