@@ -7,7 +7,7 @@ from statusmodifiers import *
 from boss import Boss
 from utilfuncs import switch, toframes, collide
 from constants import *
-from loadstaticres import explosion
+from loadstaticres import *
 import pygame
 import sys
 import random
@@ -21,10 +21,6 @@ pygame.mixer.init()
 
 pygame.init()
 
-# speed of map scrolling
-NORMSCROLLSPEED = 2
-SCROLLSPEED = 2
-
 speedupstarttime = -1
 moregunsstarttime = -1
 
@@ -32,24 +28,15 @@ moregunsstarttime = -1
 screen = pygame.display.set_mode((SCREENW, SCREENH), pygame.DOUBLEBUF)
 pygame.display.set_caption("KILL THE ALIENS")
 
+# image conversions
+map_bg = background.convert()
+bulletimg = bulletimg.convert()     # todo: change name
+
 # set text font
 myfont = pygame.font.SysFont("monospace", 15)
 
-# create singleton images for efficiency
-shipimg = pygame.image.load("spaceship1.png")
-saucerimg = pygame.image.load("saucer1.png")
-bulletimg = pygame.image.load("bullet1.png").convert()
-bossimg = pygame.image.load("invader2.png")
-
-# status modifier images
-# using same image for now, to change
-oneupimg = pygame.image.load("plus102.png")
-bombimg = pygame.image.load("bomb.png")
-speedupimg = pygame.image.load("speed.png")
-moregunsimg = pygame.image.load("guns.png")
-
 # load up music
-pygame.mixer.music.load("spectre.mp3");
+pygame.mixer.music.load(BG_MUSIC_FNAME);
 
 # actually transparent square
 blacksquare = pygame.Surface((explosion[0].get_width() - 15, explosion[0].get_height() - 15), pygame.SRCALPHA,
@@ -80,7 +67,7 @@ boom = []
 boom.append(MoveableObject(0, 0, pygame.Surface((1, 1))))
 
 clock = pygame.time.Clock()
-bg = pygame.image.load("map1.png").convert()
+
 bgoffset = 0
 FPS = 30
 
@@ -114,10 +101,9 @@ godown = False
 deadindex = -10
 
 intro = 1
-introscreen = pygame.image.load("intro1.png")
 
 # opening screen
-while (intro == 1):
+while intro == 1:
     screen.fill(BLACK)
     screen.blit(introscreen, (0, 0))
     pygame.display.flip()
@@ -403,12 +389,12 @@ while endgame == 0:
 
     # for seamless vertical scrolling
     if changeover == 0:
-        screen.blit(bg, (0, 0), (0, 2000 - SCREENH - bgoffset, SCREENW, 2000 - bgoffset))
+        screen.blit(map_bg, (0, 0), (0, 2000 - SCREENH - bgoffset, SCREENW, 2000 - bgoffset))
     elif changeover == 1:
         # print "ychng: " + str(ychng)
         # print "bgoffset: " + str(bgoffset)
-        screen.blit(bg, (0, 0), (0, bg.get_height() - ychng, SCREENW, 2000))
-        screen.blit(bg, (0, ychng), (0, 0, SCREENW, SCREENH - ychng))
+        screen.blit(map_bg, (0, 0), (0, map_bg.get_height() - ychng, SCREENW, 2000))
+        screen.blit(map_bg, (0, ychng), (0, 0, SCREENW, SCREENH - ychng))
 
     if BEASTMODE >= 2: screen.blit(boss.image, (boss.x, boss.y))
     screen.blit(ship.image, (ship.x, ship.y))  # this should probably be rendered last for overlap reasons
