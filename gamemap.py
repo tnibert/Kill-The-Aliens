@@ -1,13 +1,16 @@
 from gameobject import GameObject
 from constants import SCREENH, SCREENW, SCROLLSPEED
+from statusmodifiers import SpeedUp
 
 
+# todo: add timing to stop scroll speed change
 class GameMap(GameObject):
     def __init__(self, image):
         GameObject.__init__(self, image, layer=-1)
         self.changeover = 0
         self.bgoffset = 0
         self.ychng = 0
+        self.scrollspeed = SCROLLSPEED
 
     def update(self):
         # change offset for vertical scroll
@@ -16,10 +19,10 @@ class GameMap(GameObject):
             self.changeover = 0
             self.ychng = 0
         else:
-            self.bgoffset += SCROLLSPEED
+            self.bgoffset += self.scrollspeed
 
         if 2000 >= self.bgoffset > 2000 - SCREENH:
-            self.ychng += SCROLLSPEED
+            self.ychng += self.scrollspeed
             self.changeover = 1
 
     def draw(self, screen):
@@ -31,3 +34,7 @@ class GameMap(GameObject):
             # print "bgoffset: " + str(bgoffset)
             screen.blit(self.image, (0, 0), (0, self.image.get_height() - self.ychng, SCREENW, 2000))
             screen.blit(self.image, (0, self.ychng), (0, 0, SCREENW, SCREENH - self.ychng))
+
+    def receive_signals(self, event):
+        if isinstance(event.source, SpeedUp) and event.name == "collision":
+            self.scrollspeed = 10

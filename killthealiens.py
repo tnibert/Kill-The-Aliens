@@ -41,7 +41,8 @@ gamescene = Scene(game_mgmt_queue, screen)
 map_bg = background.convert()
 bulletimg = bulletimg.convert()     # todo: change name
 
-gamescene.attach(GameMap(map_bg))
+game_map = GameMap(map_bg)
+gamescene.attach(game_map)
 
 # set text font
 myfont = pygame.font.SysFont("monospace", 15)
@@ -137,6 +138,7 @@ while endgame == 0:
             statmod = Bomb(bombimg)
         elif case(1337) or case(219):  # to make it more likely
             statmod = SpeedUp(speedupimg)
+            statmod.subscribe("collision", game_map.receive_signals)
         elif case(511) or case(2000):
             statmod = MoreGuns(moregunsimg)
         if statmod is not None:
@@ -246,7 +248,6 @@ while endgame == 0:
                 score += 5
         if saucer.active == False: saucer.respawn()
 
-    # todo: add the map as a subscriber for scroll speed change
     # handle status modifiers
     # modRMindex = []
     # for mod in statmods:
@@ -254,7 +255,6 @@ while endgame == 0:
     #         modID = mod.payload(ship)
     #         if modID == 1:
     #             speedupstarttime = time
-    #             SCROLLSPEED = 7
     #         elif modID == 2:
     #             moregunsstarttime = time
     #         modRMindex.append(statmods.index(mod))
@@ -282,8 +282,6 @@ while endgame == 0:
             SCROLLSPEED = NORMSCROLLSPEED
             ship.bamfmode = False
 
-        #		if(endtime == 0):
-        #			endtime = time
     # for time delay after death
     if time >= endtime + 4000 and endtime != 0:
         # print "game over"
