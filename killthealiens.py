@@ -45,9 +45,6 @@ bulletimg = bulletimg.convert()     # todo: change name
 game_map = GameMap(map_bg)
 gamescene.attach(game_map)
 
-timer = Timer()
-gamescene.attach(timer)
-
 # set text font
 myfont = pygame.font.SysFont("monospace", 15)
 

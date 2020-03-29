@@ -1,6 +1,7 @@
 from gameobject import GameObject
 from constants import SCREENH, SCREENW, SCROLLSPEED
 from statusmodifiers import SpeedUp
+from timer import Timer
 
 
 # todo: add timing to stop scroll speed change
@@ -11,8 +12,12 @@ class GameMap(GameObject):
         self.bgoffset = 0
         self.ychng = 0
         self.scrollspeed = SCROLLSPEED
+        self.statmodtimer = Timer()
+        self.statmodtimer.subscribe("timeout", self.receive_signals)
 
     def update(self):
+        self.statmodtimer.tick()
+
         # change offset for vertical scroll
         if self.bgoffset > 2000:
             self.bgoffset = 0
@@ -38,3 +43,8 @@ class GameMap(GameObject):
     def receive_signals(self, event):
         if isinstance(event.source, SpeedUp) and event.name == "collision":
             self.scrollspeed = 10
+            # time for 15 seconds, todo: move to constant
+            self.statmodtimer.startwatch(15)
+        elif isinstance(event.source, Timer) and event.name == "timeout":
+            print("received timeout")
+            self.scrollspeed = SCROLLSPEED
