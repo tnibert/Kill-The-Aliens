@@ -10,6 +10,7 @@ from constants import *
 from loadstaticres import *
 from scene import Scene
 from gamemap import GameMap
+from timer import Timer
 from queue import Queue
 import pygame
 import sys
@@ -43,6 +44,9 @@ bulletimg = bulletimg.convert()     # todo: change name
 
 game_map = GameMap(map_bg)
 gamescene.attach(game_map)
+
+timer = Timer()
+gamescene.attach(timer)
 
 # set text font
 myfont = pygame.font.SysFont("monospace", 15)
@@ -249,7 +253,6 @@ while endgame == 0:
         if saucer.active == False: saucer.respawn()
 
     # handle status modifiers
-    # modRMindex = []
     # for mod in statmods:
     #     if collide(ship, mod):  # if we collect the modifier
     #         modID = mod.payload(ship)
@@ -257,7 +260,6 @@ while endgame == 0:
     #             speedupstarttime = time
     #         elif modID == 2:
     #             moregunsstarttime = time
-    #         modRMindex.append(statmods.index(mod))
 
     # this is so that we don't mess up the previous for iteration
     # remove saucers from array
@@ -292,7 +294,7 @@ while endgame == 0:
     if BEASTMODE == 4:
         for splat in boom:
             # if first pass, initialize explosion sequence
-            if (len(boom) == 1 and splat.exploding == -1):
+            if len(boom) == 1 and splat.exploding == -1:
                 splat.x = random.randrange(boss.x, boss.x + boss.width - explosion[
                     0].get_width())  # subtract explosion width
                 splat.y = random.randrange(boss.y, boss.y + boss.height - explosion[0].get_height())
