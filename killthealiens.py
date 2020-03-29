@@ -142,7 +142,7 @@ while endgame == 0:
         elif case(511) or case(2000):
             statmod = MoreGuns(moregunsimg)
         if statmod is not None:
-            statmod.subscribe(ship.receive_signals)
+            statmod.subscribe("collision", ship.receive_signals)
             gamescene.attach(statmod)
         # moregunsstarttime = time
 

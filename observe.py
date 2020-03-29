@@ -8,15 +8,18 @@ class Event:
 
 class Observable:
     def __init__(self):
-        self.callbacks = []
+        # dicts of form {eventname: [callbacks]}
+        self.callbacks = {}
 
-    def subscribe(self, callback):
-        self.callbacks.append(callback)
+    def subscribe(self, eventname, callback):
+        if eventname not in self.callbacks.keys():
+            self.callbacks[eventname] = [callback]
+        else:
+            self.callbacks[eventname].append(callback)
 
     def notify(self, event):
         event.source = self
-        # change to string to avoid circular imports
-        # something like "<class 'player.Player'>"
-        event.sourcestr = str(type(self))
-        for fn in self.callbacks:
-            fn(event)
+
+        if event.name in self.callbacks.keys():
+            for fn in self.callbacks[event.name]:
+                fn(event)

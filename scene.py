@@ -4,6 +4,7 @@ from utilfuncs import collide
 
 class Scene:
     def __init__(self, eventqueue, screen):
+        # todo: implement handling of the game event queue
         self.eventqueue = eventqueue
         self.children = []              # objects renderable in the scene
         self.screen = screen
@@ -15,7 +16,7 @@ class Scene:
         :return:
         """
         if isinstance(obj, Observable):
-            obj.subscribe(self.receive_signals)
+            obj.subscribe("remove", self.receive_signals)
         self.children.append(obj)
 
     def remove(self, obj):
