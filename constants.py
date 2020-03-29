@@ -12,6 +12,13 @@ PLAYERHEALTH = 3  # default 3
 # speed of map scrolling
 NORMSCROLLSPEED = 2
 SCROLLSPEED = 2
+MAXSCROLLSPEED = 8
 
 # most saucers that can be in play before boss comes out
 MAXENEMIES = 10
+
+STATMOD_DURATION = 15   # seconds
+MAX_SPEED = 20
+
+PLAYERSPEED = 5
+PLAYERMAXSPEED = 15

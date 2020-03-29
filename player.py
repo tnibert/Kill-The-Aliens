@@ -23,10 +23,11 @@ class Player(MoveableObject):
 
         # for processing input events
         self.eventqueue = eventqueue
+        self.statmods = []
 
     def update(self):
         # todo: multiple speed by a time interval to not lock speed to frame rate
-        # user input
+        # handle user input
         while not self.eventqueue.empty():
             event = self.eventqueue.get_nowait()
 
@@ -65,6 +66,11 @@ class Player(MoveableObject):
 
         self.updatepos()
 
+        # handle status modifiers
+        # [:] to iterate over copy of list (can remove from tick() Event handling)
+        for mod in self.statmods[:]:
+            mod.timer.tick()
+
     def fire(self, img, turret=UP):
         if turret == UP:
             return Bullet(self.x + (self.image.get_width() / 2), self.y - 10, img, UP)
@@ -100,7 +106,13 @@ class Player(MoveableObject):
 
     def receive_signals(self, event):
         print("player received {} from {}".format(event.name, type(event.source)))
-        if event.name == "collision" and isinstance(event.source, StatusModifier):
-            # todo: apply time out for payloads on speed and extra guns
-            print("applying payload")
-            event.source.payload(self)
+        if isinstance(event.source, StatusModifier):
+            if event.name == "collision":
+                print("applying payload")
+                event.source.payload(self)
+                event.source.subscribe("timeout", self.receive_signals)
+                self.statmods.append(event.source)
+            elif event.name == "timeout":
+                print("disabling stat modifier")
+                event.source.reverse(self)
+                self.statmods.remove(event.source)

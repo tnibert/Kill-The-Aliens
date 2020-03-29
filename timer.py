@@ -3,13 +3,18 @@ import time
 
 
 class Timer(Observable):
-    def __init__(self):
+    def __init__(self, owner=None):
+        """
+
+        :param owner: An optional Observable to send the timeout event from
+        """
         Observable.__init__(self)
         # for general tick
         self.prevtime = time.time()
         # for stopwatch timing
         self.start = None
         self.threshold = None
+        self.owner = owner
 
     def startwatch(self, seconds):
         self.start = time.time()
@@ -24,7 +29,10 @@ class Timer(Observable):
         # if stop watch is running
         if self.start:
             if (curtime - self.start) > self.threshold:
-                self.notify(Event("timeout"))
+                if self.owner is not None:
+                    self.owner.notify(Event("timeout"))
+                else:
+                    self.notify(Event("timeout"))
                 self.start = None
                 self.threshold = None
 

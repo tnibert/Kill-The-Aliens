@@ -231,8 +231,6 @@ while endgame == 0:
                 saucer.active = True
             # print "done exploding"
 
-        # print saucer.exploding
-
         for bullet in bullets:
             if collide(saucer, bullet):
                 bullet.x = saucer.x
@@ -249,22 +247,13 @@ while endgame == 0:
                 score += 5
         if saucer.active == False: saucer.respawn()
 
-    # handle status modifiers
-    # for mod in statmods:
-    #     if collide(ship, mod):  # if we collect the modifier
-    #         modID = mod.payload(ship)
-    #         if modID == 1:
-    #             speedupstarttime = time
-    #         elif modID == 2:
-    #             moregunsstarttime = time
-
     # this is so that we don't mess up the previous for iteration
     # remove saucers from array
     # I wonder if that bug is caused because only one saucer can die an iteration...
     if dietest == 1:
         saucers.pop(deadindex)
         dietest = 0
-        # print "LEN " + str(len(saucers))
+
         if len(saucers) == 0:
             BEASTMODE = 2
             boss.inittime = time
@@ -324,21 +313,6 @@ while endgame == 0:
             # print "boss collision"
             ship.die()  # evaluation of death is earlier in the code
 
-    # power up (speed) deactivation
-    # print time
-    # print speedupstarttime
-    # print time - speedupstarttime
-    if speedupstarttime > 0 and ((time - speedupstarttime) > 15000):  # or ship exploding
-        # print "Speed Reset"
-        ship.speed = 5
-        SCROLLSPEED = NORMSCROLLSPEED
-        speedupstarttime = -1
-    # more guns deactivation
-    if moregunsstarttime > 0 and ((time - moregunsstarttime) > 15000):
-        # print "Gun Reset"
-        ship.bamfmode = False
-        moregunsstarttime = -1
-
     # text rendering
     healthlbl = myfont.render("Health: " + str(ship.health), 1, (255, 255, 0))
     scorelbl = myfont.render("Score: " + str(score), 1, (255, 255, 0))
@@ -372,15 +346,6 @@ while endgame == 0:
 
     # if(explframe > 3): explframe=0
     # else: explframe += 1
-
-
-    # print "time: " + str(time)
-    # print "health: " + str(ship.health)
-    # print "score: " + str(score)
-
-    # debug messages
-    # print "ship speed = " + str(ship.speed)
-    # print "SCROLLSPEED = " + str(SCROLLSPEED)
 
 # end game loop
 

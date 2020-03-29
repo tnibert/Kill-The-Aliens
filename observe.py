@@ -17,8 +17,9 @@ class Observable:
         else:
             self.callbacks[eventname].append(callback)
 
-    def notify(self, event):
+    def notify(self, event, **kwargs):
         event.source = self
+        event.kwargs = kwargs
 
         if event.name in self.callbacks.keys():
             for fn in self.callbacks[event.name]:
