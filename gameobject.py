@@ -3,10 +3,11 @@ import pygame
 
 
 class GameObject(pygame.sprite.Sprite, Observable):
-    def __init__(self, img):
+    def __init__(self, img, layer=0):
         pygame.sprite.Sprite.__init__(self)
         Observable.__init__(self)
         self.image = img
+        self.layer = layer
 
     def update(self):
         pass

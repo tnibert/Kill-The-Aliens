@@ -9,6 +9,7 @@ from utilfuncs import switch, toframes, collide
 from constants import *
 from loadstaticres import *
 from scene import Scene
+from gamemap import GameMap
 from queue import Queue
 import pygame
 import sys
@@ -39,6 +40,8 @@ gamescene = Scene(game_mgmt_queue, screen)
 # image conversions
 map_bg = background.convert()
 bulletimg = bulletimg.convert()     # todo: change name
+
+gamescene.attach(GameMap(map_bg))
 
 # set text font
 myfont = pygame.font.SysFont("monospace", 15)
@@ -73,7 +76,6 @@ boom.append(MoveableObject(0, 0, pygame.Surface((1, 1))))
 
 clock = pygame.time.Clock()
 
-bgoffset = 0
 FPS = 30
 
 # flags
@@ -90,10 +92,6 @@ score = 0
 time = 0  # total play time
 endtime = 0
 
-changeover = 0  # for scroll change over
-ychng = 0
-
-# print saucers
 deadindex = -10
 
 intro = 1
@@ -142,6 +140,7 @@ while endgame == 0:
         elif case(511) or case(2000):
             statmod = MoreGuns(moregunsimg)
         if statmod is not None:
+            # todo: make the receiving function more specific
             statmod.subscribe("collision", ship.receive_signals)
             gamescene.attach(statmod)
         # moregunsstarttime = time
@@ -352,21 +351,12 @@ while endgame == 0:
 
     screen.fill(BLACK)
 
-    # for seamless vertical scrolling
-    if changeover == 0:
-        screen.blit(map_bg, (0, 0), (0, 2000 - SCREENH - bgoffset, SCREENW, 2000 - bgoffset))
-    elif changeover == 1:
-        # print "ychng: " + str(ychng)
-        # print "bgoffset: " + str(bgoffset)
-        screen.blit(map_bg, (0, 0), (0, map_bg.get_height() - ychng, SCREENW, 2000))
-        screen.blit(map_bg, (0, ychng), (0, 0, SCREENW, SCREENH - ychng))
+    gamescene.draw_cycle()
 
     if BEASTMODE >= 2: screen.blit(boss.image, (boss.x, boss.y))
 
     for saucer in saucers:
         screen.blit(saucer.image, (saucer.x, saucer.y))
-
-    gamescene.draw_cycle()
 
     for bullet in bullets:
         screen.blit(bullet.image, (bullet.x, bullet.y))
@@ -381,25 +371,12 @@ while endgame == 0:
     screen.blit(scorelbl, (SCREENW - 100, 35))
     if BEASTMODE >= 3: screen.blit(bosslbl, (SCREENW / 2, 20))
 
-    # for i in range(0,5):
-    # screen.blit(explosion[i], (i*120, 300))
-
     pygame.display.flip()  # apply double buffer
 
     # if(explframe > 3): explframe=0
     # else: explframe += 1
 
-    # change offset for vertical scroll
-    if bgoffset > 2000:
-        bgoffset = 0
-        changeover = 0
-        ychng = 0
-    else:
-        bgoffset += SCROLLSPEED
 
-    if 2000 >= bgoffset > 2000 - SCREENH:
-        ychng += SCROLLSPEED
-        changeover = 1
     # print "time: " + str(time)
     # print "health: " + str(ship.health)
     # print "score: " + str(score)
@@ -411,6 +388,7 @@ while endgame == 0:
 # end game loop
 
 # display end screens
+# todo: move file loads to resource loader
 if BEASTMODE == 5:
     disp = pygame.image.load("victory1.png")
 else:

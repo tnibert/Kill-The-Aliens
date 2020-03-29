@@ -1,4 +1,5 @@
 from observe import Observable, Event
+from moveableobject import MoveableObject
 from utilfuncs import collide
 
 
@@ -18,6 +19,8 @@ class Scene:
         if isinstance(obj, Observable):
             obj.subscribe("remove", self.receive_signals)
         self.children.append(obj)
+        # todo: optimize this for insert, don't resort list every time
+        self.children = sorted(self.children, key=lambda g: g.layer)
 
     def remove(self, obj):
         """
@@ -46,8 +49,8 @@ class Scene:
             print("gameobject removed")
 
     def check_collisions(self):
-        for c1 in self.children:
-            for c2 in self.children:
+        for c1 in filter(lambda c: isinstance(c, MoveableObject), self.children):
+            for c2 in filter(lambda c: isinstance(c, MoveableObject), self.children):
                 if c1 != c2:
                     if collide(c1, c2):
                         print("Collision between {} and {}".format(c1, c2))
