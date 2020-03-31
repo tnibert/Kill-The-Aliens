@@ -1,4 +1,5 @@
 from observe import Observable
+from timer import Timer
 import pygame
 
 
@@ -9,9 +10,11 @@ class GameObject(pygame.sprite.Sprite, Observable):
         # todo: may be better to not having GameObject tied to rendering
         self.image = img
         self.layer = layer
+        self.frame_timer = Timer()
+        self.frame_tick = 0
 
     def update(self):
-        pass
+        self.frame_tick = self.frame_timer.tick()
 
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))

@@ -1,6 +1,6 @@
 from moveableobject import MoveableObject
 from bullet import Bullet
-from constants import SCREENW, SCREENH, PLAYERHEALTH, UP, LEFT, RIGHT
+from constants import SCREENW, SCREENH, PLAYERHEALTH, UP, LEFT, RIGHT, PLAYERSPEED
 from statusmodifiers import StatusModifier
 import pygame
 
@@ -11,7 +11,7 @@ class Player(MoveableObject):
         self.health = PLAYERHEALTH
         self.spawnX = self.x
         self.spawnY = self.y
-        self.speed = 5
+        self.speed = PLAYERSPEED
         # bamf mode - shoot three bullets at a time
         self.bamfmode = False
 
@@ -26,6 +26,8 @@ class Player(MoveableObject):
         self.statmods = []
 
     def update(self):
+        super().update()
+
         # todo: multiple speed by a time interval to not lock speed to frame rate
         # handle user input
         while not self.eventqueue.empty():
@@ -55,14 +57,16 @@ class Player(MoveableObject):
                     self.godown = False
 
         # for smoothness and border checks
+        # todo: normalize diagonals
+        distance = self.speed * self.frame_tick
         if self.goright == True and self.x + self.width <= SCREENW:
-            self.x += self.speed
+            self.x += distance
         elif self.goleft == True and self.x >= 0:
-            self.x -= self.speed
+            self.x -= distance
         if self.goup == True and self.y >= 0:
-            self.y -= self.speed
+            self.y -= distance
         elif self.godown == True and self.y + self.height <= SCREENH:
-            self.y += self.speed
+            self.y += distance
 
         self.updatepos()
 
@@ -100,7 +104,7 @@ class Player(MoveableObject):
         else:
             self.x = self.spawnX
             self.y = self.spawnY
-            self.speed = 5
+            self.speed = PLAYERSPEED
             self.image = img
         self.updatepos()
 
