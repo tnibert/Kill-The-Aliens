@@ -95,7 +95,6 @@ class Player(MoveableObject):
             self.health -= 1
 
     def respawn(self, img):
-        self.exploding = -1
         self.active = True
         if self.health <= 0:
             self.x = -2000
@@ -105,8 +104,13 @@ class Player(MoveableObject):
             self.x = self.spawnX
             self.y = self.spawnY
             self.speed = PLAYERSPEED
-            self.image = img
+            self.image = self.orig_image
+            self.bamfmode = False
         self.updatepos()
+
+    def update_explosion(self, event):
+        if super().update_explosion():
+            self.respawn()
 
     def receive_signals(self, event):
         print("player received {} from {}".format(event.name, type(event.source)))

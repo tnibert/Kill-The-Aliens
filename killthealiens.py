@@ -262,14 +262,6 @@ while endgame == 0:
     if ship.health <= 0 and endtime == 0:
         endtime = time
 
-    if ship.active == False:
-        doneExploding = ship.explode(time)
-        # print doneExploding
-        if doneExploding:
-            ship.respawn(shipimg)
-            SCROLLSPEED = NORMSCROLLSPEED
-            ship.bamfmode = False
-
     # for time delay after death
     if time >= endtime + 4000 and endtime != 0:
         # print "game over"
