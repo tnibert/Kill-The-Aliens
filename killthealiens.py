@@ -16,6 +16,19 @@ import pygame
 import sys
 import random
 
+# todo:
+# ok, now this is getting hairy
+# We still need to test the explosion of the ship
+# But to do that, we need to move the bullets and the saucers to the new architecture
+# (because new arch handles the collisions)
+# explosions should be implemented for bullets and saucers if it is working
+# we also need to push events to the game_mgmt_queue and process in Scene
+#
+# currently the only object not framerate locked is the player, need to add this
+# to all other GameObjects, including the gamemap
+#
+# at the end of all of that, we will move the boss to the new architecture
+# we also need to fix the bug in the boss with infirerange() returning None
 
 # queues for input events
 player_input_queue = Queue()
@@ -146,7 +159,6 @@ while endgame == 0:
             # todo: make the receiving function more specific
             statmod.subscribe("collision", ship.receive_signals)
             gamescene.attach(statmod)
-        # moregunsstarttime = time
 
     # ENTER THE BOSS
     if len(saucers) > MAXENEMIES:  # change that number for max saucers on screen - default 10
@@ -173,17 +185,7 @@ while endgame == 0:
                 bullets.append(boss.fire(bulletimg, LEFT))
             if random.randrange(0, 10) == 1 and ship.exploding == -1:
                 bullets.append(boss.fire(bulletimg, RIGHT))
-            # elif(random.randrange(0,20) == 1):
-            #	bullets.append(boss.fire(bulletimg, LEFT))
-            #	bullets.append(boss.fire(bulletimg, RIGHT))
 
-            # potentially better collision detection
-            # for bullet in bullets:
-            # bullet.move()
-            # pygame.sprite.spritecollide(bullet, saucers, 1)
-            # if killed:
-            # print killed
-            # print saucers
     # this may be movable to the next iteration through the saucers
     for saucer in saucers:
         dietest = saucer.move(BEASTMODE)
@@ -288,12 +290,7 @@ while endgame == 0:
             BEASTMODE = 5
             score += 1000
             endtime = time
-        # print "BEASTMODE 5"
 
-    # if(boom[7].exploding == 4):
-    #	endtime = time
-    #	BEASTMODE = 5
-    # meh inefficient
     # this may have to be reexamined, testing beastmode < 3
     if boss.y > 0 and BEASTMODE < 3: BEASTMODE = 3
 

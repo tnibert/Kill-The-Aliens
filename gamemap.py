@@ -3,6 +3,7 @@ from constants import SCREENH, SCREENW, SCROLLSPEED, MAXSCROLLSPEED
 from statusmodifiers import SpeedUp
 
 
+# todo: update scroll with gameobject timer tick
 class GameMap(GameObject):
     def __init__(self, image):
         GameObject.__init__(self, image, layer=-1)

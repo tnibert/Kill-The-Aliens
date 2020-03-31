@@ -116,6 +116,12 @@ class Boss(MoveableObject):
         if foe.x + foe.width < self.x: return -1
         if foe.x > self.x + self.width: return -2
         if foe.x + foe.width < self.x + self.width and foe.x > self.x: return -3
+        # todo: this can return None and crash the program
+        # e.g.
+        # Traceback (most recent call last):
+        #   File "/home/tim/code/Kill-The-Aliens/killthealiens.py", line 213, in <module>
+        #     if boss.infirerange(ship) > 0:
+        # TypeError: '>' not supported between instances of 'NoneType' and 'int'
 
     def die(self):
         # print "dead"

@@ -1,6 +1,7 @@
 from moveableobject import MoveableObject
 from constants import UP
 
+
 class Bullet(MoveableObject):
     def __init__(self, x, y, img, dir):
         MoveableObject.__init__(self, x, y, img)
