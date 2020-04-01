@@ -1,6 +1,7 @@
 from gameobject import GameObject
 from constants import SCREENH, SCREENW, SCROLLSPEED, MAXSCROLLSPEED
 from statusmodifiers import SpeedUp
+from player import Player
 
 
 # todo: update scroll with gameobject timer tick
@@ -14,6 +15,8 @@ class GameMap(GameObject):
         self.statmodtimer = None
 
     def update(self):
+        super().update()
+
         if self.statmodtimer is not None:
             # todo: it would be better if the objects with timers did not have to tick them
             # e.g. if we had a list of timers iterated in scene
@@ -25,13 +28,13 @@ class GameMap(GameObject):
             self.changeover = 0
             self.ychng = 0
         else:
-            self.bgoffset += self.scrollspeed
+            self.bgoffset += (self.scrollspeed * self.frame_tick)
 
         if 2000 >= self.bgoffset > 2000 - SCREENH:
-            self.ychng += self.scrollspeed
+            self.ychng += (self.scrollspeed * self.frame_tick)
             self.changeover = 1
 
-    def draw(self, screen):
+    def render(self, screen):
         # for seamless vertical scrolling
         if self.changeover == 0:
             screen.blit(self.image, (0, 0), (0, 2000 - SCREENH - self.bgoffset, SCREENW, 2000 - self.bgoffset))
@@ -42,7 +45,7 @@ class GameMap(GameObject):
     def receive_signals(self, event):
         if isinstance(event.source, SpeedUp):
             print("game map received from SpeedUp")
-            if event.name == "collision":
+            if event.name == "collision" and isinstance(event.kwargs.get("who"), Player):
                 print("collision in SpeedUp event, game map handler")
                 self.scrollspeed = MAXSCROLLSPEED
                 self.statmodtimer = event.source.timer

@@ -16,5 +16,5 @@ class GameObject(pygame.sprite.Sprite, Observable):
     def update(self):
         self.frame_tick = self.frame_timer.tick()
 
-    def draw(self, screen):
+    def render(self, screen):
         screen.blit(self.image, (self.x, self.y))

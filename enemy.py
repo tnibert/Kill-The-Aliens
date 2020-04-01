@@ -2,6 +2,7 @@ from moveableobject import MoveableObject
 from constants import SCREENW, SCREENH
 import random
 
+
 class Enemy(MoveableObject):
     def __init__(self, x, y, img):
         MoveableObject.__init__(self, x, y, img)
@@ -35,6 +36,12 @@ class Enemy(MoveableObject):
         self.updatepos()
         return 0
 
+    def update(self):
+        self.move(0)
+
     def respawn(self):
         self.active = True
         self.__init__(random.randrange(0, SCREENW), random.randrange(-200, -50), self.image)
+
+    def on_collide(self, event):
+        pass

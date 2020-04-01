@@ -35,9 +35,9 @@ class Scene:
         for child in self.children:
             child.update()
 
-    def draw_cycle(self):
+    def render_cycle(self):
         for child in self.children:
-            child.draw(self.screen)
+            child.render(self.screen)
 
     def receive_signals(self, event):
         """
@@ -54,4 +54,4 @@ class Scene:
                 if c1 != c2:
                     if collide(c1, c2):
                         print("Collision between {} and {}".format(c1, c2))
-                        c1.notify(Event("collision"))
+                        c1.notify(Event("collision"), who=c2)

@@ -115,12 +115,12 @@ class Player(MoveableObject):
     def receive_signals(self, event):
         print("player received {} from {}".format(event.name, type(event.source)))
         if isinstance(event.source, StatusModifier):
-            if event.name == "collision":
+            if event.name == "collision" and isinstance(event.kwargs.get("who"), Player):
                 print("applying payload")
                 event.source.payload(self)
                 event.source.subscribe("timeout", self.receive_signals)
                 self.statmods.append(event.source)
-            elif event.name == "timeout":
+            elif event.name == "timeout" and isinstance(event.source, StatusModifier):
                 print("disabling stat modifier")
                 event.source.reverse(self)
                 self.statmods.remove(event.source)

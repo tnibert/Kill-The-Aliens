@@ -91,8 +91,6 @@ boom.append(MoveableObject(0, 0, pygame.Surface((1, 1))))
 
 clock = pygame.time.Clock()
 
-FPS = 30
-
 # flags
 # 0 means play, 1 means user exit, 2 means death, 3 means victory
 endgame = 0
@@ -129,15 +127,13 @@ pygame.mixer.music.play(-1)
 # begin main game loop
 # this should have all been put in a function T_T
 while endgame == 0:
-    ticktime = clock.tick(FPS)  # update time in milliseconds
-    time += ticktime
 
     # add more saucers to increase difficulty as time goes on
     # number of saucers is a function of time
-    if len(saucers) - 3 < time / 12000 and BEASTMODE == 0:
+    #if len(saucers) - 3 < time / 12000 and BEASTMODE == 0:
         # print len(saucers)
         # print time/6000
-        saucers.append(Enemy(random.randrange(0, SCREENW), random.randrange(-200, -50), saucerimg))
+    #    saucers.append(Enemy(random.randrange(0, SCREENW), random.randrange(-200, -50), saucerimg))
     # if(time >= 8000 and len(saucers) < 5):
     # saucers.append(Enemy(random.randrange(0, SCREENW), random.randrange(-200, -50), saucerimg))
 
@@ -157,12 +153,13 @@ while endgame == 0:
             statmod = MoreGuns(moregunsimg)
         if statmod is not None:
             # todo: make the receiving function more specific
+            print("statmod created")
             statmod.subscribe("collision", ship.receive_signals)
             gamescene.attach(statmod)
 
     # ENTER THE BOSS
-    if len(saucers) > MAXENEMIES:  # change that number for max saucers on screen - default 10
-        BEASTMODE = 1
+    #if len(saucers) > MAXENEMIES:  # change that number for max saucers on screen - default 10
+    #    BEASTMODE = 1
     # del saucers[:]		#this removes the whole list
 
     for event in pygame.event.get():
@@ -179,37 +176,37 @@ while endgame == 0:
 
     gamescene.update_cycle()
 
-    if BEASTMODE == 3:  # if boss is out
-        if boss.infirerange(ship) > 0:
-            if random.randrange(0, 10) == 1 and ship.exploding == -1:  # and if ship is not exploding
-                bullets.append(boss.fire(bulletimg, LEFT))
-            if random.randrange(0, 10) == 1 and ship.exploding == -1:
-                bullets.append(boss.fire(bulletimg, RIGHT))
+    #if BEASTMODE == 3:  # if boss is out
+    #    if boss.infirerange(ship) > 0:
+    #        if random.randrange(0, 10) == 1 and ship.exploding == -1:  # and if ship is not exploding
+    #            bullets.append(boss.fire(bulletimg, LEFT))
+    #        if random.randrange(0, 10) == 1 and ship.exploding == -1:
+    #            bullets.append(boss.fire(bulletimg, RIGHT))
 
     # this may be movable to the next iteration through the saucers
-    for saucer in saucers:
-        dietest = saucer.move(BEASTMODE)
-        if dietest == 1:
-            deadindex = saucers.index(saucer)
-
-    # move bullets, check for collisions with player or boss or off screen
-    # explosions as well
-    # just an iteration through all bullets
-    for bullet in bullets:
-        bullet.move()
-        # -60 to go a little off screen, for high up explosions
-        if bullet.y < -60 or bullet.y > SCREENH: bullet.active = False
-        if collide(ship, bullet) and bullet.dir != UP:
-            ship.die()
-            bullet.active = False
-        elif BEASTMODE == 3 and collide(boss, bullet):
-            boss.health -= 5
-            if boss.health <= 0:
-                boss.die()
-                BEASTMODE += 1
-            bullet.active = False
-        if -1 < bullet.exploding < 4: bullet.explode(time)
-        if bullet.active == False: bullets.remove(bullet)
+    # for saucer in saucers:
+    #     dietest = saucer.move(BEASTMODE)
+    #     if dietest == 1:
+    #         deadindex = saucers.index(saucer)
+    #
+    # # move bullets, check for collisions with player or boss or off screen
+    # # explosions as well
+    # # just an iteration through all bullets
+    # for bullet in bullets:
+    #     bullet.move()
+    #     # -60 to go a little off screen, for high up explosions
+    #     if bullet.y < -60 or bullet.y > SCREENH: bullet.active = False
+    #     if collide(ship, bullet) and bullet.dir != UP:
+    #         ship.die()
+    #         bullet.active = False
+    #     elif BEASTMODE == 3 and collide(boss, bullet):
+    #         boss.health -= 5
+    #         if boss.health <= 0:
+    #             boss.die()
+    #             BEASTMODE += 1
+    #         bullet.active = False
+    #     if -1 < bullet.exploding < 4: bullet.explode(time)
+    #     if bullet.active == False: bullets.remove(bullet)
 
     # maybe it would be best to have a section just to handle explosions across the board
     # perhaps an explosion object, eg just kill the sprite and have explosion obj take over
@@ -218,89 +215,89 @@ while endgame == 0:
     # just for kicks
     # inefficient collision detection
     # but it works for now
-    for saucer in saucers:
-        if collide(saucer, ship) and saucer.exploding == -1:
-            ship.die()
-            saucer.explode(time)
-        # saucer.respawn()
-        # if ship.health <= 0: endgame = 0	#change to 2 for kill
-        elif -1 < saucer.exploding < 4:
-            if saucer.explode(time):
-                # if we are finished exploding, reset
-                saucer.respawn()
-                saucer.image = saucerimg
-                saucer.exploding = -1
-                saucer.active = True
-            # print "done exploding"
-
-        for bullet in bullets:
-            if collide(saucer, bullet):
-                bullet.x = saucer.x
-                bullet.y = saucer.y
-                bullet.updatepos()
-                # respawn saucer off screen and increment score
-                if BEASTMODE != 1:
-                    saucer.respawn()
-                else:
-                    deadindex = saucers.index(saucer)
-                    dietest = 1
-                bullet.explode(time)
-                # saucers.remove(saucer)		#this removes the actual object from the list
-                score += 5
-        if saucer.active == False: saucer.respawn()
+    # for saucer in saucers:
+    #     if collide(saucer, ship) and saucer.exploding == -1:
+    #         ship.die()
+    #         saucer.explode(time)
+    #     # saucer.respawn()
+    #     # if ship.health <= 0: endgame = 0	#change to 2 for kill
+    #     elif -1 < saucer.exploding < 4:
+    #         if saucer.explode(time):
+    #             # if we are finished exploding, reset
+    #             saucer.respawn()
+    #             saucer.image = saucerimg
+    #             saucer.exploding = -1
+    #             saucer.active = True
+    #         # print "done exploding"
+    #
+    #     for bullet in bullets:
+    #         if collide(saucer, bullet):
+    #             bullet.x = saucer.x
+    #             bullet.y = saucer.y
+    #             bullet.updatepos()
+    #             # respawn saucer off screen and increment score
+    #             if BEASTMODE != 1:
+    #                 saucer.respawn()
+    #             else:
+    #                 deadindex = saucers.index(saucer)
+    #                 dietest = 1
+    #             bullet.explode(time)
+    #             # saucers.remove(saucer)		#this removes the actual object from the list
+    #             score += 5
+    #     if saucer.active == False: saucer.respawn()
 
     # this is so that we don't mess up the previous for iteration
     # remove saucers from array
     # I wonder if that bug is caused because only one saucer can die an iteration...
-    if dietest == 1:
-        saucers.pop(deadindex)
-        dietest = 0
-
-        if len(saucers) == 0:
-            BEASTMODE = 2
-            boss.inittime = time
+    # if dietest == 1:
+    #     saucers.pop(deadindex)
+    #     dietest = 0
+    #
+    #     if len(saucers) == 0:
+    #         BEASTMODE = 2
+    #         boss.inittime = time
 
     # for final player death
-    if ship.health <= 0 and endtime == 0:
-        endtime = time
-
-    # for time delay after death
-    if time >= endtime + 4000 and endtime != 0:
-        # print "game over"
-        endgame = 2
+    # if ship.health <= 0 and endtime == 0:
+    #     endtime = time
+    #
+    # # for time delay after death
+    # if time >= endtime + 4000 and endtime != 0:
+    #     # print "game over"
+    #     endgame = 2
 
     # if boss got killed make Sonic style boss death explosion
     # explode is called multiple times over several main loops to advance the explosion frame
-    if BEASTMODE == 4:
-        for splat in boom:
-            # if first pass, initialize explosion sequence
-            if len(boom) == 1 and splat.exploding == -1:
-                splat.x = random.randrange(boss.x, boss.x + boss.width - explosion[
-                    0].get_width())  # subtract explosion width
-                splat.y = random.randrange(boss.y, boss.y + boss.height - explosion[0].get_height())
-                explosion.append(blacksquare)  # to take chunks out of boss
-            splat.explode(time)
-        if boom[-1].exploding == 2 and len(boom) < 8:
-            boom.append(MoveableObject(random.randrange(boss.x, boss.x + boss.width - explosion[0].get_width()),
-                                           random.randrange(boss.y,
-                                                            boss.y + boss.height - explosion[0].get_height()),
-                                           pygame.Surface((1, 1))))
-        # if boss is done exploding
-        if len(boom) == 8 and boom[-1].exploding == len(explosion):
-            BEASTMODE = 5
-            score += 1000
-            endtime = time
+    # if BEASTMODE == 4:
+    #     for splat in boom:
+    #         # if first pass, initialize explosion sequence
+    #         if len(boom) == 1 and splat.exploding == -1:
+    #             splat.x = random.randrange(boss.x, boss.x + boss.width - explosion[
+    #                 0].get_width())  # subtract explosion width
+    #             splat.y = random.randrange(boss.y, boss.y + boss.height - explosion[0].get_height())
+    #             explosion.append(blacksquare)  # to take chunks out of boss
+    #         splat.explode(time)
+    #     if boom[-1].exploding == 2 and len(boom) < 8:
+    #         boom.append(MoveableObject(random.randrange(boss.x, boss.x + boss.width - explosion[0].get_width()),
+    #                                        random.randrange(boss.y,
+    #                                                         boss.y + boss.height - explosion[0].get_height()),
+    #                                        pygame.Surface((1, 1))))
+    #     # if boss is done exploding
+    #     if len(boom) == 8 and boom[-1].exploding == len(explosion):
+    #         BEASTMODE = 5
+    #         score += 1000
+    #         endtime = time
 
     # this may have to be reexamined, testing beastmode < 3
-    if boss.y > 0 and BEASTMODE < 3: BEASTMODE = 3
-
-    # if boss is displayed
-    if 4 > BEASTMODE >= 2:
-        boss.move(ship, time)
-        # if ship collides with boss, lose life
-        if collide(ship, boss):
-            # print "boss collision"
-            ship.die()  # evaluation of death is earlier in the code
+    # if boss.y > 0 and BEASTMODE < 3: BEASTMODE = 3
+    #
+    # # if boss is displayed
+    # if 4 > BEASTMODE >= 2:
+    #     boss.move(ship, time)
+    #     # if ship collides with boss, lose life
+    #     if collide(ship, boss):
+    #         # print "boss collision"
+    #         ship.die()  # evaluation of death is earlier in the code
 
     # text rendering
     healthlbl = myfont.render("Health: " + str(ship.health), 1, (255, 255, 0))
@@ -311,30 +308,19 @@ while endgame == 0:
 
     screen.fill(BLACK)
 
-    gamescene.draw_cycle()
+    gamescene.render_cycle()
 
-    if BEASTMODE >= 2: screen.blit(boss.image, (boss.x, boss.y))
+    # if BEASTMODE >= 2: screen.blit(boss.image, (boss.x, boss.y))
+    #
+    # if BEASTMODE >= 4:
+    #     for splat in boom:
+    #         screen.blit(splat.image, (splat.x, splat.y))
 
-    for saucer in saucers:
-        screen.blit(saucer.image, (saucer.x, saucer.y))
-
-    for bullet in bullets:
-        screen.blit(bullet.image, (bullet.x, bullet.y))
-    if BEASTMODE >= 4:
-        # if(boom[-1].exploding == 2):
-        # print "blacksquare"
-        # boss.image.blit(blacksquare, (boom[-1].x, boom[-1].y))
-        for splat in boom:
-            screen.blit(splat.image, (splat.x, splat.y))
-    # screen.blit(explosion[explframe], (SCREENW/2, SCREENH/2))
     screen.blit(healthlbl, (SCREENW - 100, 20))
     screen.blit(scorelbl, (SCREENW - 100, 35))
-    if BEASTMODE >= 3: screen.blit(bosslbl, (SCREENW / 2, 20))
+    # if BEASTMODE >= 3: screen.blit(bosslbl, (SCREENW / 2, 20))
 
     pygame.display.flip()  # apply double buffer
-
-    # if(explframe > 3): explframe=0
-    # else: explframe += 1
 
 # end game loop
 
