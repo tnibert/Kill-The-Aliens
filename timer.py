@@ -29,11 +29,14 @@ class Timer(Observable):
         # if stop watch is running
         if self.start:
             if (curtime - self.start) > self.threshold:
+
+                # allows the callback to start another timer
+                self.start = None
+                self.threshold = None
+
                 if self.owner is not None:
                     self.owner.notify(Event("timeout"))
                 else:
                     self.notify(Event("timeout"))
-                self.start = None
-                self.threshold = None
 
         return diff

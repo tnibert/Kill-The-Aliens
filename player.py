@@ -7,11 +7,10 @@ import pygame
 
 class Player(MoveableObject):
     def __init__(self, img, eventqueue):
-        MoveableObject.__init__(self, SCREENW / 2, 450, img)
+        MoveableObject.__init__(self, SCREENW / 2, 450, PLAYERSPEED, img)
         self.health = PLAYERHEALTH
         self.spawnX = self.x
         self.spawnY = self.y
-        self.speed = PLAYERSPEED
         # bamf mode - shoot three bullets at a time
         self.bamfmode = False
 
@@ -90,11 +89,10 @@ class Player(MoveableObject):
 
     def die(self):
         print("player dead")
-        if self.active == True:
-            self.active = False
-            self.health -= 1
+        self.health -= 1
+        self.start_exploding()
 
-    def respawn(self, img):
+    def respawn(self):
         self.active = True
         if self.health <= 0:
             self.x = -2000
@@ -109,11 +107,10 @@ class Player(MoveableObject):
         self.updatepos()
 
     def update_explosion(self, event):
-        if super().update_explosion():
+        if super().update_explosion(event):
             self.respawn()
 
     def receive_signals(self, event):
-        print("player received {} from {}".format(event.name, type(event.source)))
         if isinstance(event.source, StatusModifier):
             if event.name == "collision" and isinstance(event.kwargs.get("who"), Player):
                 print("applying payload")

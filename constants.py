@@ -24,3 +24,5 @@ PLAYERMAXSPEED = 180
 
 BULLETSPEED = 13
 STATMOD_SPEED = 30
+
+EXPLOSION_FRAME_UPDATE_WAIT = 0.2       # time between explosion frames in seconds

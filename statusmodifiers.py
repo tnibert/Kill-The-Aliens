@@ -14,10 +14,9 @@ import random
 # power ups and downs, to be inherited from
 class StatusModifier(MoveableObject):
     def __init__(self, img):
-        MoveableObject.__init__(self, random.randrange(0, SCREENW), -100, img)
+        MoveableObject.__init__(self, random.randrange(0, SCREENW), -100, STATMOD_SPEED, img)
         # angle randomly ranges from 100 degrees to 260, 0 degrees is vertical axis
         self.degreeangle = random.randrange(100, 260)
-        self.speed = STATMOD_SPEED
         self.timer = Timer(self)
 
     def payload(self, target):

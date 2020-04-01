@@ -10,6 +10,7 @@ class GameObject(pygame.sprite.Sprite, Observable):
         # todo: may be better to not having GameObject tied to rendering
         self.image = img
         self.layer = layer
+        # todo: perhaps move timing to the scene
         self.frame_timer = Timer()
         self.frame_tick = 0
 

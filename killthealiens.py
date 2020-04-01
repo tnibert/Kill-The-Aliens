@@ -72,22 +72,22 @@ ship = Player(shipimg, player_input_queue)
 gamescene.attach(ship)
 
 # sprite groups
-saucers = []
+#saucers = []
 bullets = []
 # gone = False
 # killed = pygame.sprite.Group()
 
 # create enemies
-for x in range(0, 3):
-    saucers.append(Enemy(random.randrange(0, SCREENW), random.randrange(0, 100), saucerimg))
+#for x in range(0, 3):
+#    saucers.append(Enemy(random.randrange(0, SCREENW), random.randrange(0, 100), saucerimg))
 
 # create boss
-boss = Boss(100, -1200, bossimg, 0)
+#boss = Boss(100, -1200, bossimg, 0)
 
 # create boss explosions
 # maybe move this later in the code and don't create it in memory until we need it
-boom = []
-boom.append(MoveableObject(0, 0, pygame.Surface((1, 1))))
+#boom = []
+#boom.append(MoveableObject(0, 0, pygame.Surface((1, 1))))
 
 clock = pygame.time.Clock()
 
@@ -166,11 +166,11 @@ while endgame == 0:
         if event.type == pygame.QUIT: endgame = 1
         elif not hasattr(event, 'key'): continue
         elif event.key == pygame.K_ESCAPE: endgame = 1
-        elif event.key == pygame.K_SPACE and ship.active:
-            bullets.append(ship.fire(bulletimg))
-            if ship.bamfmode:
-                bullets.append(ship.fire(bulletimg, LEFT))
-                bullets.append(ship.fire(bulletimg, RIGHT))
+        #elif event.key == pygame.K_SPACE and ship.active:
+        #    bullets.append(ship.fire(bulletimg))
+        #    if ship.bamfmode:
+        #        bullets.append(ship.fire(bulletimg, LEFT))
+        #        bullets.append(ship.fire(bulletimg, RIGHT))
         elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
             player_input_queue.put(event)
 
@@ -302,7 +302,7 @@ while endgame == 0:
     # text rendering
     healthlbl = myfont.render("Health: " + str(ship.health), 1, (255, 255, 0))
     scorelbl = myfont.render("Score: " + str(score), 1, (255, 255, 0))
-    bosslbl = myfont.render("Boss Health: " + str(boss.health), 1, (255, 255, 0))
+#    bosslbl = myfont.render("Boss Health: " + str(boss.health), 1, (255, 255, 0))
 
     # render images
 
