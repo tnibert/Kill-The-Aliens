@@ -1,6 +1,4 @@
-from moveableobject import MoveableObject
 from trajectorymovingobject import TrajectoryMovingObject
-from observe import Event
 from constants import SCREENW, SCREENH, STATMOD_DURATION, PLAYERSPEED, PLAYERMAXSPEED, STATMOD_SPEED
 from timer import Timer
 import random
@@ -19,12 +17,12 @@ class StatusModifier(TrajectoryMovingObject):
         self.timer = Timer(self)
 
     def payload(self, target):
-        self.notify(Event("remove"))
+        self.notify("remove")
 
     def update(self):
         super().update()
         if self.y > SCREENH:
-            self.notify(Event("remove"))
+            self.notify("remove")
 
 
 # +1 life

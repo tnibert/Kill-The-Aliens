@@ -1,4 +1,4 @@
-from observe import Observable, Event
+from observe import Observable
 import time
 
 
@@ -37,7 +37,7 @@ class Timer(Observable):
                 self.start = None
                 self.threshold = None
 
-                self.owner.notify(Event("timeout"))
+                self.owner.notify("timeout")
 
-        self.notify(Event("tick"), diff=diff)
+        self.notify("tick", diff=diff)
         return diff

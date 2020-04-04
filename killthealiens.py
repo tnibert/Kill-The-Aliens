@@ -1,31 +1,20 @@
 #! /usr/bin/env python
-from moveableobject import MoveableObject
 from enemy import Enemy
-from bullet import Bullet
 from player import Player
 from statusmodifiers import *
 from boss import Boss
-from utilfuncs import switch, toframes, collide
+from utilfuncs import switch
 from constants import *
 from loadstaticres import *
 from scene import Scene
 from gamemap import GameMap
-from timer import Timer
 from queue import Queue
 import pygame
 import sys
 import random
 
 # todo:
-# ok, now this is getting hairy
-# We still need to test the explosion of the ship
-# But to do that, we need to move the bullets and the saucers to the new architecture
-# (because new arch handles the collisions)
 # explosions should be implemented for bullets and saucers if it is working
-# we also need to push events to the game_mgmt_queue and process in Scene
-#
-# currently the only object not framerate locked is the player, need to add this
-# to all other GameObjects, including the gamemap
 #
 # at the end of all of that, we will move the boss to the new architecture
 # we also need to fix the bug in the boss with infirerange() returning None
@@ -70,6 +59,9 @@ blacksquare = pygame.Surface((explosion[0].get_width() - 15, explosion[0].get_he
 # set up game objects
 ship = Player(shipimg, player_input_queue)
 gamescene.attach(ship)
+
+# enable firing of bullets
+ship.subscribe("fire", lambda ev: gamescene.attach(ev.kwargs.get("bullet")))
 
 # create enemies
 for x in range(0, 3):
@@ -149,11 +141,6 @@ while endgame == 0:
             continue
         elif event.key == pygame.K_ESCAPE:
             endgame = 1
-        #elif event.key == pygame.K_SPACE and ship.active:
-        #    bullets.append(ship.fire(bulletimg))
-        #    if ship.bamfmode:
-        #        bullets.append(ship.fire(bulletimg, LEFT))
-        #        bullets.append(ship.fire(bulletimg, RIGHT))
         elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
             player_input_queue.put(event)
 

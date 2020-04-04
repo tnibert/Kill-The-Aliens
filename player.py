@@ -2,6 +2,7 @@ from moveableobject import MoveableObject
 from bullet import Bullet
 from constants import SCREENW, SCREENH, PLAYERHEALTH, UP, LEFT, RIGHT, PLAYERSPEED
 from statusmodifiers import StatusModifier
+from loadstaticres import bulletimg
 import pygame
 
 
@@ -44,6 +45,11 @@ class Player(MoveableObject):
                     self.goup = True
                 elif event.key == pygame.K_DOWN and self.y + self.height <= SCREENH:
                     self.godown = True
+                elif event.key == pygame.K_SPACE:
+                    self.fire(bulletimg)
+                    if self.bamfmode:
+                        self.fire(bulletimg, LEFT)
+                        self.fire(bulletimg, RIGHT)
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
@@ -76,16 +82,13 @@ class Player(MoveableObject):
 
     def fire(self, img, turret=UP):
         if turret == UP:
-            return Bullet(self.x + (self.image.get_width() / 2), self.y - 10, img, UP)
+            bullet = Bullet(self.x + (self.image.get_width() / 2), self.y - 10, img, UP)
         if turret == LEFT:
-            return Bullet(self.x + 15, self.y + 40, img, UP)
+            bullet = Bullet(self.x + 15, self.y + 40, img, UP)
         if turret == RIGHT:
-            return Bullet(self.x + self.image.get_width() - 15, self.y + 40, img, UP)
-        # so, in order to implement bamf mode, we need bullets to come out from side turrets
-        # but currently our fire method can only return one bullet
-        # so we either return a list of bullets when we fire (a cool bit of modification to the game loop)
-        # or we can check in the game loop and if bamfmode call fire two more times, I think this is better
-        # we should also add something in the main loop that prevents a bullet moving upward from harming the ship
+            bullet = Bullet(self.x + self.image.get_width() - 15, self.y + 40, img, UP)
+        # todo: ensure bullet always has a value
+        self.notify("fire", bullet=bullet)
 
     def die(self):
         print("player dead")

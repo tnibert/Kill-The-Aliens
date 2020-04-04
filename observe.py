@@ -24,7 +24,8 @@ class Observable:
                 self.callbacks[eventname].remove(callback)
                 print("callback removed from {}".format(eventname))
 
-    def notify(self, event, **kwargs):
+    def notify(self, eventname, **kwargs):
+        event = Event(eventname)
         event.source = self
         event.kwargs = kwargs
 

@@ -26,8 +26,9 @@ class Enemy(TrajectoryMovingObject):
 
     def on_collide(self, event):
         if event.kwargs.get("who") == self:
-            if isinstance(event.source, Player):
-                if not self.exploding:
-                    self.start_exploding()
-            elif isinstance(event.source, Bullet):
-                self.start_exploding()
+            if not self.exploding:
+                if isinstance(event.source, Player):
+                        self.start_exploding()
+                elif isinstance(event.source, Bullet):
+                        self.start_exploding()
+                        event.source.notify("remove")

@@ -1,4 +1,3 @@
-from observe import Observable, Event
 from moveableobject import MoveableObject
 from utilfuncs import collide
 from timer import Timer
@@ -64,4 +63,4 @@ class Scene:
             for c2 in filter(lambda c: isinstance(c, MoveableObject), self.children):
                 if c1 != c2:
                     if collide(c1, c2):
-                        c1.notify(Event("collision"), who=c2)
+                        c1.notify("collision", who=c2)
