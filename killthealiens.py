@@ -32,7 +32,7 @@ import random
 
 # queues for input events
 player_input_queue = Queue()
-game_mgmt_queue = Queue()
+#game_mgmt_queue = Queue()
 
 # well, we added music but it makes the game hang :\
 # these two lines before pygame.init() fix hang problem slightly, but don't completely fix
@@ -49,7 +49,7 @@ moregunsstarttime = -1
 screen = pygame.display.set_mode((SCREENW, SCREENH), pygame.DOUBLEBUF)
 pygame.display.set_caption("KILL THE ALIENS")
 
-gamescene = Scene(game_mgmt_queue, screen)
+gamescene = Scene(screen)
 
 # image conversions
 map_bg = background.convert()
@@ -70,12 +70,6 @@ blacksquare = pygame.Surface((explosion[0].get_width() - 15, explosion[0].get_he
 # set up game objects
 ship = Player(shipimg, player_input_queue)
 gamescene.attach(ship)
-
-# sprite groups
-#saucers = []
-bullets = []
-# gone = False
-# killed = pygame.sprite.Group()
 
 # create enemies
 for x in range(0, 3):
@@ -149,9 +143,12 @@ while endgame == 0:
             gamescene.attach(statmod)
 
     for event in pygame.event.get():
-        if event.type == pygame.QUIT: endgame = 1
-        elif not hasattr(event, 'key'): continue
-        elif event.key == pygame.K_ESCAPE: endgame = 1
+        if event.type == pygame.QUIT:
+            sys.exit(0)
+        elif not hasattr(event, 'key'):
+            continue
+        elif event.key == pygame.K_ESCAPE:
+            endgame = 1
         #elif event.key == pygame.K_SPACE and ship.active:
         #    bullets.append(ship.fire(bulletimg))
         #    if ship.bamfmode:

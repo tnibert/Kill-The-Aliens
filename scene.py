@@ -5,9 +5,7 @@ from timer import Timer
 
 
 class Scene:
-    def __init__(self, eventqueue, screen):
-        # todo: implement handling of the game event queue
-        self.eventqueue = eventqueue
+    def __init__(self, screen):
         self.children = []              # objects renderable in the scene
         self.screen = screen
         self.clock = Timer(owner=self)
