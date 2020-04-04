@@ -14,14 +14,18 @@ import sys
 import random
 
 # todo:
-# explosions should be implemented for bullets and saucers if it is working
+# additional saucers spawning over time
 #
-# at the end of all of that, we will move the boss to the new architecture
+# move the boss to the new architecture
 # we also need to fix the bug in the boss with infirerange() returning None
+# have boss signal saucers to clear out when entering?
+#
+# add score keeping
+# load static resources from file
+# multiple level capability
 
 # queues for input events
 player_input_queue = Queue()
-#game_mgmt_queue = Queue()
 
 # well, we added music but it makes the game hang :\
 # these two lines before pygame.init() fix hang problem slightly, but don't completely fix
