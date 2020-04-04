@@ -78,8 +78,8 @@ bullets = []
 # killed = pygame.sprite.Group()
 
 # create enemies
-#for x in range(0, 3):
-#    saucers.append(Enemy(random.randrange(0, SCREENW), random.randrange(0, 100), saucerimg))
+for x in range(0, 3):
+    gamescene.attach(Enemy(random.randrange(0, SCREENW), random.randrange(0, 100), saucerimg))
 
 # create boss
 #boss = Boss(100, -1200, bossimg, 0)
@@ -140,16 +140,16 @@ while endgame == 0:
     # determine if we should have a status modifier
     # so apparently there's no switch/case in python >_>
     # choose a random number, determine which powerup based on number, if not 1 - 6 just continue on w/ no stat mod
-    for case in switch(random.randrange(0, 2201)):  # figure out the right number for this, maybe 2201
+    for case in switch(random.randrange(0, 10000)):
         statmod = None
         if case(1):
             statmod = OneUp(oneupimg)
         elif case(90):
             statmod = Bomb(bombimg)
-        elif case(1337) or case(219):  # to make it more likely
+        elif case(1337):  # to make it more likely
             statmod = SpeedUp(speedupimg)
             statmod.subscribe("collision", game_map.receive_signals)
-        elif case(511) or case(2000):
+        elif case(511):
             statmod = MoreGuns(moregunsimg)
         if statmod is not None:
             # todo: make the receiving function more specific
