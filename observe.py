@@ -17,6 +17,10 @@ class Observable:
         else:
             self.callbacks[eventname].append(callback)
 
+    # todo: implement
+    def unsubscribe(self, eventname, callback):
+        pass
+
     def notify(self, event, **kwargs):
         event.source = self
         event.kwargs = kwargs

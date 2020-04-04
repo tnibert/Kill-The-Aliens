@@ -14,7 +14,10 @@ class Timer(Observable):
         # for stopwatch timing
         self.start = None
         self.threshold = None
-        self.owner = owner
+        if owner is not None:
+            self.owner = owner
+        else:
+            self.owner = self
 
     def startwatch(self, seconds):
         self.start = time.time()
@@ -34,9 +37,7 @@ class Timer(Observable):
                 self.start = None
                 self.threshold = None
 
-                if self.owner is not None:
-                    self.owner.notify(Event("timeout"))
-                else:
-                    self.notify(Event("timeout"))
+                self.owner.notify(Event("timeout"))
 
+        self.notify(Event("tick"), diff=diff)
         return diff

@@ -1,6 +1,7 @@
 from observe import Observable, Event
 from moveableobject import MoveableObject
 from utilfuncs import collide
+from timer import Timer
 
 
 class Scene:
@@ -9,6 +10,7 @@ class Scene:
         self.eventqueue = eventqueue
         self.children = []              # objects renderable in the scene
         self.screen = screen
+        self.clock = Timer(owner=self)
 
     def attach(self, obj):
         """
@@ -18,6 +20,7 @@ class Scene:
         """
         if isinstance(obj, Observable):
             obj.subscribe("remove", self.receive_signals)
+        self.clock.subscribe("tick", obj.on_tick)
         self.children.append(obj)
         # todo: optimize this for insert, don't resort list every time
         self.children = sorted(self.children, key=lambda g: g.layer)
@@ -31,6 +34,7 @@ class Scene:
         self.children.remove(obj)
 
     def update_cycle(self):
+        self.clock.tick()
         self.check_collisions()
         for child in self.children:
             child.update()
