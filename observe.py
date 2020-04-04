@@ -7,6 +7,7 @@ class Event:
 
 
 class Observable:
+    # todo: unit test
     def __init__(self):
         # dicts of form {eventname: [callbacks]}
         self.callbacks = {}
@@ -17,14 +18,16 @@ class Observable:
         else:
             self.callbacks[eventname].append(callback)
 
-    # todo: implement
     def unsubscribe(self, eventname, callback):
-        pass
+        if eventname in self.callbacks.keys():
+            if callback in self.callbacks[eventname]:
+                self.callbacks[eventname].remove(callback)
+                print("callback removed from {}".format(eventname))
 
     def notify(self, event, **kwargs):
         event.source = self
         event.kwargs = kwargs
 
         if event.name in self.callbacks.keys():
-            for fn in self.callbacks[event.name]:
+            for fn in self.callbacks[event.name][:]:
                 fn(event)

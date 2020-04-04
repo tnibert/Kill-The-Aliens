@@ -31,6 +31,8 @@ class Scene:
         :param obj:
         :return:
         """
+        self.clock.unsubscribe("tick", obj.on_tick)
+        obj.unsubscribe("remove", self.receive_signals)
         self.children.remove(obj)
 
     def update_cycle(self):

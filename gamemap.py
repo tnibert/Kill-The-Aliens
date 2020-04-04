@@ -18,11 +18,10 @@ class GameMap(GameObject):
         super().update()
 
         if self.statmodtimer is not None:
-            # todo: it would be better if the objects with timers did not have to tick them
-            # e.g. if we had a list of timers iterated in scene
             self.statmodtimer.tick()
 
         # change offset for vertical scroll
+        # todo: make 2000 a constant
         if self.bgoffset > 2000:
             self.bgoffset = 0
             self.changeover = 0
