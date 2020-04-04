@@ -7,10 +7,8 @@ from timer import Timer
 # all sprites inherit from this class
 class MoveableObject(GameObject):
     def __init__(self, x, y, speed, img):
-        GameObject.__init__(self, img)
+        GameObject.__init__(self, x, y, img)
         self.orig_image = self.image
-        self.x = x
-        self.y = y
         self.speed = speed
         self.width = self.image.get_width()
         self.height = self.image.get_height()
@@ -30,7 +28,6 @@ class MoveableObject(GameObject):
     def update(self):
         super().update()
         if self.exploding:
-            print("updating explosion timer")
             self.explosion_timer.tick()
 
     def start_exploding(self):

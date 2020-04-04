@@ -79,7 +79,7 @@ bullets = []
 
 # create enemies
 for x in range(0, 3):
-    gamescene.attach(Enemy(random.randrange(0, SCREENW), random.randrange(0, 100), saucerimg))
+    gamescene.attach(Enemy(saucerimg))
 
 # create boss
 #boss = Boss(100, -1200, bossimg, 0)
@@ -128,15 +128,6 @@ pygame.mixer.music.play(-1)
 # this should have all been put in a function T_T
 while endgame == 0:
 
-    # add more saucers to increase difficulty as time goes on
-    # number of saucers is a function of time
-    #if len(saucers) - 3 < time / 12000 and BEASTMODE == 0:
-        # print len(saucers)
-        # print time/6000
-    #    saucers.append(Enemy(random.randrange(0, SCREENW), random.randrange(-200, -50), saucerimg))
-    # if(time >= 8000 and len(saucers) < 5):
-    # saucers.append(Enemy(random.randrange(0, SCREENW), random.randrange(-200, -50), saucerimg))
-
     # determine if we should have a status modifier
     # so apparently there's no switch/case in python >_>
     # choose a random number, determine which powerup based on number, if not 1 - 6 just continue on w/ no stat mod
@@ -146,7 +137,7 @@ while endgame == 0:
             statmod = OneUp(oneupimg)
         elif case(90):
             statmod = Bomb(bombimg)
-        elif case(1337):  # to make it more likely
+        elif case(1337):
             statmod = SpeedUp(speedupimg)
             statmod.subscribe("collision", game_map.receive_signals)
         elif case(511):
@@ -156,11 +147,6 @@ while endgame == 0:
             print("statmod created")
             statmod.subscribe("collision", ship.receive_signals)
             gamescene.attach(statmod)
-
-    # ENTER THE BOSS
-    #if len(saucers) > MAXENEMIES:  # change that number for max saucers on screen - default 10
-    #    BEASTMODE = 1
-    # del saucers[:]		#this removes the whole list
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT: endgame = 1
@@ -183,11 +169,6 @@ while endgame == 0:
     #        if random.randrange(0, 10) == 1 and ship.exploding == -1:
     #            bullets.append(boss.fire(bulletimg, RIGHT))
 
-    # this may be movable to the next iteration through the saucers
-    # for saucer in saucers:
-    #     dietest = saucer.move(BEASTMODE)
-    #     if dietest == 1:
-    #         deadindex = saucers.index(saucer)
     #
     # # move bullets, check for collisions with player or boss or off screen
     # # explosions as well
@@ -210,25 +191,6 @@ while endgame == 0:
 
     # maybe it would be best to have a section just to handle explosions across the board
     # perhaps an explosion object, eg just kill the sprite and have explosion obj take over
-
-    # print "Boss Health: " + str(boss.health)
-    # just for kicks
-    # inefficient collision detection
-    # but it works for now
-    # for saucer in saucers:
-    #     if collide(saucer, ship) and saucer.exploding == -1:
-    #         ship.die()
-    #         saucer.explode(time)
-    #     # saucer.respawn()
-    #     # if ship.health <= 0: endgame = 0	#change to 2 for kill
-    #     elif -1 < saucer.exploding < 4:
-    #         if saucer.explode(time):
-    #             # if we are finished exploding, reset
-    #             saucer.respawn()
-    #             saucer.image = saucerimg
-    #             saucer.exploding = -1
-    #             saucer.active = True
-    #         # print "done exploding"
     #
     #     for bullet in bullets:
     #         if collide(saucer, bullet):
@@ -245,17 +207,6 @@ while endgame == 0:
     #             # saucers.remove(saucer)		#this removes the actual object from the list
     #             score += 5
     #     if saucer.active == False: saucer.respawn()
-
-    # this is so that we don't mess up the previous for iteration
-    # remove saucers from array
-    # I wonder if that bug is caused because only one saucer can die an iteration...
-    # if dietest == 1:
-    #     saucers.pop(deadindex)
-    #     dietest = 0
-    #
-    #     if len(saucers) == 0:
-    #         BEASTMODE = 2
-    #         boss.inittime = time
 
     # for final player death
     # if ship.health <= 0 and endtime == 0:

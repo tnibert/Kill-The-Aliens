@@ -7,7 +7,7 @@ from player import Player
 # todo: update scroll with gameobject timer tick
 class GameMap(GameObject):
     def __init__(self, image):
-        GameObject.__init__(self, image, layer=-1)
+        GameObject.__init__(self, 0, 0, image, layer=-1)
         self.changeover = 0
         self.bgoffset = 0
         self.ychng = 0

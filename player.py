@@ -110,14 +110,18 @@ class Player(MoveableObject):
         if super().update_explosion(event):
             self.respawn()
 
-    def receive_signals(self, event):
-        if isinstance(event.source, StatusModifier):
-            if event.name == "collision" and isinstance(event.kwargs.get("who"), Player):
+    def on_collide(self, event):
+        if event.kwargs.get("who") == self:
+            if isinstance(event.source, StatusModifier):
                 print("applying payload")
                 event.source.payload(self)
                 event.source.subscribe("timeout", self.receive_signals)
                 self.statmods.append(event.source)
-            elif event.name == "timeout" and isinstance(event.source, StatusModifier):
-                print("disabling stat modifier")
-                event.source.reverse(self)
-                self.statmods.remove(event.source)
+            elif "Enemy" in str(event.source) and not self.exploding:
+                self.die()
+
+    def receive_signals(self, event):
+        if event.name == "timeout" and isinstance(event.source, StatusModifier):
+            print("disabling stat modifier")
+            event.source.reverse(self)
+            self.statmods.remove(event.source)

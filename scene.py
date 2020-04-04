@@ -18,9 +18,16 @@ class Scene:
         :param obj:
         :return:
         """
-        if isinstance(obj, Observable):
-            obj.subscribe("remove", self.receive_signals)
+        obj.subscribe("remove", self.receive_signals)
+
+        # subscribe to timer for obtaining time between frames
         self.clock.subscribe("tick", obj.on_tick)
+
+        # enable collision handling
+        for child in self.children:
+            child.subscribe("collision", obj.on_collide)
+            obj.subscribe("collision", child.on_collide)
+
         self.children.append(obj)
         # todo: optimize this for insert, don't resort list every time
         self.children = sorted(self.children, key=lambda g: g.layer)
@@ -59,5 +66,4 @@ class Scene:
             for c2 in filter(lambda c: isinstance(c, MoveableObject), self.children):
                 if c1 != c2:
                     if collide(c1, c2):
-                        # print("Collision between {} and {}".format(c1, c2))
                         c1.notify(Event("collision"), who=c2)

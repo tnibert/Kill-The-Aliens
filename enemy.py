@@ -1,18 +1,33 @@
 from trajectorymovingobject import TrajectoryMovingObject
 from constants import SCREENW, SCREENH
+from player import Player
+from bullet import Bullet
 import random
 
 
 class Enemy(TrajectoryMovingObject):
-    def __init__(self, x, y, img):
-        TrajectoryMovingObject.__init__(self, random.randrange(0, SCREENW), -1 * img.get_height(),
-                                        random.randrange(70, 110), img)
+    def __init__(self, img):
+        TrajectoryMovingObject.__init__(self, random.randrange(0, SCREENW), # x location
+                                        -3 * img.get_height(),              # y location
+                                        random.randrange(60, 100),          # speed
+                                        img)
 
     def update(self):
         super().update()
+        if self.y > SCREENH:
+            self.respawn()
 
     def respawn(self):
-        self.__init__(random.randrange(0, SCREENW), random.randrange(-200, -50), self.image)
+        self.__init__(self.orig_image)
+
+    def update_explosion(self, event):
+        if super().update_explosion(event):
+            self.respawn()
 
     def on_collide(self, event):
-        pass
+        if event.kwargs.get("who") == self:
+            if isinstance(event.source, Player):
+                if not self.exploding:
+                    self.start_exploding()
+            elif isinstance(event.source, Bullet):
+                self.start_exploding()
