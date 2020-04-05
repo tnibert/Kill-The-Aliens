@@ -6,14 +6,15 @@ from utilfuncs import switch
 from timer import Timer
 from player import Player
 from loadstaticres import *
-from constants import NEW_SAUCER_IVAL
+from constants import NEW_SAUCER_IVAL, SAUCER_THRESHOLD
 import random
 
 
 class Level(Strategy):
     def __init__(self, scene, inputqueue):
         super().__init__(scene)
-        # set up game objects
+
+        # set up player
         self.ship = Player(shipimg, inputqueue)
         self.scene.attach(self.ship)
         # enable firing of bullets
@@ -23,6 +24,13 @@ class Level(Strategy):
         map_bg = background.convert()
         self.game_map = GameMap(map_bg)
         self.scene.attach(self.game_map)
+
+        # create initial enemies
+        self.saucers = []
+        for x in range(0, 3):
+            newsaucer = Enemy(saucerimg)
+            self.saucers.append(newsaucer)
+            self.scene.attach(newsaucer)
 
         self.saucer_timer = Timer()
         self.saucer_timer.subscribe("timeout", self.add_saucer)
@@ -54,5 +62,20 @@ class Level(Strategy):
         super().run_game()
 
     def add_saucer(self, event):
-        self.scene.attach(Enemy(saucerimg))
-        self.saucer_timer.startwatch(NEW_SAUCER_IVAL)
+        """
+        Event handler for saucer add timeout
+        :param event:
+        :return:
+        """
+        if len(self.saucers) < SAUCER_THRESHOLD:
+            newsaucer = Enemy(saucerimg)
+            self.saucers.append(newsaucer)
+            self.scene.attach(newsaucer)
+            self.saucer_timer.startwatch(NEW_SAUCER_IVAL)
+        else:
+            self.clear_saucers()
+
+    def clear_saucers(self):
+        for s in self.saucers:
+            s.leave()
+        self.saucers.clear()

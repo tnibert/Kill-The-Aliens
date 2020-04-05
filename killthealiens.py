@@ -81,10 +81,6 @@ while intro == 1:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN: intro = 0
 
-# create enemies
-for x in range(0, 3):
-    gamescene.attach(Enemy(saucerimg))
-
 mylevel = Level(gamescene, player_input_queue)
 
 # start music on endless loop

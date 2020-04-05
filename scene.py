@@ -43,12 +43,12 @@ class Scene:
     def update_cycle(self):
         self.clock.tick()
         self.check_collisions()
-        for child in self.children:
+        for child in self.children[:]:
             child.update()
 
     def render_cycle(self):
         self.screen.fill(BLACK)
-        for child in self.children:
+        for child in self.children[:]:
             child.render(self.screen)
 
     def receive_signals(self, event):

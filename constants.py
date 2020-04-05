@@ -26,4 +26,5 @@ STATMOD_SPEED = 30
 
 EXPLOSION_FRAME_UPDATE_WAIT = 0.2       # time between explosion frames in seconds
 
-NEW_SAUCER_IVAL = 60
+NEW_SAUCER_IVAL = 45
+SAUCER_THRESHOLD = 10

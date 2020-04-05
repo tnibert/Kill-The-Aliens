@@ -11,6 +11,7 @@ class Enemy(TrajectoryMovingObject):
                                         -3 * img.get_height(),              # y location
                                         random.randrange(60, 100),          # speed
                                         img)
+        self.exit_stage = False
 
     def update(self):
         super().update()
@@ -18,7 +19,14 @@ class Enemy(TrajectoryMovingObject):
             self.respawn()
 
     def respawn(self):
-        self.__init__(self.orig_image)
+        """
+        Respawn if not set to exit
+        :return:
+        """
+        if not self.exit_stage:
+            self.__init__(self.orig_image)
+        else:
+            self.notify("remove")
 
     def update_explosion(self, event):
         if super().update_explosion(event):
@@ -32,3 +40,10 @@ class Enemy(TrajectoryMovingObject):
                 elif isinstance(event.source, Bullet):
                         self.start_exploding()
                         event.source.notify("remove")
+
+    def leave(self):
+        """
+        Set flag to leave the game scene on screen exit
+        :return:
+        """
+        self.exit_stage = True
