@@ -96,7 +96,7 @@ class Player(MoveableObject):
         self.start_exploding()
 
     def respawn(self):
-        self.active = True
+        #self.active = True
         if self.health <= 0:
             self.x = -2000
             self.y = -2000

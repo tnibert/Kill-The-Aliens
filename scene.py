@@ -1,6 +1,7 @@
 from moveableobject import MoveableObject
 from utilfuncs import collide
 from timer import Timer
+from constants import BLACK
 
 
 class Scene:
@@ -46,6 +47,7 @@ class Scene:
             child.update()
 
     def render_cycle(self):
+        self.screen.fill(BLACK)
         for child in self.children:
             child.render(self.screen)
 

@@ -1,17 +1,12 @@
 #! /usr/bin/env python
 from enemy import Enemy
-from player import Player
-from statusmodifiers import *
-from boss import Boss
-from utilfuncs import switch
 from constants import *
 from loadstaticres import *
 from scene import Scene
-from gamemap import GameMap
 from queue import Queue
+from level import Level
 import pygame
 import sys
-import random
 
 # todo:
 # additional saucers spawning over time
@@ -20,36 +15,27 @@ import random
 # we also need to fix the bug in the boss with infirerange() returning None
 # have boss signal saucers to clear out when entering?
 #
-# add score keeping
+# normalize ship diagonal movement
+#
+# add score keeping and add text elements to scene
 # load static resources from file
 # multiple level capability
+# increase speed of speed up power up
 
 # queues for input events
 player_input_queue = Queue()
 
-# well, we added music but it makes the game hang :\
-# these two lines before pygame.init() fix hang problem slightly, but don't completely fix
-# may have to somehow run mixer in a separate process
+# setup audio mixer
 pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.mixer.init()
 
 pygame.init()
-
-speedupstarttime = -1
-moregunsstarttime = -1
 
 # set up window
 screen = pygame.display.set_mode((SCREENW, SCREENH), pygame.DOUBLEBUF)
 pygame.display.set_caption("KILL THE ALIENS")
 
 gamescene = Scene(screen)
-
-# image conversions
-map_bg = background.convert()
-bulletimg = bulletimg.convert()     # todo: change name
-
-game_map = GameMap(map_bg)
-gamescene.attach(game_map)
 
 # set text font
 myfont = pygame.font.SysFont("monospace", 15)
@@ -60,17 +46,6 @@ pygame.mixer.music.load(BG_MUSIC_FNAME)
 # actually transparent square
 blacksquare = pygame.Surface((explosion[0].get_width() - 15, explosion[0].get_height() - 15), pygame.SRCALPHA, 32)
 
-# set up game objects
-ship = Player(shipimg, player_input_queue)
-gamescene.attach(ship)
-
-# enable firing of bullets
-ship.subscribe("fire", lambda ev: gamescene.attach(ev.kwargs.get("bullet")))
-
-# create enemies
-for x in range(0, 3):
-    gamescene.attach(Enemy(saucerimg))
-
 # create boss
 #boss = Boss(100, -1200, bossimg, 0)
 
@@ -79,23 +54,18 @@ for x in range(0, 3):
 #boom = []
 #boom.append(MoveableObject(0, 0, pygame.Surface((1, 1))))
 
-clock = pygame.time.Clock()
+#clock = pygame.time.Clock()
 
 # flags
 # 0 means play, 1 means user exit, 2 means death, 3 means victory
 endgame = 0
 # 0 means no boss, 1 means clear out shop for boss, 2 means boss entering,
 # 3 means boss is out, 4 means dying, 5 means dead
-BEASTMODE = 0
+#BEASTMODE = 0
 
-BLACK = (0, 0, 0)
-blacksquare.fill(BLACK)
+#blacksquare.fill(BLACK)
 
 score = 0
-time = 0  # total play time
-endtime = 0
-
-deadindex = -10
 
 intro = 1
 
@@ -111,32 +81,18 @@ while intro == 1:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN: intro = 0
 
+# create enemies
+for x in range(0, 3):
+    gamescene.attach(Enemy(saucerimg))
+
+mylevel = Level(gamescene, player_input_queue)
+
 # start music on endless loop
 pygame.mixer.music.play(-1)
 
 # begin main game loop
 # this should have all been put in a function T_T
 while endgame == 0:
-
-    # determine if we should have a status modifier
-    # so apparently there's no switch/case in python >_>
-    # choose a random number, determine which powerup based on number, if not 1 - 6 just continue on w/ no stat mod
-    for case in switch(random.randrange(0, 10000)):
-        statmod = None
-        if case(1):
-            statmod = OneUp(oneupimg)
-        elif case(90):
-            statmod = Bomb(bombimg)
-        elif case(1337):
-            statmod = SpeedUp(speedupimg)
-            statmod.subscribe("collision", game_map.receive_signals)
-        elif case(511):
-            statmod = MoreGuns(moregunsimg)
-        if statmod is not None:
-            # todo: make the receiving function more specific
-            print("statmod created")
-            statmod.subscribe("collision", ship.receive_signals)
-            gamescene.attach(statmod)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -147,8 +103,6 @@ while endgame == 0:
             endgame = 1
         elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
             player_input_queue.put(event)
-
-    gamescene.update_cycle()
 
     #if BEASTMODE == 3:  # if boss is out
     #    if boss.infirerange(ship) > 0:
@@ -176,25 +130,6 @@ while endgame == 0:
     #         bullet.active = False
     #     if -1 < bullet.exploding < 4: bullet.explode(time)
     #     if bullet.active == False: bullets.remove(bullet)
-
-    # maybe it would be best to have a section just to handle explosions across the board
-    # perhaps an explosion object, eg just kill the sprite and have explosion obj take over
-    #
-    #     for bullet in bullets:
-    #         if collide(saucer, bullet):
-    #             bullet.x = saucer.x
-    #             bullet.y = saucer.y
-    #             bullet.updatepos()
-    #             # respawn saucer off screen and increment score
-    #             if BEASTMODE != 1:
-    #                 saucer.respawn()
-    #             else:
-    #                 deadindex = saucers.index(saucer)
-    #                 dietest = 1
-    #             bullet.explode(time)
-    #             # saucers.remove(saucer)		#this removes the actual object from the list
-    #             score += 5
-    #     if saucer.active == False: saucer.respawn()
 
     # for final player death
     # if ship.health <= 0 and endtime == 0:
@@ -239,15 +174,11 @@ while endgame == 0:
     #         ship.die()  # evaluation of death is earlier in the code
 
     # text rendering
-    healthlbl = myfont.render("Health: " + str(ship.health), 1, (255, 255, 0))
-    scorelbl = myfont.render("Score: " + str(score), 1, (255, 255, 0))
+    #healthlbl = myfont.render("Health: " + str(ship.health), 1, (255, 255, 0))
+    #scorelbl = myfont.render("Score: " + str(score), 1, (255, 255, 0))
 #    bosslbl = myfont.render("Boss Health: " + str(boss.health), 1, (255, 255, 0))
 
-    # render images
-
-    screen.fill(BLACK)
-
-    gamescene.render_cycle()
+    mylevel.run_game()
 
     # if BEASTMODE >= 2: screen.blit(boss.image, (boss.x, boss.y))
     #
@@ -255,8 +186,8 @@ while endgame == 0:
     #     for splat in boom:
     #         screen.blit(splat.image, (splat.x, splat.y))
 
-    screen.blit(healthlbl, (SCREENW - 100, 20))
-    screen.blit(scorelbl, (SCREENW - 100, 35))
+    #screen.blit(healthlbl, (SCREENW - 100, 20))
+    #screen.blit(scorelbl, (SCREENW - 100, 35))
     # if BEASTMODE >= 3: screen.blit(bosslbl, (SCREENW / 2, 20))
 
     pygame.display.flip()  # apply double buffer
