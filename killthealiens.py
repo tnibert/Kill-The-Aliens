@@ -9,18 +9,18 @@ import pygame
 import sys
 
 # todo:
-# additional saucers spawning over time
+# ship death on saucer impact
 #
 # move the boss to the new architecture
 # we also need to fix the bug in the boss with infirerange() returning None
-# have boss signal saucers to clear out when entering?
+# have boss signal saucers to clear out when entering
 #
 # normalize ship diagonal movement
 #
 # add score keeping and add text elements to scene
 # load static resources from file
 # multiple level capability
-# increase speed of speed up power up
+# increase speed of speed up power up, and match speed on map and ship
 
 # queues for input events
 player_input_queue = Queue()
@@ -111,26 +111,6 @@ while endgame == 0:
     #        if random.randrange(0, 10) == 1 and ship.exploding == -1:
     #            bullets.append(boss.fire(bulletimg, RIGHT))
 
-    #
-    # # move bullets, check for collisions with player or boss or off screen
-    # # explosions as well
-    # # just an iteration through all bullets
-    # for bullet in bullets:
-    #     bullet.move()
-    #     # -60 to go a little off screen, for high up explosions
-    #     if bullet.y < -60 or bullet.y > SCREENH: bullet.active = False
-    #     if collide(ship, bullet) and bullet.dir != UP:
-    #         ship.die()
-    #         bullet.active = False
-    #     elif BEASTMODE == 3 and collide(boss, bullet):
-    #         boss.health -= 5
-    #         if boss.health <= 0:
-    #             boss.die()
-    #             BEASTMODE += 1
-    #         bullet.active = False
-    #     if -1 < bullet.exploding < 4: bullet.explode(time)
-    #     if bullet.active == False: bullets.remove(bullet)
-
     # for final player death
     # if ship.health <= 0 and endtime == 0:
     #     endtime = time
@@ -196,6 +176,7 @@ while endgame == 0:
 
 # display end screens
 # todo: move file loads to resource loader
+BEASTMODE = 5
 if BEASTMODE == 5:
     disp = pygame.image.load("victory1.png")
 else:

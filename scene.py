@@ -58,7 +58,6 @@ class Scene:
         """
         if event.name == "remove":
             self.remove(event.source)
-            print("gameobject removed")
 
     def check_collisions(self):
         for c1 in filter(lambda c: isinstance(c, MoveableObject), self.children):
