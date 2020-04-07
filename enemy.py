@@ -24,7 +24,10 @@ class Enemy(TrajectoryMovingObject):
         :return:
         """
         if not self.exit_stage:
-            self.__init__(self.orig_image)
+            self.image = self.orig_image
+            self.x = random.randrange(0, SCREENW)
+            self.y = -3 * self.image.get_height()
+            self.speed = random.randrange(60, 100)
         else:
             self.notify("remove")
 

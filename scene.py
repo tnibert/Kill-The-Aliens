@@ -37,8 +37,14 @@ class Scene:
         :return:
         """
         self.clock.unsubscribe("tick", obj.on_tick)
-        obj.unsubscribe("remove", self.receive_signals)
+
         self.children.remove(obj)
+
+        for child in self.children:
+            child.unsubscribe("collision", obj.on_collide)
+            obj.unsubscribe("collision", child.on_collide)
+
+        obj.unsubscribe("remove", self.receive_signals)
 
     def update_cycle(self):
         self.clock.tick()
