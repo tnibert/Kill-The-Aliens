@@ -28,3 +28,5 @@ EXPLOSION_FRAME_UPDATE_WAIT = 0.2       # time between explosion frames in secon
 
 NEW_SAUCER_IVAL = 45
 SAUCER_THRESHOLD = 10
+
+BOSS_SPEED = 70

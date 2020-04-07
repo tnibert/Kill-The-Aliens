@@ -5,6 +5,7 @@ from statusmodifiers import OneUp, Bomb, SpeedUp, MoreGuns
 from utilfuncs import switch
 from timer import Timer
 from player import Player
+from boss import Boss
 from loadstaticres import *
 from constants import NEW_SAUCER_IVAL, SAUCER_THRESHOLD
 import random
@@ -73,7 +74,9 @@ class Level(Strategy):
             self.scene.attach(newsaucer)
             self.saucer_timer.startwatch(NEW_SAUCER_IVAL)
         else:
+            # clear out the saucers and enter the boss
             self.clear_saucers()
+            self.scene.attach(Boss(100, -1200, bossimg, 0))
 
     def clear_saucers(self):
         for s in self.saucers:
