@@ -39,6 +39,7 @@ class Level(Strategy):
         self.saucer_timer.startwatch(NEW_SAUCER_IVAL)
 
         # setup labels
+        # todo: improve font and color
         gamefont = pygame.font.SysFont("monospace", TEXT_SIZE)
         textcolor = (255, 255, 0)
         text_x_loc = SCREENW - 130
@@ -48,7 +49,7 @@ class Level(Strategy):
         self.health_label = TextElement(text_x_loc, text_y_loc_start, gamefont, textcolor, "Health: {}", self.ship.health)
         self.score_label = TextElement(text_x_loc, text_y_loc_start+TEXT_SIZE, gamefont, textcolor, "Score: {}", 0)
 
-        self.ship.subscribe("death", self.health_label.update_value)
+        self.ship.subscribe("alterhealth", self.health_label.update_value)
 
         self.scene.attach(self.health_label)
         self.scene.attach(self.score_label)
@@ -71,9 +72,6 @@ class Level(Strategy):
             elif case(511):
                 statmod = MoreGuns(moregunsimg)
             if statmod is not None:
-                # todo: make the receiving function more specific
-                print("statmod created")
-                statmod.subscribe("collision", self.ship.on_collide)
                 self.scene.attach(statmod)
 
         super().run_game()

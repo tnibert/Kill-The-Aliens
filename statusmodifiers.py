@@ -29,13 +29,12 @@ class StatusModifier(TrajectoryMovingObject):
 class OneUp(StatusModifier):
     def payload(self, target):
         # add some sort of happy animation
-        target.health += 1
+        target.oneup()
         super().payload(target)
         return 0
 
 
 # bomb booby trap, -1 life
-# we'll have to make sure that the payload does not happen multiple times
 class Bomb(StatusModifier):
     def payload(self, target):
         target.die()  # initiate explosion

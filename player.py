@@ -29,7 +29,6 @@ class Player(MoveableObject):
     def update(self):
         super().update()
 
-        # todo: multiple speed by a time interval to not lock speed to frame rate
         # handle user input
         while not self.eventqueue.empty():
             event = self.eventqueue.get_nowait()
@@ -92,10 +91,13 @@ class Player(MoveableObject):
         self.notify("fire", bullet=bullet)
 
     def die(self):
-        print("player dead")
         self.health -= 1
         self.start_exploding()
-        self.notify("death", value=-1)
+        self.notify("alterhealth", value=-1)
+
+    def oneup(self):
+        self.health += 1
+        self.notify("alterhealth", value=1)
 
     def respawn(self):
         if self.health <= 0:
@@ -117,9 +119,9 @@ class Player(MoveableObject):
     def on_collide(self, event):
         if event.kwargs.get("who") == self:
             if isinstance(event.source, StatusModifier):
-                print("applying payload")
                 event.source.payload(self)
                 event.source.subscribe("timeout", self.receive_signals)
+                # todo: non timed status modifiers will never be removed
                 self.statmods.append(event.source)
             elif "Enemy" in str(event.source) and not self.exploding:
                 self.die()
@@ -128,6 +130,5 @@ class Player(MoveableObject):
 
     def receive_signals(self, event):
         if event.name == "timeout" and isinstance(event.source, StatusModifier):
-            print("disabling stat modifier")
             event.source.reverse(self)
             self.statmods.remove(event.source)
