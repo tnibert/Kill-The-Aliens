@@ -36,7 +36,6 @@ class MoveableObject(GameObject):
         self.explosion_timer.startwatch(EXPLOSION_FRAME_UPDATE_WAIT)
 
     def update_explosion(self, event):
-        print("in update explosion")
         if self.explosion_index < len(explosion)-1:
             self.explosion_index += 1
             self.image = explosion[self.explosion_index]

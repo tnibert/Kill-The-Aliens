@@ -2,7 +2,6 @@ from moveableobject import MoveableObject
 from bullet import Bullet
 from constants import *
 from loadstaticres import blank, explosion
-from functools import reduce
 import random
 
 
@@ -62,26 +61,37 @@ class Boss(MoveableObject):
             pass
 
         elif self.game_state == BOSS_STATE_DYING:
-            for e in self.boom:
-                e.update()
             if not self.exploding:
                 self.start_exploding()
-            else:
-                for e in self.boom:
-                    e.render(self.image)
 
-                # check if all explosions are finished
-                if len([e for e in self.boom if e.exploding == True]) == 0:
-                    self.game_state = BOSS_STATE_DEAD
-                    self.exploding = False
+            for e in self.boom:
+                e.update()
+
+            # start next explosion if the previous is finished
+            if not self.boom[self.trigger_index].exploding and self.trigger_index < len(self.boom)-1:
+                self.trigger_index += 1
+                print("starting explosion {}".format(self.trigger_index))
+                self.boom[self.trigger_index].start_exploding()
+
+            # render explosions onto boss
+            # todo: make sections of boss transparent after explosions
+            self.image = self.orig_image.copy()
+            for e in self.boom:
+                e.render(self.image)
+
+            # check if all explosions are finished
+            if self.trigger_index == len(self.boom)-1 and not self.boom[self.trigger_index].exploding:
+                print("boss dead")
+                self.game_state = BOSS_STATE_DEAD
+                self.exploding = False
 
         elif self.game_state == BOSS_STATE_DEAD:
             pass
 
     def start_exploding(self):
         self.exploding = True
-        for e in self.boom:
-            e.start_exploding()
+        self.image = self.image.copy()
+        self.boom[self.trigger_index].start_exploding()
 
     def move(self, foe, time):
         # update mode based on timer
