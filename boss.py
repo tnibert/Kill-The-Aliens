@@ -1,6 +1,8 @@
 from moveableobject import MoveableObject
 from bullet import Bullet
 from constants import *
+from loadstaticres import blank, explosion
+from functools import reduce
 import random
 
 
@@ -41,8 +43,12 @@ class Boss(MoveableObject):
         self.alreadygoing = 0
 
         # create boss explosions
-        #boom = []
-        #boom.append(MoveableObject(0, 0, pygame.Surface((1, 1))))
+        self.boom = []
+        self.trigger_index = 0
+        for i in range(NUM_BOSS_EXPLOSIONS):
+            self.boom.append(MoveableObject(random.randrange(self.image.get_width() - explosion[0].get_width()),
+                                            random.randrange(self.image.get_height() - explosion[0].get_height()),
+                                            0, blank))
 
     def update(self):
         super().update()
@@ -50,16 +56,32 @@ class Boss(MoveableObject):
             if self.y < 5:
                 self.y += self.speed * self.frame_tick
             else:
-                self.game_state = BOSS_STATE_FIGHTING
+                self.game_state = BOSS_STATE_DYING
+
+        elif self.game_state == BOSS_STATE_FIGHTING:
+            pass
+
+        elif self.game_state == BOSS_STATE_DYING:
+            for e in self.boom:
+                e.update()
+            if not self.exploding:
+                self.start_exploding()
+            else:
+                for e in self.boom:
+                    e.render(self.image)
+
+                # check if all explosions are finished
+                if len([e for e in self.boom if e.exploding == True]) == 0:
+                    self.game_state = BOSS_STATE_DEAD
+                    self.exploding = False
+
+        elif self.game_state == BOSS_STATE_DEAD:
+            pass
 
     def start_exploding(self):
-        pass
-
-    def update_explosion(self, event):
-        pass
-
-    def enter_game_view(self):
-        pass
+        self.exploding = True
+        for e in self.boom:
+            e.start_exploding()
 
     def move(self, foe, time):
         # update mode based on timer

@@ -20,3 +20,5 @@ moregunsimg = pygame.image.load("guns.png")
 background = pygame.image.load("map1.png")
 
 BG_MUSIC_FNAME = "spectre.mp3"
+
+blank = pygame.Surface((1, 1))
