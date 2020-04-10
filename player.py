@@ -3,6 +3,7 @@ from bullet import Bullet
 from constants import SCREENW, SCREENH, PLAYERHEALTH, UP, LEFT, RIGHT, PLAYERSPEED
 from statusmodifiers import StatusModifier
 from loadstaticres import bulletimg
+from boss import Boss
 import pygame
 
 
@@ -121,6 +122,8 @@ class Player(MoveableObject):
                 event.source.subscribe("timeout", self.receive_signals)
                 self.statmods.append(event.source)
             elif "Enemy" in str(event.source) and not self.exploding:
+                self.die()
+            elif isinstance(event.source, Boss) and not self.exploding:
                 self.die()
 
     def receive_signals(self, event):
