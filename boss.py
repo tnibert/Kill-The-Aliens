@@ -136,13 +136,6 @@ class Boss(MoveableObject):
                 self.dir = RIGHT
                 self.alreadygoing = 1
             elif test > 0:
-                #Traceback (most recent call last):
-                # File "/home/tim/code/Kill-The-Aliens/killthealiens.py", line 374, in <module>
-                #   boss.move(ship, time)
-                # File "/home/tim/code/Kill-The-Aliens/boss.py", line 64, in move
-                #   elif test > 0:
-                #TypeError: '>' not supported between instances of 'NoneType' and 'int'
-                # wtf?
                 self.mode = 0
                 self.alreadygoing = 0
 
@@ -181,20 +174,23 @@ class Boss(MoveableObject):
             return Bullet(self.x + self.width, self.y + self.height, img, DOWN)
 
     def infirerange(self):
+        # todo: examine this logic more closely
         # self.x is left turret, self.x+self.width is right turret
         # return 1 if left turret, return 2 if right
         # return -1 if too far left, -2 if too far right, -3 if in center
-        if self.foe.x + self.foe.width > self.x and self.foe.x < self.x: return 1
-        if self.foe.x + self.foe.width > self.x + self.width and self.foe.x < self.x + self.width: return 2
-        if self.foe.x + self.foe.width < self.x: return -1
-        if self.foe.x > self.x + self.width: return -2
-        if self.foe.x + self.foe.width < self.x + self.width and self.foe.x > self.x: return -3
-        # todo: this can return None and crash the program
-        # e.g.
-        # Traceback (most recent call last):
-        #   File "/home/tim/code/Kill-The-Aliens/killthealiens.py", line 213, in <module>
-        #     if boss.infirerange(ship) > 0:
-        # TypeError: '>' not supported between instances of 'NoneType' and 'int'
+        if self.foe.x + self.foe.width >= self.x and self.foe.x <= self.x:
+            return 1
+        if self.foe.x + self.foe.width >= self.x + self.width and self.foe.x <= self.x + self.width:
+            return 2
+        if self.foe.x + self.foe.width <= self.x:
+            return -1
+        if self.foe.x >= self.x + self.width:
+            return -2
+        if self.foe.x + self.foe.width <= self.x + self.width and self.foe.x >= self.x:
+            return -3
+
+        # default to center
+        return -3
 
     def die(self):
         # print "dead"
