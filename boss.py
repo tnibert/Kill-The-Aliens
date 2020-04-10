@@ -1,5 +1,6 @@
 from moveableobject import MoveableObject
 from bullet import Bullet
+from timer import Timer
 from constants import *
 from loadstaticres import blank, explosion
 import random
@@ -22,19 +23,22 @@ class Boss(MoveableObject):
     0 means no boss, 1 means clear out shop for boss, 2 means boss entering,
     3 means boss is out, 4 means dying, 5 means dead
     """
-    def __init__(self, x, y, img, time):
+    def __init__(self, x, y, img, foe):
         MoveableObject.__init__(self, x, y, BOSS_SPEED, img)
         self.health = BOSSHEALTH
-        self.inittime = time
+        self.combat_state_timer = Timer()
+        self.combat_state_change_time = 5
+        self.combat_state_timer.subscribe("timeout", self.update_combat_mode)
 
         self.game_state = BOSS_STATE_ENTERING
         # move mode
         self.mode = MOVE_MODE_STILL
 
+        self.foe = foe
+
         # counts number of steps in a given direction
         self.step = 0
         self.maxstep = 4
-        self.stepdist = 4
         # initial direction
         self.dir = random.randrange(0, 4)
         self.active = True
@@ -55,10 +59,16 @@ class Boss(MoveableObject):
             if self.y < 5:
                 self.y += self.speed * self.frame_tick
             else:
-                self.game_state = BOSS_STATE_DYING
+                self.game_state = BOSS_STATE_FIGHTING
+                self.combat_state_timer.startwatch(self.combat_state_change_time)
 
         elif self.game_state == BOSS_STATE_FIGHTING:
-            pass
+            if self.health <= 0:
+                self.game_state = BOSS_STATE_DYING
+                return
+
+            self.combat_state_timer.tick()
+            self.combat_move()
 
         elif self.game_state == BOSS_STATE_DYING:
             if not self.exploding:
@@ -93,14 +103,15 @@ class Boss(MoveableObject):
         self.image = self.image.copy()
         self.boom[self.trigger_index].start_exploding()
 
-    def move(self, foe, time):
-        # update mode based on timer
-        if time - self.inittime > 1000:
-            self.inittime = time
-            if self.mode < 3:
-                self.mode += 1
-            else:
-                self.mode = 0
+    def update_combat_mode(self, event):
+        if self.mode < MOVE_MODE_FIRE:
+            self.mode += 1
+        else:
+            self.mode = MOVE_MODE_STILL
+
+        self.combat_state_timer.startwatch(self.combat_state_change_time)
+
+    def combat_move(self):
 
         if self.mode == MOVE_MODE_STILL:
             return
@@ -114,7 +125,7 @@ class Boss(MoveableObject):
                 self.maxstep = random.randrange(2, 6)
 
         elif self.mode == MOVE_MODE_CHASING:
-            test = self.infirerange(foe)
+            test = self.infirerange()
             if test == -3 and self.alreadygoing == 0:  # if ship is in middle
                 self.dir = random.randrange(0, 2)
                 self.alreadygoing = 1
@@ -138,7 +149,7 @@ class Boss(MoveableObject):
         # MODE 3 HAS NOT BEEN IMPLEMENTED
 
         # check for screen boundaries
-        if self.y + self.height > foe.y - 60:
+        if self.y + self.height > self.foe.y - 60:
             self.dir = UP
             self.step = 0
         if self.y < 0:
@@ -153,13 +164,13 @@ class Boss(MoveableObject):
 
         # self.dir = random.randrange(2,4)
         if self.dir == DOWN:  # move down
-            self.y += self.stepdist
+            self.y += self.speed * self.frame_tick
         elif self.dir == UP:  # move up
-            self.y -= self.stepdist
+            self.y -= self.speed * self.frame_tick
         elif self.dir == LEFT:  # move left
-            self.x -= self.stepdist
+            self.x -= self.speed * self.frame_tick
         elif self.dir == RIGHT:  # move right
-            self.x += self.stepdist
+            self.x += self.speed * self.frame_tick
 
         self.updatepos()
 
@@ -169,15 +180,15 @@ class Boss(MoveableObject):
         else:
             return Bullet(self.x + self.width, self.y + self.height, img, DOWN)
 
-    def infirerange(self, foe):
+    def infirerange(self):
         # self.x is left turret, self.x+self.width is right turret
         # return 1 if left turret, return 2 if right
         # return -1 if too far left, -2 if too far right, -3 if in center
-        if foe.x + foe.width > self.x and foe.x < self.x: return 1
-        if foe.x + foe.width > self.x + self.width and foe.x < self.x + self.width: return 2
-        if foe.x + foe.width < self.x: return -1
-        if foe.x > self.x + self.width: return -2
-        if foe.x + foe.width < self.x + self.width and foe.x > self.x: return -3
+        if self.foe.x + self.foe.width > self.x and self.foe.x < self.x: return 1
+        if self.foe.x + self.foe.width > self.x + self.width and self.foe.x < self.x + self.width: return 2
+        if self.foe.x + self.foe.width < self.x: return -1
+        if self.foe.x > self.x + self.width: return -2
+        if self.foe.x + self.foe.width < self.x + self.width and self.foe.x > self.x: return -3
         # todo: this can return None and crash the program
         # e.g.
         # Traceback (most recent call last):
@@ -196,45 +207,11 @@ class Boss(MoveableObject):
     #        if random.randrange(0, 10) == 1 and ship.exploding == -1:
     #            bullets.append(boss.fire(bulletimg, RIGHT))
 
-    # if boss got killed make Sonic style boss death explosion
-    # explode is called multiple times over several main loops to advance the explosion frame
-    # if BEASTMODE == 4:
-    #     for splat in boom:
-    #         # if first pass, initialize explosion sequence
-    #         if len(boom) == 1 and splat.exploding == -1:
-    #             splat.x = random.randrange(boss.x, boss.x + boss.width - explosion[
-    #                 0].get_width())  # subtract explosion width
-    #             splat.y = random.randrange(boss.y, boss.y + boss.height - explosion[0].get_height())
-    #             explosion.append(blacksquare)  # to take chunks out of boss
-    #         splat.explode(time)
-    #     if boom[-1].exploding == 2 and len(boom) < 8:
-    #         boom.append(MoveableObject(random.randrange(boss.x, boss.x + boss.width - explosion[0].get_width()),
-    #                                        random.randrange(boss.y,
-    #                                                         boss.y + boss.height - explosion[0].get_height()),
-    #                                        pygame.Surface((1, 1))))
     #     # if boss is done exploding
     #     if len(boom) == 8 and boom[-1].exploding == len(explosion):
     #         BEASTMODE = 5
     #         score += 1000
     #         endtime = time
-
-    # this may have to be reexamined, testing beastmode < 3
-    # if boss.y > 0 and BEASTMODE < 3: BEASTMODE = 3
-    #
-    # # if boss is displayed
-    # if 4 > BEASTMODE >= 2:
-    #     boss.move(ship, time)
-    #     # if ship collides with boss, lose life
-    #     if collide(ship, boss):
-    #         # print "boss collision"
-    #         ship.die()  # evaluation of death is earlier in the code
-
-
-    # if BEASTMODE >= 2: screen.blit(boss.image, (boss.x, boss.y))
-    #
-    # if BEASTMODE >= 4:
-    #     for splat in boom:
-    #         screen.blit(splat.image, (splat.x, splat.y))
 
     # bosslbl = myfont.render("Boss Health: " + str(boss.health), 1, (255, 255, 0))
     # if BEASTMODE >= 3: screen.blit(bosslbl, (SCREENW / 2, 20))

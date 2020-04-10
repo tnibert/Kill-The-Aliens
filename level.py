@@ -76,7 +76,7 @@ class Level(Strategy):
         else:
             # clear out the saucers and enter the boss
             self.clear_saucers()
-            self.scene.attach(Boss(SCREENW/2-bossimg.get_width()/2, -1200, bossimg, 0))
+            self.scene.attach(Boss(SCREENW/2-bossimg.get_width()/2, -1200, bossimg, self.ship))
 
     def clear_saucers(self):
         for s in self.saucers:
