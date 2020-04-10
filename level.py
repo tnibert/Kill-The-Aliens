@@ -4,10 +4,11 @@ from gamemap import GameMap
 from statusmodifiers import OneUp, Bomb, SpeedUp, MoreGuns
 from utilfuncs import switch
 from timer import Timer
+from textelement import TextElement
 from player import Player
 from boss import Boss
 from loadstaticres import *
-from constants import NEW_SAUCER_IVAL, SAUCER_THRESHOLD, SCREENW
+from constants import NEW_SAUCER_IVAL, SAUCER_THRESHOLD, SCREENW, TEXT_SIZE
 import random
 
 
@@ -36,6 +37,21 @@ class Level(Strategy):
         self.saucer_timer = Timer()
         self.saucer_timer.subscribe("timeout", self.add_saucer)
         self.saucer_timer.startwatch(NEW_SAUCER_IVAL)
+
+        # setup labels
+        gamefont = pygame.font.SysFont("monospace", TEXT_SIZE)
+        textcolor = (255, 255, 0)
+        text_x_loc = SCREENW - 130
+        text_y_loc_start = 20
+
+        # add health and score labels
+        self.health_label = TextElement(text_x_loc, text_y_loc_start, gamefont, textcolor, "Health: {}", self.ship.health)
+        self.score_label = TextElement(text_x_loc, text_y_loc_start+TEXT_SIZE, gamefont, textcolor, "Score: {}", 0)
+
+        self.ship.subscribe("death", self.health_label.update_value)
+
+        self.scene.attach(self.health_label)
+        self.scene.attach(self.score_label)
 
     def run_game(self):
         self.saucer_timer.tick()

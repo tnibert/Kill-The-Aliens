@@ -95,9 +95,9 @@ class Player(MoveableObject):
         print("player dead")
         self.health -= 1
         self.start_exploding()
+        self.notify("death", value=-1)
 
     def respawn(self):
-        #self.active = True
         if self.health <= 0:
             self.x = -2000
             self.y = -2000

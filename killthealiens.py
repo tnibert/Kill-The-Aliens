@@ -9,14 +9,12 @@ import pygame
 import sys
 
 # todo:
-# ship death on saucer impact
-#
-# move the boss to the new architecture
-# we also need to fix the bug in the boss with infirerange() returning None
+# add score keeping and add text elements to scene
+# boss firing
+# boss or player final death ending game
+# player collision with boss does not work initially (updatepos()?)
 #
 # normalize ship diagonal movement
-#
-# add score keeping and add text elements to scene
 # load static resources from file
 # multiple level capability
 # increase speed of speed up power up, and match speed on map and ship
@@ -35,9 +33,6 @@ screen = pygame.display.set_mode((SCREENW, SCREENH), pygame.DOUBLEBUF)
 pygame.display.set_caption("KILL THE ALIENS")
 
 gamescene = Scene(screen)
-
-# set text font
-myfont = pygame.font.SysFont("monospace", 15)
 
 # load up music
 pygame.mixer.music.load(BG_MUSIC_FNAME)
@@ -62,6 +57,7 @@ while intro == 1:
     pygame.display.flip()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            pygame.quit()
             sys.exit()
         if not hasattr(event, 'key'): continue
         if event.type == pygame.KEYDOWN:
