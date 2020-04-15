@@ -36,6 +36,11 @@ class MoveableObject(GameObject):
         self.explosion_timer.startwatch(EXPLOSION_FRAME_UPDATE_WAIT)
 
     def update_explosion(self, event):
+        """
+        Event handler to update the explosion, called from the explosion timer
+        :param event: the timer notify event
+        :return: True if explosion is complete, False if not
+        """
         if self.explosion_index < len(explosion)-1:
             self.explosion_index += 1
             self.image = explosion[self.explosion_index]

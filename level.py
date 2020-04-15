@@ -27,17 +27,6 @@ class Level(Strategy):
         self.game_map = GameMap(map_bg)
         self.scene.attach(self.game_map)
 
-        # create initial enemies
-        self.saucers = []
-        for x in range(0, 3):
-            newsaucer = Enemy(saucerimg)
-            self.saucers.append(newsaucer)
-            self.scene.attach(newsaucer)
-
-        self.saucer_timer = Timer()
-        self.saucer_timer.subscribe("timeout", self.add_saucer)
-        self.saucer_timer.startwatch(NEW_SAUCER_IVAL)
-
         # setup labels
         # todo: improve font and color
         gamefont = pygame.font.SysFont("monospace", TEXT_SIZE)
@@ -53,6 +42,18 @@ class Level(Strategy):
 
         self.scene.attach(self.health_label)
         self.scene.attach(self.score_label)
+
+        # create initial enemies
+        self.saucers = []
+        for x in range(0, 3):
+            newsaucer = Enemy(saucerimg)
+            newsaucer.subscribe("score_up", self.score_label.update_value)
+            self.saucers.append(newsaucer)
+            self.scene.attach(newsaucer)
+
+        self.saucer_timer = Timer()
+        self.saucer_timer.subscribe("timeout", self.add_saucer)
+        self.saucer_timer.startwatch(NEW_SAUCER_IVAL)
 
     def run_game(self):
         self.saucer_timer.tick()
@@ -84,6 +85,7 @@ class Level(Strategy):
         """
         if len(self.saucers) < SAUCER_THRESHOLD:
             newsaucer = Enemy(saucerimg)
+            newsaucer.subscribe("score_up", self.score_label.update_value)
             self.saucers.append(newsaucer)
             self.scene.attach(newsaucer)
             self.saucer_timer.startwatch(NEW_SAUCER_IVAL)

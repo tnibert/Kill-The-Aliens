@@ -1,5 +1,5 @@
 from trajectorymovingobject import TrajectoryMovingObject
-from constants import SCREENW, SCREENH
+from constants import SCREENW, SCREENH, SAUCER_DEATH_SCORE_INC
 from player import Player
 from bullet import Bullet
 import random
@@ -33,6 +33,8 @@ class Enemy(TrajectoryMovingObject):
 
     def update_explosion(self, event):
         if super().update_explosion(event):
+            # if the explosion is complete
+            self.notify("score_up", value=SAUCER_DEATH_SCORE_INC)
             self.respawn()
 
     def on_collide(self, event):
