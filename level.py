@@ -8,7 +8,7 @@ from textelement import TextElement
 from player import Player
 from boss import Boss
 from loadstaticres import *
-from constants import NEW_SAUCER_IVAL, SAUCER_THRESHOLD, SCREENW, TEXT_SIZE
+from constants import NEW_SAUCER_IVAL, SAUCER_THRESHOLD, SCREENW, TEXT_SIZE, BOSSHEALTH
 import random
 
 
@@ -31,12 +31,15 @@ class Level(Strategy):
         # todo: improve font and color
         gamefont = pygame.font.SysFont("monospace", TEXT_SIZE)
         textcolor = (255, 255, 0)
-        text_x_loc = SCREENW - 130
+        text_x_loc = SCREENW - 180
         text_y_loc_start = 20
 
         # add health and score labels
-        self.health_label = TextElement(text_x_loc, text_y_loc_start, gamefont, textcolor, "Health: {}", self.ship.health)
+        self.health_label = TextElement(text_x_loc, text_y_loc_start, gamefont,
+                                        textcolor, "Health: {}", self.ship.health)
         self.score_label = TextElement(text_x_loc, text_y_loc_start+TEXT_SIZE, gamefont, textcolor, "Score: {}", 0)
+        self.boss_health_label = TextElement(text_x_loc, text_y_loc_start+TEXT_SIZE*2,
+                                             gamefont, textcolor, "Boss: {}", BOSSHEALTH)
 
         self.ship.subscribe("alterhealth", self.health_label.update_value)
 
@@ -92,7 +95,10 @@ class Level(Strategy):
         else:
             # clear out the saucers and enter the boss
             self.clear_saucers()
-            self.scene.attach(Boss(SCREENW/2-bossimg.get_width()/2, -1200, bossimg, self.ship))
+            boss = Boss(SCREENW/2-bossimg.get_width()/2, -1200, bossimg, self.ship)
+            boss.subscribe("health_down", self.boss_health_label.update_value)
+            self.scene.attach(boss)
+            self.scene.attach(self.boss_health_label)
 
     def clear_saucers(self):
         for s in self.saucers:

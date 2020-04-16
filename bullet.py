@@ -20,7 +20,3 @@ class Bullet(MoveableObject):
         self.move()
         if self.y+self.image.get_height() > SCREENH or self.y < 0:
             self.notify("remove")
-
-    #def on_collide(self, event):
-    #    if event.kwargs.get("who") == self and "Player" not in str(event.source):
-    #         self.notify(Event("remove"))

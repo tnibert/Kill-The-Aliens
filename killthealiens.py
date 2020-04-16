@@ -9,15 +9,20 @@ import pygame
 import sys
 
 # todo:
-# add score keeping and add text elements to scene
-# boss firing
-# boss or player final death ending game
+# boss health display in scene
+# boss firing - in middle
+# boss or player final death to end game
 # player collision with boss does not work initially (updatepos()?)
 #
+# add boss bum rush
+#
 # normalize ship diagonal movement
+# move static resources to subdirectory
 # load static resources from file
 # multiple level capability
 # increase speed of speed up power up, and match speed on map and ship
+#
+# Replace health texts with health bars
 
 # queues for input events
 player_input_queue = Queue()

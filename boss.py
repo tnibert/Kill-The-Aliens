@@ -98,6 +98,8 @@ class Boss(MoveableObject):
         elif self.game_state == BOSS_STATE_DEAD:
             pass
 
+        self.updatepos()
+
     def start_exploding(self):
         self.exploding = True
         self.image = self.image.copy()
@@ -165,7 +167,16 @@ class Boss(MoveableObject):
         elif self.dir == RIGHT:  # move right
             self.x += self.speed * self.frame_tick
 
-        self.updatepos()
+    def on_collide(self, event):
+        """
+        Handle bullet collision with boss
+        :param event:
+        :return:
+        """
+        if isinstance(event.source, Bullet):
+            self.health -= 1
+            self.notify("health_down", value=-1)
+            #event.source.notify("remove")
 
     def fire(self, img, side):
         if side == LEFT:
