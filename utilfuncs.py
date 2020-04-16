@@ -24,8 +24,14 @@ class switch(object):
             return False
 
 
-# divide an image into frames
 def toframes(img, numframes, xstep):
+    """
+    Divide an image into frames
+    :param img:
+    :param numframes:
+    :param xstep:
+    :return:
+    """
     # img to divide up, number of frames to generate, step size on x axis to split on
     frames = []  # list of images
     for i in range(0, numframes):
@@ -37,6 +43,12 @@ def toframes(img, numframes, xstep):
 
 
 def collide(spr1, spr2):
+    """
+    Detect sprite collision
+    :param spr1: a GameObject
+    :param spr2: a GameObject
+    :return: True if the sprites have collided, False if not
+    """
     # spr1 is a, spr2 is b
     wa = spr1.x + spr1.width
     ha = spr1.y + spr1.height

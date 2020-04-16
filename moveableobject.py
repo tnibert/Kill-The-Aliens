@@ -10,8 +10,6 @@ class MoveableObject(GameObject):
         GameObject.__init__(self, x, y, img)
         self.orig_image = self.image
         self.speed = speed
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
         self.exploding = False
         self.explosion_index = 0
         self.explosion_timer = Timer()

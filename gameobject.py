@@ -12,8 +12,9 @@ class GameObject(Observable):
 
         self.x = x
         self.y = y
-
         self.image = img
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
         self.layer = layer
 
         # allows for movement speed independent of frame rate
