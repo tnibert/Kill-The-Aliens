@@ -13,7 +13,6 @@ class Bullet(MoveableObject):
             self.y -= self.speed * self.frame_tick
         else:
             self.y += self.speed * self.frame_tick
-        self.updatepos()
 
     def update(self):
         super().update()

@@ -3,12 +3,11 @@ from timer import Timer
 import pygame
 
 
-class GameObject(pygame.sprite.Sprite, Observable):
+class GameObject(Observable):
     """
     A renderable object in the game
     """
     def __init__(self, x, y, img, layer=0):
-        pygame.sprite.Sprite.__init__(self)
         Observable.__init__(self)
 
         self.x = x

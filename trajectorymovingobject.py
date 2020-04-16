@@ -22,7 +22,6 @@ class TrajectoryMovingObject(MoveableObject):
 
         self.x -= (((math.degrees(math.sin(math.radians(self.degreeangle))) * self.speed) / 40) * self.frame_tick)
         self.y -= (((math.degrees(math.cos(math.radians(self.degreeangle))) * self.speed) / 40) * self.frame_tick)
-        self.updatepos()
 
     def update(self):
         super().update()

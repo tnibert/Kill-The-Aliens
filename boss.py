@@ -98,8 +98,6 @@ class Boss(MoveableObject):
         elif self.game_state == BOSS_STATE_DEAD:
             pass
 
-        self.updatepos()
-
     def start_exploding(self):
         self.exploding = True
         self.image = self.image.copy()

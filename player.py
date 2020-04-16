@@ -73,8 +73,6 @@ class Player(MoveableObject):
         elif self.godown == True and self.y + self.height <= SCREENH:
             self.y += distance
 
-        self.updatepos()
-
         # handle status modifiers
         # [:] to iterate over copy of list (can remove from tick() Event handling)
         for mod in self.statmods[:]:
@@ -110,7 +108,6 @@ class Player(MoveableObject):
             self.speed = PLAYERSPEED
             self.image = self.orig_image
             self.bamfmode = False
-        self.updatepos()
 
     def update_explosion(self, event):
         if super().update_explosion(event):

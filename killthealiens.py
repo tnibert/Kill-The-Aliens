@@ -9,10 +9,10 @@ import pygame
 import sys
 
 # todo:
-# boss health display in scene
-# boss firing - in middle
+# remove bullet when boss is hit
+# boss firing - in middle, multiple bullets in stream next to each other like laser
 # boss or player final death to end game
-# player collision with boss does not work initially (updatepos()?)
+# player collision with boss does not work
 #
 # add boss bum rush
 #

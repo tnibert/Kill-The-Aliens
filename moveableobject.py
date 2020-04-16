@@ -12,17 +12,10 @@ class MoveableObject(GameObject):
         self.speed = speed
         self.width = self.image.get_width()
         self.height = self.image.get_height()
-        self.rect = self.image.get_rect()
-        self.updatepos()
         self.exploding = False
         self.explosion_index = 0
         self.explosion_timer = Timer()
         self.explosion_timer.subscribe("timeout", self.update_explosion)
-
-    def updatepos(self):  # this lets us play nice with pygame collision detection
-        self.pos = (self.x, self.y)
-        self.rect.x = self.x
-        self.rect.y = self.y
 
     def update(self):
         super().update()
