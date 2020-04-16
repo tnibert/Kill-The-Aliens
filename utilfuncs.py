@@ -37,4 +37,25 @@ def toframes(img, numframes, xstep):
 
 
 def collide(spr1, spr2):
-    return pygame.sprite.collide_rect(spr1, spr2)
+    # spr1 is a, spr2 is b
+    wa = spr1.x + spr1.width
+    ha = spr1.y + spr1.height
+    wb = spr2.x + spr2.width
+    hb = spr2.y + spr2.height
+    bx = 5
+    by = 5
+
+    if inside(spr1.x, spr1.y, spr2.x+bx, spr2.y+by, wb-bx, hb-by) \
+            or inside(spr1.x, ha, spr2.x+bx, spr2.y + by, wb-bx, hb-by) \
+            or inside(wa, spr1.y, spr2.x+bx, spr2.y+by, wb-bx, hb-by) \
+            or inside(wa, ha, spr2.x+bx, spr2.y+by, wb-bx, hb-by):
+        return True
+    else:
+        return False
+
+
+def inside(x, y, left, top, right, bottom):
+    if x > left and x < right and y > top and y < bottom:
+        return True
+    else:
+        return False
