@@ -171,10 +171,9 @@ class Boss(MoveableObject):
         :param event:
         :return:
         """
-        if isinstance(event.source, Bullet):
+        if isinstance(event.source, Bullet) and event.kwargs.get("who") is self:
             self.health -= 1
             self.notify("health_down", value=-1)
-            #event.source.notify("remove")
 
     def fire(self, img, side):
         if side == LEFT:
