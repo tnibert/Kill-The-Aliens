@@ -42,32 +42,14 @@ def toframes(img, numframes, xstep):
     return frames
 
 
-def collide(spr1, spr2):
+def collide(rect1, rect2):
     """
     Detect sprite collision
-    :param spr1: a GameObject
-    :param spr2: a GameObject
+    :param rect1: a GameObject
+    :param rect2: a GameObject
     :return: True if the sprites have collided, False if not
     """
-    # spr1 is a, spr2 is b
-    wa = spr1.x + spr1.width
-    ha = spr1.y + spr1.height
-    wb = spr2.x + spr2.width
-    hb = spr2.y + spr2.height
-    bx = 5
-    by = 5
-
-    if inside(spr1.x, spr1.y, spr2.x+bx, spr2.y+by, wb-bx, hb-by) \
-            or inside(spr1.x, ha, spr2.x+bx, spr2.y + by, wb-bx, hb-by) \
-            or inside(wa, spr1.y, spr2.x+bx, spr2.y+by, wb-bx, hb-by) \
-            or inside(wa, ha, spr2.x+bx, spr2.y+by, wb-bx, hb-by):
-        return True
-    else:
-        return False
-
-
-def inside(x, y, left, top, right, bottom):
-    if x > left and x < right and y > top and y < bottom:
+    if rect1.x < rect2.x + rect2.width and rect1.x + rect1.width > rect2.x and rect1.y < rect2.y + rect2.height and rect1.y + rect1.height > rect2.y:
         return True
     else:
         return False

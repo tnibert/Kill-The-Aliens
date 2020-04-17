@@ -66,8 +66,8 @@ class Scene:
             self.remove(event.source)
 
     def check_collisions(self):
-        for c1 in filter(lambda c: isinstance(c, MoveableObject), self.children):
-            for c2 in filter(lambda c: isinstance(c, MoveableObject), self.children):
-                if c1 != c2:
-                    if collide(c1, c2):
-                        c1.notify("collision", who=c2)
+        moveable_children = list(filter(lambda c: isinstance(c, MoveableObject), self.children))
+        for c1 in moveable_children:
+            for c2 in moveable_children:
+                if collide(c1, c2) and c1 is not c2:
+                    c1.notify("collision", who=c2)
