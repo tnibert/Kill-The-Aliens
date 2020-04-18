@@ -21,6 +21,11 @@ class MoveableObject(GameObject):
             self.explosion_timer.tick()
 
     def start_exploding(self):
+        """
+        Start the explosion sequence
+        queues up update_explosion calls on explosion_timer timeout event
+        NB: If this is called again while the explosion is occurring, the sequence will reset
+        """
         self.exploding = True
         self.image = explosion[self.explosion_index]
         self.speed = 0

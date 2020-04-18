@@ -165,16 +165,6 @@ class Boss(MoveableObject):
         elif self.dir == RIGHT:  # move right
             self.x += self.speed * self.frame_tick
 
-    def on_collide(self, event):
-        """
-        Handle bullet collision with boss
-        :param event:
-        :return:
-        """
-        if isinstance(event.source, bullet.Bullet) and event.kwargs.get("who") is self:
-            self.health -= 1
-            self.notify("health_down", value=-1)
-
     def fire(self, img, side):
         if side == LEFT:
             return bullet.Bullet(self.x, self.y + self.height, img, DOWN)

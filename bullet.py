@@ -24,8 +24,11 @@ class Bullet(MoveableObject):
     def on_collide(self, event):
         if isinstance(event.source, boss.Boss) and event.kwargs.get("who") is self and not self.exploding:
             self.start_exploding()
+            # best to not divide actions between boss and bullet
+            # but it raises the question of if all bullet collisions should be handled here
+            event.source.health -= 1
+            event.source.notify("health_down", value=-1)
 
     def update_explosion(self, event):
-        print("in bullet update_explosion()")
         if super().update_explosion(event):
             self.notify("remove")
