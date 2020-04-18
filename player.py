@@ -4,6 +4,7 @@ from constants import SCREENW, SCREENH, PLAYERHEALTH, UP, LEFT, RIGHT, PLAYERSPE
 from statusmodifiers import StatusModifier
 from loadstaticres import bulletimg
 from boss import Boss
+from endgamesignal import EndLevel
 import pygame
 
 
@@ -102,6 +103,7 @@ class Player(MoveableObject):
             self.x = -2000
             self.y = -2000
             self.speed = 0
+            raise EndLevel("failure")
         else:
             self.x = self.spawnX
             self.y = self.spawnY

@@ -9,11 +9,11 @@ import pygame
 import sys
 
 # todo:
+# boss AI:
 # boss firing - in middle, multiple bullets in stream next to each other like laser
-# boss or player final death to end game
-#
 # add boss bum rush
 #
+# create scenes for static screens
 # normalize ship diagonal movement
 # load static resources from file
 # multiple level capability
@@ -46,8 +46,6 @@ blacksquare = pygame.Surface((explosion[0].get_width() - 15, explosion[0].get_he
 # 0 means play, 1 means user exit, 2 means death, 3 means victory
 endgame = 0
 
-#blacksquare.fill(BLACK)
-
 score = 0
 
 intro = 1
@@ -63,7 +61,8 @@ while intro == 1:
             sys.exit()
         if not hasattr(event, 'key'): continue
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RETURN: intro = 0
+            if event.key == pygame.K_RETURN:
+                intro = 0
 
 mylevel = Level(gamescene, player_input_queue)
 
@@ -71,7 +70,6 @@ mylevel = Level(gamescene, player_input_queue)
 pygame.mixer.music.play(-1)
 
 # begin main game loop
-# this should have all been put in a function T_T
 while endgame == 0:
 
     for event in pygame.event.get():
@@ -84,38 +82,18 @@ while endgame == 0:
         elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
             player_input_queue.put(event)
 
-    # for final player death
-    # if ship.health <= 0 and endtime == 0:
-    #     endtime = time
-    #
-    # # for time delay after death
-    # if time >= endtime + 4000 and endtime != 0:
-    #     # print "game over"
-    #     endgame = 2
-
-    # text rendering
-    #healthlbl = myfont.render("Health: " + str(ship.health), 1, (255, 255, 0))
-    #scorelbl = myfont.render("Score: " + str(score), 1, (255, 255, 0))
-
     try:
         mylevel.run_game()
     except EndLevel as e:
         endgame = 1
-
-    #screen.blit(healthlbl, (SCREENW - 100, 20))
-    #screen.blit(scorelbl, (SCREENW - 100, 35))
+        if e.args[0] == "victory":
+            disp = pygame.image.load("assets/victory1.png")
+        else:
+            disp = pygame.image.load("assets/dead1.png")
 
     pygame.display.flip()  # apply double buffer
 
-# end game loop
-
-# display end screens
 # todo: move file loads to resource loader
-BEASTMODE = 5
-if BEASTMODE == 5:
-    disp = pygame.image.load("assets/victory1.png")
-else:
-    disp = pygame.image.load("assets/dead1.png")
 
 # add loop to get input, continue to high scores, etc
 cont = 0
@@ -126,7 +104,6 @@ while cont == 0:
         if event.key == pygame.K_ESCAPE: cont = 1
     screen.blit(disp, (0, 0))
     pygame.display.flip()
-# elif(endgame == 1): continue
 
 # update and view high scores
 # open file
@@ -138,7 +115,6 @@ while cont == 0:
 # read scores into list
 # compare score to list
 # display high scores
-
 
 pygame.quit()
 sys.exit()
