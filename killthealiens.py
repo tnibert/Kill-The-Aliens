@@ -9,7 +9,6 @@ import pygame
 import sys
 
 # todo:
-# remove bullet when boss is hit
 # boss firing - in middle, multiple bullets in stream next to each other like laser
 # boss or player final death to end game
 # player collision with boss does not work
@@ -17,7 +16,6 @@ import sys
 # add boss bum rush
 #
 # normalize ship diagonal movement
-# move static resources to subdirectory
 # load static resources from file
 # multiple level capability
 # increase speed of speed up power up, and match speed on map and ship
@@ -113,9 +111,9 @@ while endgame == 0:
 # todo: move file loads to resource loader
 BEASTMODE = 5
 if BEASTMODE == 5:
-    disp = pygame.image.load("victory1.png")
+    disp = pygame.image.load("assets/victory1.png")
 else:
-    disp = pygame.image.load("dead1.png")
+    disp = pygame.image.load("assets/dead1.png")
 
 # add loop to get input, continue to high scores, etc
 cont = 0
