@@ -12,6 +12,15 @@ class Observable:
         # dicts of form {eventname: [callbacks]}
         self.callbacks = {}
 
+    def remove_event(self, eventname):
+        """
+        Removes an event
+        Will just do nothing if event is not already a key in callbacks
+        :param eventname: the name of the vent to remove
+        :return:
+        """
+        self.callbacks.pop(eventname, None)
+
     def subscribe(self, eventname, callback):
         if eventname not in self.callbacks.keys():
             self.callbacks[eventname] = [callback]
