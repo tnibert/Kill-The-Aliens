@@ -29,8 +29,9 @@ class Bullet(MoveableObject):
 
             # best to not divide actions between boss and bullet
             # any scenario where the bullet explodes should be handled in this function
-            event.source.health -= 1
-            event.source.notify("health_down", value=-1)
+            if event.source.health > 0:
+                event.source.health -= 1
+                event.source.notify("health_down", value=-1)
 
     def update_explosion(self, event):
         if super().update_explosion(event):

@@ -81,7 +81,6 @@ class Boss(MoveableObject):
             # start next explosion if the previous is finished
             if not self.boom[self.trigger_index].exploding and self.trigger_index < len(self.boom)-1:
                 self.trigger_index += 1
-                print("starting explosion {}".format(self.trigger_index))
                 self.boom[self.trigger_index].start_exploding()
 
             # render explosions onto boss
@@ -92,7 +91,6 @@ class Boss(MoveableObject):
 
             # check if all explosions are finished
             if self.trigger_index == len(self.boom)-1 and not self.boom[self.trigger_index].exploding:
-                print("boss dead")
                 self.game_state = BOSS_STATE_DEAD
                 self.exploding = False
 
