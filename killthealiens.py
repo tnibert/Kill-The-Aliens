@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 from constants import *
-from loadstaticres import *
+from loadstaticres import BG_MUSIC_FNAME, introscreen
 from scene import Scene
 from queue import Queue
 from level import Level
@@ -42,9 +42,6 @@ gamescene = Scene(screen)
 # load up music
 pygame.mixer.music.load(BG_MUSIC_FNAME)
 
-# actually transparent square
-blacksquare = pygame.Surface((explosion[0].get_width() - 15, explosion[0].get_height() - 15), pygame.SRCALPHA, 32)
-
 # flags
 # 0 means play, 1 means user exit, 2 means death, 3 means victory
 endgame = 0
@@ -79,7 +76,7 @@ while endgame == 0:
         elif not hasattr(event, 'key'):
             continue
         elif event.key == pygame.K_ESCAPE:
-            endgame = 1
+            sys.exit(0)
         elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
             player_input_queue.put(event)
 
