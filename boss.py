@@ -1,5 +1,5 @@
 from moveableobject import MoveableObject
-from bullet import Bullet
+import bullet
 from timer import Timer
 from constants import *
 from loadstaticres import blank, explosion
@@ -171,15 +171,15 @@ class Boss(MoveableObject):
         :param event:
         :return:
         """
-        if isinstance(event.source, Bullet) and event.kwargs.get("who") is self:
+        if isinstance(event.source, bullet.Bullet) and event.kwargs.get("who") is self:
             self.health -= 1
             self.notify("health_down", value=-1)
 
     def fire(self, img, side):
         if side == LEFT:
-            return Bullet(self.x, self.y + self.height, img, DOWN)
+            return bullet.Bullet(self.x, self.y + self.height, img, DOWN)
         else:
-            return Bullet(self.x + self.width, self.y + self.height, img, DOWN)
+            return bullet.Bullet(self.x + self.width, self.y + self.height, img, DOWN)
 
     def infirerange(self):
         # todo: examine this logic more closely
