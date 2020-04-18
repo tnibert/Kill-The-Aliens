@@ -15,7 +15,8 @@ import sys
 #
 # game map speed up to reset on player death
 #
-# create scenes for static screens
+# create levels for static screens
+# move music control to level
 #
 # load static resources from data structure for
 # multiple level capability
@@ -47,8 +48,6 @@ blacksquare = pygame.Surface((explosion[0].get_width() - 15, explosion[0].get_he
 # flags
 # 0 means play, 1 means user exit, 2 means death, 3 means victory
 endgame = 0
-
-score = 0
 
 intro = 1
 
