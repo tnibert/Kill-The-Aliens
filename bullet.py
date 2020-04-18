@@ -24,8 +24,11 @@ class Bullet(MoveableObject):
     def on_collide(self, event):
         if isinstance(event.source, boss.Boss) and event.kwargs.get("who") is self and not self.exploding:
             self.start_exploding()
+            self.x = self.x - self.image.get_width()/2
+            self.y = self.y - self.image.get_height()/2
+
             # best to not divide actions between boss and bullet
-            # but it raises the question of if all bullet collisions should be handled here
+            # any scenario where the bullet explodes should be handled in this function
             event.source.health -= 1
             event.source.notify("health_down", value=-1)
 
