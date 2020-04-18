@@ -1,17 +1,16 @@
 #! /usr/bin/env python
-from enemy import Enemy
 from constants import *
 from loadstaticres import *
 from scene import Scene
 from queue import Queue
 from level import Level
+from endgamesignal import EndLevel
 import pygame
 import sys
 
 # todo:
 # boss firing - in middle, multiple bullets in stream next to each other like laser
 # boss or player final death to end game
-# player collision with boss does not work
 #
 # add boss bum rush
 #
@@ -98,7 +97,10 @@ while endgame == 0:
     #healthlbl = myfont.render("Health: " + str(ship.health), 1, (255, 255, 0))
     #scorelbl = myfont.render("Score: " + str(score), 1, (255, 255, 0))
 
-    mylevel.run_game()
+    try:
+        mylevel.run_game()
+    except EndLevel as e:
+        endgame = 1
 
     #screen.blit(healthlbl, (SCREENW - 100, 20))
     #screen.blit(scorelbl, (SCREENW - 100, 35))

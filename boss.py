@@ -1,9 +1,10 @@
 from moveableobject import MoveableObject
-import bullet
 from timer import Timer
 from constants import *
 from loadstaticres import blank, explosion
+from endgamesignal import EndLevel
 import random
+import bullet
 
 
 BOSS_STATE_ENTERING = 0
@@ -96,7 +97,7 @@ class Boss(MoveableObject):
                 self.exploding = False
 
         elif self.game_state == BOSS_STATE_DEAD:
-            pass
+            raise EndLevel("victory")
 
     def start_exploding(self):
         self.exploding = True
