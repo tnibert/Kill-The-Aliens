@@ -1,3 +1,4 @@
+# todo: increase screen height to 800 (need art update)
 SCREENH = 600
 SCREENW = 640
 LEFT = 0
@@ -5,29 +6,27 @@ RIGHT = 1
 UP = 2
 DOWN = 3
 BLACK = (0, 0, 0)
-EXTIMELAPSE = 250
-BOSSHEALTH = 2000  # default 2000
-PLAYERHEALTH = 3  # default 3
+
+BOSSHEALTH = 300
+PLAYERHEALTH = 3
 
 # speed of map scrolling
 SCROLLSPEED = 30
-MAXSCROLLSPEED = 90
-
-# most saucers that can be in play before boss comes out
-MAXENEMIES = 10
+MAXSCROLLSPEED = 180
 
 STATMOD_DURATION = 15   # seconds
 
 PLAYERSPEED = 90
-PLAYERMAXSPEED = 180
+PLAYERMAXSPEED = 270
 
 BULLETSPEED = 200
-STATMOD_SPEED = 30
+STATMOD_SPEED = 90
 
 EXPLOSION_FRAME_UPDATE_WAIT = 0.2       # time between explosion frames in seconds
 
-NEW_SAUCER_IVAL = 4
-SAUCER_THRESHOLD = 3
+NEW_SAUCER_IVAL = 15
+# most saucers that can be in play before boss comes out
+SAUCER_THRESHOLD = 10
 
 BOSS_SPEED = 70
 NUM_BOSS_EXPLOSIONS = 10

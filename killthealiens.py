@@ -13,12 +13,14 @@ import sys
 # boss firing - in middle, multiple bullets in stream next to each other like laser
 # add boss bum rush
 #
-# create scenes for static screens
-# normalize ship diagonal movement
-# load static resources from file
-# multiple level capability
-# increase speed of speed up power up, and match speed on map and ship
+# game map speed up to reset on player death
 #
+# create scenes for static screens
+#
+# load static resources from data structure for
+# multiple level capability
+#
+# normalize ship diagonal movement
 # Replace health texts with health bars
 
 # queues for input events
