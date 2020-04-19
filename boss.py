@@ -3,6 +3,7 @@ from timer import Timer
 from constants import *
 from loadstaticres import blank, explosion
 from endgamesignal import EndLevel
+from loadstaticres import bulletimg
 import random
 import bullet
 
@@ -16,6 +17,7 @@ MOVE_MODE_STILL = 0
 MOVE_MODE_AIMLESS = 1
 MOVE_MODE_CHASING = 2
 MOVE_MODE_FIRE = 3
+MOVE_MODE_RUSH = 4
 
 
 class Boss(MoveableObject):
@@ -39,7 +41,7 @@ class Boss(MoveableObject):
 
         # counts number of steps in a given direction
         self.step = 0
-        self.maxstep = 4
+        self.maxstep = 10
         # initial direction
         self.dir = random.randrange(0, 4)
         self.active = True
@@ -103,19 +105,23 @@ class Boss(MoveableObject):
         self.boom[self.trigger_index].start_exploding()
 
     def update_combat_mode(self, event):
-        if self.mode < MOVE_MODE_FIRE:
+        print("start mode {}".format(self.mode))
+        print("mode rush {}".format(MOVE_MODE_RUSH))
+        if self.mode < MOVE_MODE_RUSH:
             self.mode += 1
         else:
             self.mode = MOVE_MODE_STILL
-
+        print("MODE {}".format(self.mode))
         self.combat_state_timer.startwatch(self.combat_state_change_time)
 
     def combat_move(self):
 
         if self.mode == MOVE_MODE_STILL:
+            #print("move mode still")
             return
 
         elif self.mode == MOVE_MODE_AIMLESS:
+            #print("move mode aimless")
             if self.step < self.maxstep:
                 self.step += 1
             else:
@@ -124,6 +130,7 @@ class Boss(MoveableObject):
                 self.maxstep = random.randrange(2, 6)
 
         elif self.mode == MOVE_MODE_CHASING:
+            #print("move mode chasing")
             test = self.infirerange()
             if test == -3 and self.alreadygoing == 0:  # if ship is in middle
                 self.dir = random.randrange(0, 2)
@@ -138,7 +145,18 @@ class Boss(MoveableObject):
                 self.mode = 0
                 self.alreadygoing = 0
 
-        # MODE 3 HAS NOT BEEN IMPLEMENTED
+        elif self.mode == MOVE_MODE_FIRE:
+            #print("in fire mode")
+            b = bullet.Bullet(self.x + self.width/2,
+                              self.y + self.height + bulletimg.get_height(),
+                              bulletimg,
+                              DOWN,
+                              self)
+            self.notify("fire", bullet=b)
+
+        elif self.mode == MOVE_MODE_RUSH:
+            #print("move mode rush")
+            pass
 
         # check for screen boundaries
         if self.y + self.height > self.foe.y - 60:

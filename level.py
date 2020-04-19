@@ -97,6 +97,7 @@ class Level(Strategy):
             self.clear_saucers()
             boss = Boss(SCREENW/2-bossimg.get_width()/2, -1200, bossimg, self.ship)
             boss.subscribe("health_down", self.boss_health_label.update_value)
+            boss.subscribe("fire", lambda ev: self.scene.attach(ev.kwargs.get("bullet")))
             self.scene.attach(boss)
             self.scene.attach(self.boss_health_label)
 

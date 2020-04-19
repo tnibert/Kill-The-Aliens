@@ -4,9 +4,18 @@ import boss
 
 
 class Bullet(MoveableObject):
-    def __init__(self, x, y, img, dir):
+    def __init__(self, x, y, img, dir, origin=None):
+        """
+
+        :param x:
+        :param y:
+        :param img:
+        :param dir: The direction the bullet is travelling
+        :param origin: the object that fired the bullet, prevents us from damaging ourselves
+        """
         super().__init__(x, y, BULLETSPEED, img)
         self.dir = dir
+        self.origin = origin
 
     def move(self):
         # dir 0 for up, anything else for down
@@ -22,7 +31,10 @@ class Bullet(MoveableObject):
             self.notify("remove")
 
     def on_collide(self, event):
-        if isinstance(event.source, boss.Boss) and event.kwargs.get("who") is self and not self.exploding:
+        if isinstance(event.source, boss.Boss) \
+                and event.kwargs.get("who") is self \
+                and not self.exploding \
+                and self.origin is not event.source:
             self.start_exploding()
             self.x = self.x - self.image.get_width()/2
             self.y = self.y - self.image.get_height()/2

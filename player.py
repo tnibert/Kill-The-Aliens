@@ -81,11 +81,11 @@ class Player(MoveableObject):
 
     def fire(self, img, turret=UP):
         if turret == UP:
-            bullet = Bullet(self.x + (self.image.get_width() / 2), self.y - 10, img, UP)
+            bullet = Bullet(self.x + (self.image.get_width() / 2), self.y - 10, img, UP, self)
         if turret == LEFT:
-            bullet = Bullet(self.x + 15, self.y + 40, img, UP)
+            bullet = Bullet(self.x + 15, self.y + 40, img, UP, self)
         if turret == RIGHT:
-            bullet = Bullet(self.x + self.image.get_width() - 15, self.y + 40, img, UP)
+            bullet = Bullet(self.x + self.image.get_width() - 15, self.y + 40, img, UP, self)
         # todo: ensure bullet always has a value
         self.notify("fire", bullet=bullet)
 
@@ -126,6 +126,9 @@ class Player(MoveableObject):
                 self.die()
             elif isinstance(event.source, Boss) and not self.exploding:
                 self.die()
+            elif isinstance(event.source, Bullet) and not self.exploding:
+                if event.source.origin is not self:
+                    self.die()
 
     def receive_signals(self, event):
         if event.name == "timeout" and isinstance(event.source, StatusModifier):
