@@ -26,6 +26,7 @@ class Timer(Observable):
     def stopwatch(self):
         self.start = None
         self.threshold = None
+        # todo: return diff
 
     def tick(self):
         curtime = time.time()

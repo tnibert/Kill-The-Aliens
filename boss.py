@@ -168,8 +168,6 @@ class Boss(MoveableObject):
             self.general_motion()
 
         elif self.mode == MOVE_MODE_FIRE:
-            # todo: fire while moving?
-            #print("in fire mode")
             bullet_start_locs = [-10, 0, 10]
             for loc in bullet_start_locs:
                 self.notify("fire", bullet=bullet.Bullet(self.x + self.width/2 + loc,
@@ -177,6 +175,9 @@ class Boss(MoveableObject):
                                                          bulletimg,
                                                          DOWN,
                                                          self))
+            # to fire while moving
+            self.adjust_for_boundaries()
+            self.general_motion()
 
         elif self.mode == MOVE_MODE_RUSH:
             # todo: increase rush speed
