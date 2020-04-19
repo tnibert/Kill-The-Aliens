@@ -13,6 +13,7 @@ BOSS_STATE_FIGHTING = 1
 BOSS_STATE_DYING = 2
 BOSS_STATE_DEAD = 3
 
+# todo: bug, move mode states don't proceed in a linear manner always
 MOVE_MODE_STILL = 0
 MOVE_MODE_AIMLESS = 1
 MOVE_MODE_CHASING = 2
@@ -147,12 +148,16 @@ class Boss(MoveableObject):
 
         elif self.mode == MOVE_MODE_FIRE:
             #print("in fire mode")
-            b = bullet.Bullet(self.x + self.width/2,
-                              self.y + self.height + bulletimg.get_height(),
-                              bulletimg,
-                              DOWN,
-                              self)
-            self.notify("fire", bullet=b)
+            bullet_start_locs = [-10, 0, 10]
+            bullets = []
+            for loc in bullet_start_locs:
+                bullets.append(bullet.Bullet(self.x + self.width/2 + loc,
+                                             self.y + self.height + bulletimg.get_height(),
+                                             bulletimg,
+                                             DOWN,
+                                             self))
+            for b in bullets:
+                self.notify("fire", bullet=b)
 
         elif self.mode == MOVE_MODE_RUSH:
             #print("move mode rush")
