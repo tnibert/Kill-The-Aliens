@@ -136,6 +136,9 @@ class Boss(MoveableObject):
                 self.step = 0
                 self.maxstep = random.randrange(2, 6)
 
+            self.adjust_for_boundaries()
+            self.general_motion()
+
         elif self.mode == MOVE_MODE_CHASING:
             #print("move mode chasing")
             test = self.infirerange()
@@ -151,6 +154,9 @@ class Boss(MoveableObject):
             elif test > 0:
                 self.alreadygoing = 0
 
+            self.adjust_for_boundaries()
+            self.general_motion()
+
         elif self.mode == MOVE_MODE_FIRE:
             #print("in fire mode")
             bullet_start_locs = [-10, 0, 10]
@@ -165,7 +171,10 @@ class Boss(MoveableObject):
             #print("move mode rush")
             pass
 
-        # check for screen boundaries
+    def adjust_for_boundaries(self):
+        """
+        Check for boundaries and change direction if necessary
+        """
         if self.y + self.height > self.foe.y - 60:
             self.dir = UP
             self.step = 0
@@ -179,7 +188,10 @@ class Boss(MoveableObject):
             self.dir = LEFT
             self.step = 0
 
-        # self.dir = random.randrange(2,4)
+    def general_motion(self):
+        """
+        Adjust position based on direction specified
+        """
         if self.dir == DOWN:  # move down
             self.y += self.speed * self.frame_tick
         elif self.dir == UP:  # move up
