@@ -149,15 +149,12 @@ class Boss(MoveableObject):
         elif self.mode == MOVE_MODE_FIRE:
             #print("in fire mode")
             bullet_start_locs = [-10, 0, 10]
-            bullets = []
             for loc in bullet_start_locs:
-                bullets.append(bullet.Bullet(self.x + self.width/2 + loc,
-                                             self.y + self.height + bulletimg.get_height(),
-                                             bulletimg,
-                                             DOWN,
-                                             self))
-            for b in bullets:
-                self.notify("fire", bullet=b)
+                self.notify("fire", bullet=bullet.Bullet(self.x + self.width/2 + loc,
+                                                         self.y + self.height + bulletimg.get_height(),
+                                                         bulletimg,
+                                                         DOWN,
+                                                         self))
 
         elif self.mode == MOVE_MODE_RUSH:
             #print("move mode rush")
