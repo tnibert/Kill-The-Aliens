@@ -25,8 +25,6 @@ MOVE_MODE_RUSH = 4
 class Boss(MoveableObject):
     """
     State machine for the boss behavior
-    0 means no boss, 1 means clear out shop for boss, 2 means boss entering,
-    3 means boss is out, 4 means dying, 5 means dead
     """
     def __init__(self, x, y, img, foe):
         MoveableObject.__init__(self, x, y, BOSS_SPEED, img)
@@ -46,8 +44,7 @@ class Boss(MoveableObject):
         self.maxstep = 10
         # initial direction
         self.dir = random.randrange(0, 4)
-        self.active = True
-        # for mode 2
+
         self.alreadygoing = 0
 
         # create boss explosions
@@ -107,6 +104,12 @@ class Boss(MoveableObject):
         self.boom[self.trigger_index].start_exploding()
 
     def update_combat_mode(self, event):
+        """
+        Event handler for the combat state timer
+        Cycle through combat states
+        :param event:
+        :return:
+        """
         if self.mode < MOVE_MODE_RUSH:
             self.mode += 1
         else:
@@ -115,6 +118,10 @@ class Boss(MoveableObject):
         self.combat_state_timer.startwatch(self.combat_state_change_time)
 
     def combat_move(self):
+        """
+        Handle movement while in BOSS_STATE_FIGHTING
+        :return:
+        """
 
         if self.mode == MOVE_MODE_STILL:
             #print("move mode still")
@@ -183,6 +190,11 @@ class Boss(MoveableObject):
             self.x += self.speed * self.frame_tick
 
     def infirerange(self):
+        """
+        The logic here isn't really relevant anymore since we got rid of the turrets
+        But it seems to add an interesting dynamic, so we'll keep it for the moment
+        :return: an int which determines the behavior in the calling function
+        """
         # todo: examine this logic more closely
         # self.x is left turret, self.x+self.width is right turret
         # return 1 if left turret, return 2 if right
@@ -200,7 +212,3 @@ class Boss(MoveableObject):
 
         # default to center
         return -3
-
-    def die(self):
-        # print "dead"
-        self.active = False
