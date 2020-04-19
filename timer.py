@@ -23,6 +23,10 @@ class Timer(Observable):
         self.start = time.time()
         self.threshold = seconds
 
+    def stopwatch(self):
+        self.start = None
+        self.threshold = None
+
     def tick(self):
         curtime = time.time()
 
@@ -34,8 +38,7 @@ class Timer(Observable):
             if (curtime - self.start) > self.threshold:
 
                 # allows the callback to start another timer
-                self.start = None
-                self.threshold = None
+                self.stopwatch()
 
                 self.owner.notify("timeout")
 

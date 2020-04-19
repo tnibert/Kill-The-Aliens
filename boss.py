@@ -21,6 +21,12 @@ MOVE_MODE_CHASING = 2
 MOVE_MODE_FIRE = 3
 MOVE_MODE_RUSH = 4
 
+# for rush attack
+RUSH_DOWN = 0
+RUSH_SIDE = 1
+RUSH_UP = 2
+RUSH_RECENTER = 3
+
 
 class Boss(MoveableObject):
     """
@@ -33,8 +39,10 @@ class Boss(MoveableObject):
         self.combat_state_change_time = 5
         self.combat_state_timer.subscribe("timeout", self.update_combat_mode)
 
+        # overarching state
         self.game_state = BOSS_STATE_ENTERING
-        # move mode
+
+        # combat move mode
         self.mode = MOVE_MODE_STILL
 
         self.foe = foe
@@ -46,6 +54,8 @@ class Boss(MoveableObject):
         self.dir = random.randrange(0, 4)
 
         self.alreadygoing = 0
+
+        self.rush_phase = RUSH_DOWN
 
         # create boss explosions
         self.boom = []
@@ -158,6 +168,7 @@ class Boss(MoveableObject):
             self.general_motion()
 
         elif self.mode == MOVE_MODE_FIRE:
+            # todo: fire while moving?
             #print("in fire mode")
             bullet_start_locs = [-10, 0, 10]
             for loc in bullet_start_locs:
@@ -168,8 +179,31 @@ class Boss(MoveableObject):
                                                          self))
 
         elif self.mode == MOVE_MODE_RUSH:
+            # todo: increase rush speed
             #print("move mode rush")
-            pass
+            if self.y < SCREENH - self.height and self.rush_phase == RUSH_DOWN and self.dir != DOWN:
+                print("going down")
+                self.combat_state_timer.stopwatch()
+                self.dir = DOWN
+            elif self.rush_phase == RUSH_DOWN and self.y >= SCREENH - self.height:
+                self.rush_phase = RUSH_SIDE
+                print("choosing left right")
+                self.dir = random.choice((LEFT, RIGHT))
+            elif self.x <= 0 or self.x + self.width >= SCREENW and self.rush_phase == RUSH_SIDE:
+                self.rush_phase = RUSH_UP
+                print("going up")
+                self.dir = UP
+            elif self.rush_phase == RUSH_UP and self.y > SCREENH/2 - self.height:
+                self.rush_phase = RUSH_RECENTER
+                if self.x < SCREENW/2:
+                    self.dir = RIGHT
+                else:
+                    self.dir = LEFT
+            elif self.rush_phase == RUSH_RECENTER and self.x < SCREENW/2 + self.width/2 and self.x > SCREENW/2 - self.width/2:
+                self.rush_phase = RUSH_DOWN
+                self.update_combat_mode(None)
+
+            self.general_motion()
 
     def adjust_for_boundaries(self):
         """
@@ -207,7 +241,7 @@ class Boss(MoveableObject):
         But it seems to add an interesting dynamic, so we'll keep it for the moment
         :return: an int which determines the behavior in the calling function
         """
-        # todo: examine this logic more closely
+        # todo: change this for center cannon
         # self.x is left turret, self.x+self.width is right turret
         # return 1 if left turret, return 2 if right
         # return -1 if too far left, -2 if too far right, -3 if in center

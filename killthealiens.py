@@ -19,6 +19,9 @@ import sys
 # create levels for static screens
 # move music control to level
 #
+# add hi scores screen
+# add easy, medium, hard difficulty options
+#
 # load static resources from data structure for
 # multiple level capability
 #
