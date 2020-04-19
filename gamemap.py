@@ -43,11 +43,9 @@ class GameMap(GameObject):
     def receive_signals(self, event):
         if isinstance(event.source, SpeedUp):
             if event.name == "collision" and isinstance(event.kwargs.get("who"), Player):
-                print("collision in SpeedUp event, game map handler")
                 self.scrollspeed = MAXSCROLLSPEED
                 self.statmodtimer = event.source.timer
                 event.source.subscribe("timeout", self.receive_signals)
             elif event.name == "timeout":
-                print("received timeout for speed up")
                 self.scrollspeed = SCROLLSPEED
                 self.statmodtimer = None
