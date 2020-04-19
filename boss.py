@@ -8,12 +8,13 @@ import random
 import bullet
 
 
+# overarching boss states
 BOSS_STATE_ENTERING = 0
 BOSS_STATE_FIGHTING = 1
 BOSS_STATE_DYING = 2
 BOSS_STATE_DEAD = 3
 
-# todo: bug, move mode states don't proceed in a linear manner always
+# combat states
 MOVE_MODE_STILL = 0
 MOVE_MODE_AIMLESS = 1
 MOVE_MODE_CHASING = 2
@@ -106,13 +107,11 @@ class Boss(MoveableObject):
         self.boom[self.trigger_index].start_exploding()
 
     def update_combat_mode(self, event):
-        print("start mode {}".format(self.mode))
-        print("mode rush {}".format(MOVE_MODE_RUSH))
         if self.mode < MOVE_MODE_RUSH:
             self.mode += 1
         else:
             self.mode = MOVE_MODE_STILL
-        print("MODE {}".format(self.mode))
+
         self.combat_state_timer.startwatch(self.combat_state_change_time)
 
     def combat_move(self):
@@ -143,7 +142,6 @@ class Boss(MoveableObject):
                 self.dir = RIGHT
                 self.alreadygoing = 1
             elif test > 0:
-                self.mode = 0
                 self.alreadygoing = 0
 
         elif self.mode == MOVE_MODE_FIRE:
@@ -184,12 +182,6 @@ class Boss(MoveableObject):
         elif self.dir == RIGHT:  # move right
             self.x += self.speed * self.frame_tick
 
-    def fire(self, img, side):
-        if side == LEFT:
-            return bullet.Bullet(self.x, self.y + self.height, img, DOWN)
-        else:
-            return bullet.Bullet(self.x + self.width, self.y + self.height, img, DOWN)
-
     def infirerange(self):
         # todo: examine this logic more closely
         # self.x is left turret, self.x+self.width is right turret
@@ -212,19 +204,3 @@ class Boss(MoveableObject):
     def die(self):
         # print "dead"
         self.active = False
-
-    # if BEASTMODE == 3:  # if boss is out
-    #    if boss.infirerange(ship) > 0:
-    #        if random.randrange(0, 10) == 1 and ship.exploding == -1:  # and if ship is not exploding
-    #            bullets.append(boss.fire(bulletimg, LEFT))
-    #        if random.randrange(0, 10) == 1 and ship.exploding == -1:
-    #            bullets.append(boss.fire(bulletimg, RIGHT))
-
-    #     # if boss is done exploding
-    #     if len(boom) == 8 and boom[-1].exploding == len(explosion):
-    #         BEASTMODE = 5
-    #         score += 1000
-    #         endtime = time
-
-    # bosslbl = myfont.render("Boss Health: " + str(boss.health), 1, (255, 255, 0))
-    # if BEASTMODE >= 3: screen.blit(bosslbl, (SCREENW / 2, 20))

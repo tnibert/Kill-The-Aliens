@@ -10,8 +10,9 @@ import sys
 
 # todo:
 # boss AI:
-# boss firing - in middle, multiple bullets in stream next to each other like laser
 # add boss bum rush
+#
+# Currently boss can repeatedly destroy player on respawn
 #
 # game map speed up to reset on player death
 #
