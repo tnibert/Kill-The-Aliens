@@ -10,8 +10,6 @@ import sys
 
 # todo:
 # Maybe stop boss from moving while shooting
-# change infirerange() to reflect center cannon
-# Currently boss can repeatedly destroy player on respawn
 #
 # create levels for static screens
 # move music control to level

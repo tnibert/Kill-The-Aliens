@@ -5,12 +5,17 @@ from statusmodifiers import StatusModifier
 from loadstaticres import bulletimg
 from boss import Boss
 from endgamesignal import EndLevel
+from timer import Timer
 import pygame
+
+
+OFF_SCREEN = -2000
+PLAYER_RESPAWN_DELAY = 3
 
 
 class Player(MoveableObject):
     def __init__(self, img, eventqueue):
-        MoveableObject.__init__(self, SCREENW / 2, 450, PLAYERSPEED, img)
+        MoveableObject.__init__(self, SCREENW / 2 - img.get_width()/2, SCREENH - img.get_height() -5 , PLAYERSPEED, img)
         self.health = PLAYERHEALTH
         self.spawnX = self.x
         self.spawnY = self.y
@@ -27,8 +32,13 @@ class Player(MoveableObject):
         self.eventqueue = eventqueue
         self.statmods = []
 
+        self.respawn_timer = Timer()
+        self.respawn_timer.subscribe("timeout", self.respawn)
+
     def update(self):
         super().update()
+        if self.respawn_timer.is_timing():
+            self.respawn_timer.tick()
 
         # handle user input
         while not self.eventqueue.empty():
@@ -98,10 +108,8 @@ class Player(MoveableObject):
         self.health += 1
         self.notify("alterhealth", value=1)
 
-    def respawn(self):
+    def respawn(self, event=None):
         if self.health <= 0:
-            self.x = -2000
-            self.y = -2000
             self.speed = 0
             raise EndLevel("failure")
         else:
@@ -114,7 +122,9 @@ class Player(MoveableObject):
 
     def update_explosion(self, event):
         if super().update_explosion(event):
-            self.respawn()
+            self.x = OFF_SCREEN
+            self.y = OFF_SCREEN
+            self.respawn_timer.startwatch(PLAYER_RESPAWN_DELAY)
 
     def on_collide(self, event):
         if event.kwargs.get("who") == self:
