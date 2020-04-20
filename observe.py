@@ -1,0 +1,42 @@
+class Event:
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return self.name
+
+
+class Observable:
+    # todo: unit test
+    def __init__(self):
+        # dicts of form {eventname: [callbacks]}
+        self.callbacks = {}
+
+    def remove_event(self, eventname):
+        """
+        Removes an event
+        Will just do nothing if event is not already a key in callbacks
+        :param eventname: the name of the vent to remove
+        :return:
+        """
+        self.callbacks.pop(eventname, None)
+
+    def subscribe(self, eventname, callback):
+        if eventname not in self.callbacks.keys():
+            self.callbacks[eventname] = [callback]
+        else:
+            self.callbacks[eventname].append(callback)
+
+    def unsubscribe(self, eventname, callback):
+        if eventname in self.callbacks.keys():
+            if callback in self.callbacks[eventname]:
+                self.callbacks[eventname].remove(callback)
+
+    def notify(self, eventname, **kwargs):
+        event = Event(eventname)
+        event.source = self
+        event.kwargs = kwargs
+
+        if event.name in self.callbacks.keys():
+            for fn in self.callbacks[event.name][:]:
+                fn(event)
