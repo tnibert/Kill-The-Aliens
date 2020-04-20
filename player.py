@@ -80,13 +80,13 @@ class Player(MoveableObject):
             mod.timer.tick()
 
     def fire(self, img, turret=UP):
-        if turret == UP:
-            bullet = Bullet(self.x + (self.image.get_width() / 2), self.y - 10, img, UP, self)
         if turret == LEFT:
             bullet = Bullet(self.x + 15, self.y + 40, img, UP, self)
-        if turret == RIGHT:
+        elif turret == RIGHT:
             bullet = Bullet(self.x + self.image.get_width() - 15, self.y + 40, img, UP, self)
-        # todo: ensure bullet always has a value
+        else:
+            bullet = Bullet(self.x + (self.image.get_width() / 2), self.y - 10, img, UP, self)
+
         self.notify("fire", bullet=bullet)
 
     def die(self):
