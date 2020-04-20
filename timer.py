@@ -28,6 +28,13 @@ class Timer(Observable):
         self.threshold = None
         # todo: return diff
 
+    def is_timing(self):
+        """
+        Check if timer is currently running
+        :return: boolean, True if startwatch() has been called and timeout has not yet been reached
+        """
+        return self.start is not None and self.threshold is not None
+
     def tick(self):
         curtime = time.time()
 
