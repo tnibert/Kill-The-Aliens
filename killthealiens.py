@@ -9,9 +9,8 @@ import pygame
 import sys
 
 # todo:
-# boss AI:
-# add boss bum rush
-#
+# Maybe stop boss from moving while shooting
+# change infirerange() to reflect center cannon
 # Currently boss can repeatedly destroy player on respawn
 #
 # game map speed up to reset on player death

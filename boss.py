@@ -135,11 +135,9 @@ class Boss(MoveableObject):
         """
 
         if self.mode == MOVE_MODE_STILL:
-            #print("move mode still")
             return
 
         elif self.mode == MOVE_MODE_AIMLESS:
-            #print("move mode aimless")
             if self.step < self.maxstep:
                 self.step += 1
             else:
@@ -151,7 +149,6 @@ class Boss(MoveableObject):
             self.general_motion()
 
         elif self.mode == MOVE_MODE_CHASING:
-            #print("move mode chasing")
             test = self.infirerange()
             if test == -3 and self.alreadygoing == 0:  # if ship is in middle
                 self.dir = random.randrange(0, 2)
@@ -169,7 +166,6 @@ class Boss(MoveableObject):
             self.general_motion()
 
         elif self.mode == MOVE_MODE_FIRE:
-            #print("move mode fire")
             bullet_start_locs = [-10, 0, 10]
             for loc in bullet_start_locs:
                 self.notify("fire", bullet=bullet.Bullet(self.x + self.width/2 + loc,
@@ -182,34 +178,25 @@ class Boss(MoveableObject):
             self.general_motion()
 
         elif self.mode == MOVE_MODE_RUSH:
-            #print("move mode rush")
-            # todo: there is a problem with the state change criteria here
             if self.rush_phase == RUSH_START:
-                print("going down")
-                #self.speed *= 3
+                self.speed *= 3
                 self.combat_state_timer.stopwatch()
                 self.dir = DOWN
                 self.rush_phase = RUSH_DOWN
             elif self.rush_phase == RUSH_DOWN and self.y >= SCREENH - self.height:
-                print("scrubbing side")
                 self.rush_phase = RUSH_SIDE
                 self.dir = random.choice((LEFT, RIGHT))
             elif (self.x <= 0 or self.x + self.width >= SCREENW) and self.rush_phase == RUSH_SIDE:
-                print("going up")
                 self.rush_phase = RUSH_UP
                 self.dir = UP
             elif self.rush_phase == RUSH_UP and self.y < SCREENH/2 - self.height:
-                print("recentering")
                 self.rush_phase = RUSH_RECENTER
-                if self.x < SCREENW/2:
-                    print("recenter right")
+                if self.x < SCREENW/2 - self.width/2:
                     self.dir = RIGHT
                 else:
-                    print("recenter left")
                     self.dir = LEFT
-            elif self.rush_phase == RUSH_RECENTER and self.x < SCREENW/2 + self.width/2 and self.x > SCREENW/2 - self.width/2:
-                print("ending rush")
-                #self.speed /= 3
+            elif self.rush_phase == RUSH_RECENTER and self.x < SCREENW/2 - self.width/2 + 15 and self.x > SCREENW/2 - self.width/2 - 15:
+                self.speed /= 3
                 self.rush_phase = RUSH_START
                 self.update_combat_mode(None)
 
