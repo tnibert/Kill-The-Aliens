@@ -1,6 +1,4 @@
 from observe import Observable
-from timer import Timer
-import pygame
 
 
 class GameObject(Observable):

@@ -9,12 +9,12 @@ import pygame
 import sys
 
 # todo:
-# Does boss moving while shooting make boss impossibly difficult?
-#
-# Ensure initial saucers spawn off screen
-#
 # create levels for static screens + center images vertically
 # move music control to level
+#
+# fix nuitka build, make linux build
+# add unit tests
+# setup ci
 #
 # add hi scores screen
 # add easy, medium, hard difficulty options
@@ -22,6 +22,7 @@ import sys
 # load static resources from data structure for
 # multiple level capability
 #
+# Ensure initial saucers spawn off screen
 # normalize ship diagonal movement
 # Replace health texts with health bars
 
