@@ -1,5 +1,4 @@
-# todo: increase screen height to 800 (need art update)
-SCREENH = 600
+SCREENH = 800
 SCREENW = 640
 LEFT = 0
 RIGHT = 1
@@ -16,7 +15,7 @@ MAXSCROLLSPEED = 180
 
 STATMOD_DURATION = 15   # seconds
 
-PLAYERSPEED = 90
+PLAYERSPEED = 150
 PLAYERMAXSPEED = 270
 
 BULLETSPEED = 300

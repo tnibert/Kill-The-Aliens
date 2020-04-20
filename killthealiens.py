@@ -101,6 +101,7 @@ while cont == 0:
         if event.type == pygame.QUIT: cont = 1
         if not hasattr(event, 'key'): continue
         if event.key == pygame.K_ESCAPE: cont = 1
+    screen.fill(BLACK)
     screen.blit(disp, (0, 0))
     pygame.display.flip()
 
