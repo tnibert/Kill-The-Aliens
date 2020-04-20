@@ -9,9 +9,11 @@ import pygame
 import sys
 
 # todo:
-# Maybe stop boss from moving while shooting
+# Does boss moving while shooting make boss impossibly difficult?
 #
-# create levels for static screens
+# Ensure initial saucers spawn off screen
+#
+# create levels for static screens + center images vertically
 # move music control to level
 #
 # add hi scores screen
