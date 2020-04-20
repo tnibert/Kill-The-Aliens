@@ -149,18 +149,7 @@ class Boss(MoveableObject):
             self.general_motion()
 
         elif self.mode == MOVE_MODE_CHASING:
-            test = self.infirerange()
-            if test == -3 and self.alreadygoing == 0:  # if ship is in middle
-                self.dir = random.randrange(0, 2)
-                self.alreadygoing = 1
-            elif test == -1 and self.alreadygoing == 0:
-                self.dir = LEFT
-                self.alreadygoing = 1
-            elif test == -2 and self.alreadygoing == 0:
-                self.dir = RIGHT
-                self.alreadygoing = 1
-            elif test > 0:
-                self.alreadygoing = 0
+            self.dir = self.detect_foe_loc_relative()
 
             self.adjust_for_boundaries()
             self.general_motion()
@@ -232,26 +221,12 @@ class Boss(MoveableObject):
         elif self.dir == RIGHT:  # move right
             self.x += self.speed * self.frame_tick
 
-    def infirerange(self):
+    def detect_foe_loc_relative(self):
         """
-        The logic here isn't really relevant anymore since we got rid of the turrets
-        But it seems to add an interesting dynamic, so we'll keep it for the moment
-        :return: an int which determines the behavior in the calling function
+        Determine the location of the player relative to the boss
+        :return: LEFT or RIGHT
         """
-        # todo: change this for center cannon
-        # self.x is left turret, self.x+self.width is right turret
-        # return 1 if left turret, return 2 if right
-        # return -1 if too far left, -2 if too far right, -3 if in center
-        if self.foe.x + self.foe.width >= self.x and self.foe.x <= self.x:
-            return 1
-        if self.foe.x + self.foe.width >= self.x + self.width and self.foe.x <= self.x + self.width:
-            return 2
-        if self.foe.x + self.foe.width <= self.x:
-            return -1
-        if self.foe.x >= self.x + self.width:
-            return -2
-        if self.foe.x + self.foe.width <= self.x + self.width and self.foe.x >= self.x:
-            return -3
-
-        # default to center
-        return -3
+        if self.foe.x + self.foe.width/2 > self.x + self.width/2:
+            return RIGHT
+        else:
+            return LEFT
