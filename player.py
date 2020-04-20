@@ -110,6 +110,7 @@ class Player(MoveableObject):
             self.speed = PLAYERSPEED
             self.image = self.orig_image
             self.bamfmode = False
+            self.notify("player_respawn")
 
     def update_explosion(self, event):
         if super().update_explosion(event):

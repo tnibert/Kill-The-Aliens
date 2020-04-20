@@ -27,6 +27,9 @@ class Level(Strategy):
         self.game_map = GameMap(map_bg)
         self.scene.attach(self.game_map)
 
+        # so that map speed up resets on player death
+        self.ship.subscribe("player_respawn", self.game_map.reset_speed)
+
         # setup labels
         # todo: improve font and color
         gamefont = pygame.font.SysFont("monospace", TEXT_SIZE)
@@ -72,7 +75,7 @@ class Level(Strategy):
                 statmod = Bomb(bombimg)
             elif case(1337):
                 statmod = SpeedUp(speedupimg)
-                statmod.subscribe("collision", self.game_map.receive_signals)
+                statmod.subscribe("collision", self.game_map.increase_speed)
             elif case(511):
                 statmod = MoreGuns(moregunsimg)
             if statmod is not None:

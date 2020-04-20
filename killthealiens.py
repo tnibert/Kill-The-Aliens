@@ -13,8 +13,6 @@ import sys
 # change infirerange() to reflect center cannon
 # Currently boss can repeatedly destroy player on respawn
 #
-# game map speed up to reset on player death
-#
 # create levels for static screens
 # move music control to level
 #

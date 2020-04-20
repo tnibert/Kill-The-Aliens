@@ -40,12 +40,12 @@ class GameMap(GameObject):
             screen.blit(self.image, (0, 0), (0, self.image.get_height() - self.ychng, SCREENW, 2000))
             screen.blit(self.image, (0, self.ychng), (0, 0, SCREENW, SCREENH - self.ychng))
 
-    def receive_signals(self, event):
-        if isinstance(event.source, SpeedUp):
-            if event.name == "collision" and isinstance(event.kwargs.get("who"), Player):
-                self.scrollspeed = MAXSCROLLSPEED
-                self.statmodtimer = event.source.timer
-                event.source.subscribe("timeout", self.receive_signals)
-            elif event.name == "timeout":
-                self.scrollspeed = SCROLLSPEED
-                self.statmodtimer = None
+    def increase_speed(self, event):
+        if isinstance(event.kwargs.get("who"), Player):
+            self.scrollspeed = MAXSCROLLSPEED
+            self.statmodtimer = event.source.timer
+            event.source.subscribe("timeout", self.reset_speed)
+
+    def reset_speed(self, event):
+        self.scrollspeed = SCROLLSPEED
+        self.statmodtimer = None
