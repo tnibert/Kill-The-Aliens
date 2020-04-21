@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 from constants import *
-from loadstaticres import introscreen, level_configs
+from loadstaticres import introscreen
+from levelconfigs import level_configs
 from scene import Scene
 from queue import Queue
 from level import Level

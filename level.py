@@ -6,7 +6,6 @@ from utilfuncs import switch
 from timer import Timer
 from textelement import TextElement
 from player import Player
-from boss import Boss
 from endgamesignal import EndLevel
 from loadstaticres import shipimg, oneupimg, moregunsimg, speedupimg, bombimg
 from constants import NEW_SAUCER_IVAL, SAUCER_THRESHOLD, SCREENW, TEXT_SIZE, BOSSHEALTH
@@ -126,7 +125,10 @@ class Level(Strategy):
         else:
             # clear out the saucers and enter the boss
             self.clear_saucers()
-            boss = Boss(SCREENW/2-self.config["boss_image"].get_width()/2, -1200, self.config["boss_image"], self.ship)
+            boss = self.config["boss_class"](SCREENW/2-self.config["boss_image"].get_width()/2,
+                                             -1200,
+                                             self.config["boss_image"],
+                                             self.ship)
             boss.subscribe("health_down", self.boss_health_label.update_value)
             boss.subscribe("fire", lambda ev: self.scene.attach(ev.kwargs.get("bullet")))
             self.scene.attach(boss)
