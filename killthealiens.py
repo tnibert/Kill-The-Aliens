@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-from constants import *
+from constants import SCREENW, SCREENH
 from loadstaticres import introscreen
 from levelconfigs import level_configs
 from scene import Scene
@@ -18,7 +18,13 @@ import sys
 # add hi scores screen
 # add easy, medium, hard difficulty options
 #
-# add a second level config
+# add a second level config:
+# test with changing music between levels
+# fix second level saucers
+# fix second level boss entrance
+# give second level boss own behavior (original boss behavior)
+# copy score between levels
+# show correct victory or failure after last level
 #
 # Ensure initial saucers spawn off screen
 # normalize ship diagonal movement
