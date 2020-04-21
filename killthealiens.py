@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 from constants import *
-from loadstaticres import BG_MUSIC_FNAME, introscreen
+from loadstaticres import introscreen, level_configs
 from scene import Scene
 from queue import Queue
 from level import Level
@@ -17,8 +17,7 @@ import sys
 # add hi scores screen
 # add easy, medium, hard difficulty options
 #
-# load static resources from data structure for
-# multiple level capability
+# add a second level config
 #
 # Ensure initial saucers spawn off screen
 # normalize ship diagonal movement
@@ -37,15 +36,19 @@ pygame.init()
 screen = pygame.display.set_mode((SCREENW, SCREENH), pygame.DOUBLEBUF)
 pygame.display.set_caption("KILL THE ALIENS")
 
-# load up music
-pygame.mixer.music.load(BG_MUSIC_FNAME)
-
+# list of levels (including splash pages
 levels = [
-    SplashPage(Scene(screen), input_queue, introscreen, pygame.K_RETURN),
-    Level(Scene(screen), input_queue, pygame.mixer)
+    SplashPage(Scene(screen), input_queue, introscreen, pygame.K_RETURN)
 ]
 
+# append to list of levels for every available level configuration
+for config in level_configs:
+    levels.append(Level(Scene(screen), input_queue, pygame.mixer, config))
+
+# proceed through the levels
 while len(levels) > 0:
+
+    # process and queue valid input
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -55,8 +58,11 @@ while len(levels) > 0:
         elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
             input_queue.put(event)
 
+    # run the level
     try:
         levels[0].run_game()
+
+    # EndLevel exception signals end of level
     except EndLevel as e:
         levels.pop(0)
         if e.args[0].get("state") == "victory":
@@ -68,9 +74,9 @@ while len(levels) > 0:
         if score is not None:
             print("Score: {}".format(score))
 
-    pygame.display.flip()  # apply double buffer
+    # apply double buffer
+    pygame.display.flip()
 
-# todo: move file loads to resource loader
 
 # pseudocode to update and view high scores:
 # open file

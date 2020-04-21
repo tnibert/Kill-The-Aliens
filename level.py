@@ -7,24 +7,30 @@ from timer import Timer
 from textelement import TextElement
 from player import Player
 from boss import Boss
-from loadstaticres import *
 from endgamesignal import EndLevel
+from loadstaticres import shipimg, oneupimg, moregunsimg, speedupimg, bombimg
 from constants import NEW_SAUCER_IVAL, SAUCER_THRESHOLD, SCREENW, TEXT_SIZE, BOSSHEALTH
 import random
+import pygame
 
 
 class Level(Strategy):
     """
     Strategy for managing progression of typical game level
     """
-    def __init__(self, scene, inputqueue, mixer):
+    def __init__(self, scene, inputqueue, mixer, config):
         """
         :param scene: Scene object to manipulate
         :param inputqueue: Queue object to receive input from
         :param mixer: pygame.mixer object
+        :param config: dictionary of level specific resources
         """
         super().__init__(scene)
         self.mixer = mixer
+        self.config = config
+
+        # load up music
+        self.mixer.music.load(self.config["bg_music_fname"])
 
         # set up player
         self.ship = Player(shipimg, inputqueue)
@@ -33,7 +39,7 @@ class Level(Strategy):
         self.ship.subscribe("fire", lambda ev: self.scene.attach(ev.kwargs.get("bullet")))
 
         # set up map
-        map_bg = background.convert()
+        map_bg = self.config["background"].convert()
         self.game_map = GameMap(map_bg)
         self.scene.attach(self.game_map)
 
@@ -62,7 +68,7 @@ class Level(Strategy):
         # create initial enemies
         self.saucers = []
         for x in range(0, 3):
-            newsaucer = Enemy(saucerimg)
+            newsaucer = Enemy(self.config["enemy_image"])
             newsaucer.subscribe("score_up", self.score_label.update_value)
             self.saucers.append(newsaucer)
             self.scene.attach(newsaucer)
@@ -112,7 +118,7 @@ class Level(Strategy):
         :return:
         """
         if len(self.saucers) < SAUCER_THRESHOLD:
-            newsaucer = Enemy(saucerimg)
+            newsaucer = Enemy(self.config["enemy_image"])
             newsaucer.subscribe("score_up", self.score_label.update_value)
             self.saucers.append(newsaucer)
             self.scene.attach(newsaucer)
@@ -120,7 +126,7 @@ class Level(Strategy):
         else:
             # clear out the saucers and enter the boss
             self.clear_saucers()
-            boss = Boss(SCREENW/2-bossimg.get_width()/2, -1200, bossimg, self.ship)
+            boss = Boss(SCREENW/2-self.config["boss_image"].get_width()/2, -1200, self.config["boss_image"], self.ship)
             boss.subscribe("health_down", self.boss_health_label.update_value)
             boss.subscribe("fire", lambda ev: self.scene.attach(ev.kwargs.get("bullet")))
             self.scene.attach(boss)
