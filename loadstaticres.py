@@ -1,4 +1,5 @@
 from utilfuncs import toframes
+from boss import Boss
 import pygame
 
 
@@ -22,9 +23,19 @@ blank = pygame.Surface((1, 1))
 # todo: add behaviors (boss, enemies) into this config
 level_configs = [
     {
-        "background": pygame.image.load("assets/map1.png"),
+        "background": pygame.image.load("assets/level1/map.png"),
         "bg_music_fname": "assets/spectre.mp3",
-        "boss_image": pygame.image.load("assets/invader2.png"),
-        "enemy_image": pygame.image.load("assets/saucer1.png")
+        "boss_image": pygame.image.load("assets/level1/boss.png"),
+        "enemy_image": pygame.image.load("assets/level1/saucer.png"),
+        "boss_class": Boss
+    },
+    # todo; saucers aren't appearing on this level
+    # todo: boss erroneously appears from bottom of screen
+    {
+        "background": pygame.image.load("assets/level2/map.png"),
+        "bg_music_fname": "assets/spectre.mp3",
+        "boss_image": pygame.image.load("assets/level2/invader.png"),
+        "enemy_image": pygame.image.load("assets/level2/saucer.png"),
+        "boss_class": Boss
     }
 ]
