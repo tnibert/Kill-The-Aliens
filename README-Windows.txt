@@ -4,7 +4,6 @@ Double click on killthealiens.exe in the killthealiens-win32 folder.
 Controls:
 Space - shoot
 Arrow keys - move a given direction
-Escape - exit game
 
 Battle through the aliens and take out the boss!
 
