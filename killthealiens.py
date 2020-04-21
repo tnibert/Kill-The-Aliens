@@ -10,8 +10,6 @@ import pygame
 import sys
 
 # todo:
-# move music control to level
-#
 # fix nuitka build, make linux build
 # add unit tests
 # setup ci
@@ -44,11 +42,8 @@ pygame.mixer.music.load(BG_MUSIC_FNAME)
 
 levels = [
     SplashPage(Scene(screen), input_queue, introscreen, pygame.K_RETURN),
-    Level(Scene(screen), input_queue)
+    Level(Scene(screen), input_queue, pygame.mixer)
 ]
-
-# start music on endless loop
-pygame.mixer.music.play(-1)
 
 while len(levels) > 0:
     for event in pygame.event.get():
@@ -68,6 +63,10 @@ while len(levels) > 0:
             levels.append(SplashPage(Scene(screen), input_queue, pygame.image.load("assets/victory1.png"), pygame.K_ESCAPE))
         elif e.args[0].get("state") == "failure":
             levels.append(SplashPage(Scene(screen), input_queue, pygame.image.load("assets/dead1.png"), pygame.K_ESCAPE))
+
+        score = e.args[0].get("score")
+        if score is not None:
+            print("Score: {}".format(score))
 
     pygame.display.flip()  # apply double buffer
 

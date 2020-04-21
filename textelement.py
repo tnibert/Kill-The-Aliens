@@ -32,3 +32,6 @@ class TextElement(GameObject):
             self.value += event.kwargs.get("value")
             self.text = self.defaulttext.format(self.value)
             self.image = self.font.render(self.text, 1, self.color)
+
+    def get_value(self):
+        return self.value

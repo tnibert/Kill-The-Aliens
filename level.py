@@ -8,13 +8,23 @@ from textelement import TextElement
 from player import Player
 from boss import Boss
 from loadstaticres import *
+from endgamesignal import EndLevel
 from constants import NEW_SAUCER_IVAL, SAUCER_THRESHOLD, SCREENW, TEXT_SIZE, BOSSHEALTH
 import random
 
 
 class Level(Strategy):
-    def __init__(self, scene, inputqueue):
+    """
+    Strategy for managing progression of typical game level
+    """
+    def __init__(self, scene, inputqueue, mixer):
+        """
+        :param scene: Scene object to manipulate
+        :param inputqueue: Queue object to receive input from
+        :param mixer: pygame.mixer object
+        """
         super().__init__(scene)
+        self.mixer = mixer
 
         # set up player
         self.ship = Player(shipimg, inputqueue)
@@ -62,26 +72,38 @@ class Level(Strategy):
         self.saucer_timer.startwatch(NEW_SAUCER_IVAL)
 
     def run_game(self):
-        self.saucer_timer.tick()
+        try:
+            if not self.mixer.music.get_busy():
+                # start music on endless loop
+                self.mixer.music.play(-1)
 
-        # determine if we should have a status modifier
-        # so apparently there's no switch/case in python >_>
-        # choose a random number, determine which powerup based on number, if not 1 - 6 just continue on w/ no stat mod
-        for case in switch(random.randrange(0, 10000)):
-            statmod = None
-            if case(1):
-                statmod = OneUp(oneupimg)
-            elif case(90):
-                statmod = Bomb(bombimg)
-            elif case(1337):
-                statmod = SpeedUp(speedupimg)
-                statmod.subscribe("collision", self.game_map.increase_speed)
-            elif case(511):
-                statmod = MoreGuns(moregunsimg)
-            if statmod is not None:
-                self.scene.attach(statmod)
+            self.saucer_timer.tick()
 
-        super().run_game()
+            # determine if we should have a status modifier
+            # so apparently there's no switch/case in python >_>
+            # choose a random number, determine which powerup based on number
+            for case in switch(random.randrange(0, 10000)):
+                statmod = None
+                if case(1):
+                    statmod = OneUp(oneupimg)
+                elif case(90):
+                    statmod = Bomb(bombimg)
+                elif case(1337):
+                    statmod = SpeedUp(speedupimg)
+                    statmod.subscribe("collision", self.game_map.increase_speed)
+                elif case(511):
+                    statmod = MoreGuns(moregunsimg)
+                if statmod is not None:
+                    self.scene.attach(statmod)
+
+            super().run_game()
+
+        # intercept the EndLevel signal, stop music, and attach score
+        except EndLevel as e:
+            self.mixer.music.stop()
+            info = e.args[0]
+            info['score'] = self.score_label.get_value()
+            raise EndLevel(info)
 
     def add_saucer(self, event):
         """
