@@ -107,7 +107,7 @@ class Boss(MoveableObject):
                 self.exploding = False
 
         elif self.game_state == BOSS_STATE_DEAD:
-            raise EndLevel("victory")
+            raise EndLevel({"state": "victory"})
 
     def start_exploding(self):
         self.exploding = True

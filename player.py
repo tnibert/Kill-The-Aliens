@@ -111,7 +111,7 @@ class Player(MoveableObject):
     def respawn(self, event=None):
         if self.health <= 0:
             self.speed = 0
-            raise EndLevel("failure")
+            raise EndLevel({"state": "failure"})
         else:
             self.x = self.spawnX
             self.y = self.spawnY
