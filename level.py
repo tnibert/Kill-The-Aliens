@@ -49,8 +49,6 @@ class Level(Strategy):
         self.boss_health_label = TextElement(VAL_X_LOC, VAL_Y_LOC_START+VAL_TEXT_SIZE*2,
                                              VAL_FONT, TEXTCOLOR, "Boss: {}", BOSSHEALTH)
 
-        self.ship.subscribe("alterhealth", self.health_label.update_value)
-
         self.scene.attach(self.health_label)
         self.scene.attach(self.score_label)
 

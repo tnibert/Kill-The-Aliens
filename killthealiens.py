@@ -29,8 +29,7 @@ import sys
 # add easy, medium, hard difficulty options
 #
 # add a second level config:
-# bug: double subscription of one up
-#   --- move logic out of Level.__init__ and call before level starts
+# move logic out of Level.__init__ and call before level starts
 # test with changing music between levels
 # fix second level saucers
 # fix second level boss entrance
@@ -54,6 +53,8 @@ shared_objects = {
     "health_label": TextElement(VAL_X_LOC, VAL_Y_LOC_START, VAL_FONT, TEXTCOLOR, "Health: {}", PLAYERHEALTH),
     "score_label": TextElement(VAL_X_LOC, VAL_Y_LOC_START+VAL_TEXT_SIZE, VAL_FONT, TEXTCOLOR, "Score: {}", 0)
 }
+
+shared_objects["ship"].subscribe("alterhealth", shared_objects["health_label"].update_value)
 
 # list of levels (including splash pages
 levels = [
