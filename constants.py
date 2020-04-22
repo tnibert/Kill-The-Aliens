@@ -25,6 +25,10 @@ STATMOD_SPEED = 90
 
 EXPLOSION_FRAME_UPDATE_WAIT = 0.2       # time between explosion frames in seconds
 
+# number of saucers initially
+INITIAL_SAUCERS = 3
+
+# seconds between additional saucer spawns
 NEW_SAUCER_IVAL = 15
 # most saucers that can be in play before boss comes out
 SAUCER_THRESHOLD = 10

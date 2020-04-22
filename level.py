@@ -7,7 +7,7 @@ from timer import Timer
 from textelement import TextElement
 from endgamesignal import EndLevel
 from loadstaticres import oneupimg, moregunsimg, speedupimg, bombimg
-from constants import NEW_SAUCER_IVAL, SAUCER_THRESHOLD, SCREENW, VAL_TEXT_SIZE, BOSSHEALTH, VAL_X_LOC, VAL_FONT, VAL_Y_LOC_START, TEXTCOLOR
+from constants import NEW_SAUCER_IVAL, SAUCER_THRESHOLD, SCREENW, VAL_TEXT_SIZE, BOSSHEALTH, VAL_X_LOC, VAL_FONT, VAL_Y_LOC_START, TEXTCOLOR, INITIAL_SAUCERS
 import random
 
 
@@ -64,7 +64,7 @@ class Level(Strategy):
         self.saucer_timer.subscribe("timeout", self.add_saucer)
 
         # create initial enemies
-        for x in range(0, 3):
+        for x in range(0, INITIAL_SAUCERS):
             newsaucer = Enemy(self.config["enemy_image"])
             newsaucer.subscribe("score_up", self.score_label.update_value)
             self.saucers.append(newsaucer)
