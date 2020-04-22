@@ -83,18 +83,22 @@ while len(levels) > 0:
 
     # EndLevel exception signals end of level
     except EndLevel as e:
+        # remove current level from level list
         is_splash = isinstance(levels.pop(0), SplashPage)
 
+        # stop the game if player is out of lives
+        if e.args[0].get("state") == "failure":
+            levels = [SplashPage(Scene(screen), input_queue, pygame.image.load("assets/dead1.png"), pygame.K_ESCAPE)]
+            continue
+
+        # if there are still levels to go, set up the scene
         if len(levels) > 0:
             levels[0].setup()
 
         # handle last level finishing
-        # todo: if we fail on non last level, does not end game
         elif len(levels) == 0 and not is_splash:
             if e.args[0].get("state") == "victory":
                 levels.append(SplashPage(Scene(screen), input_queue, pygame.image.load("assets/victory1.png"), pygame.K_ESCAPE))
-            elif e.args[0].get("state") == "failure":
-                levels.append(SplashPage(Scene(screen), input_queue, pygame.image.load("assets/dead1.png"), pygame.K_ESCAPE))
 
         #score = e.args[0].get("score")
         print("Score: {}".format(shared_objects["score_label"].get_value()))
