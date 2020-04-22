@@ -27,7 +27,6 @@ EXPLOSION_FRAME_UPDATE_WAIT = 0.2       # time between explosion frames in secon
 
 NEW_SAUCER_IVAL = 15
 # most saucers that can be in play before boss comes out
-# todo: if this value is set to 3, then boss appears from bottom and no saucers appear on seconds level
 SAUCER_THRESHOLD = 10
 
 BOSS_SPEED = 70

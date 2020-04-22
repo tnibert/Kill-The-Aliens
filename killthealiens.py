@@ -30,9 +30,9 @@ import sys
 #
 # add a second level config:
 # test with changing music between levels
-# fix second level saucers
-# fix second level boss entrance
 # give second level boss own behavior (original boss behavior)
+#
+# add to score on boss death
 #
 # Ensure initial saucers spawn off screen
 # normalize ship diagonal movement
@@ -100,7 +100,6 @@ while len(levels) > 0:
             if e.args[0].get("state") == "victory":
                 levels.append(SplashPage(Scene(screen), input_queue, pygame.image.load("assets/victory1.png"), pygame.K_ESCAPE))
 
-        #score = e.args[0].get("score")
         print("Score: {}".format(shared_objects["score_label"].get_value()))
 
     # apply double buffer
