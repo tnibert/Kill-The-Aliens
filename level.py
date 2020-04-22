@@ -5,24 +5,22 @@ from statusmodifiers import OneUp, Bomb, SpeedUp, MoreGuns
 from utilfuncs import switch
 from timer import Timer
 from textelement import TextElement
-from player import Player
 from endgamesignal import EndLevel
-from loadstaticres import shipimg, oneupimg, moregunsimg, speedupimg, bombimg
-from constants import NEW_SAUCER_IVAL, SAUCER_THRESHOLD, SCREENW, TEXT_SIZE, BOSSHEALTH
+from loadstaticres import oneupimg, moregunsimg, speedupimg, bombimg
+from constants import NEW_SAUCER_IVAL, SAUCER_THRESHOLD, SCREENW, VAL_TEXT_SIZE, BOSSHEALTH, VAL_X_LOC, VAL_FONT, VAL_Y_LOC_START, TEXTCOLOR
 import random
-import pygame
 
 
 class Level(Strategy):
     """
     Strategy for managing progression of typical game level
     """
-    def __init__(self, scene, inputqueue, mixer, config):
+    def __init__(self, scene, mixer, config, universal):
         """
         :param scene: Scene object to manipulate
-        :param inputqueue: Queue object to receive input from
         :param mixer: pygame.mixer object
         :param config: dictionary of level specific resources
+        :param universal: dictionary of objects that stay in use between levels
         """
         super().__init__(scene)
         self.mixer = mixer
@@ -32,7 +30,7 @@ class Level(Strategy):
         self.mixer.music.load(self.config["bg_music_fname"])
 
         # set up player
-        self.ship = Player(shipimg, inputqueue)
+        self.ship = universal["ship"]
         self.scene.attach(self.ship)
         # enable firing of bullets
         self.ship.subscribe("fire", lambda ev: self.scene.attach(ev.kwargs.get("bullet")))
@@ -45,19 +43,11 @@ class Level(Strategy):
         # so that map speed up resets on player death
         self.ship.subscribe("player_respawn", self.game_map.reset_speed)
 
-        # setup labels
-        # todo: improve font and color
-        gamefont = pygame.font.SysFont("monospace", TEXT_SIZE)
-        textcolor = (255, 255, 0)
-        text_x_loc = SCREENW - 180
-        text_y_loc_start = 20
-
         # add health and score labels
-        self.health_label = TextElement(text_x_loc, text_y_loc_start, gamefont,
-                                        textcolor, "Health: {}", self.ship.health)
-        self.score_label = TextElement(text_x_loc, text_y_loc_start+TEXT_SIZE, gamefont, textcolor, "Score: {}", 0)
-        self.boss_health_label = TextElement(text_x_loc, text_y_loc_start+TEXT_SIZE*2,
-                                             gamefont, textcolor, "Boss: {}", BOSSHEALTH)
+        self.health_label = universal["health_label"]
+        self.score_label = universal["score_label"]
+        self.boss_health_label = TextElement(VAL_X_LOC, VAL_Y_LOC_START+VAL_TEXT_SIZE*2,
+                                             VAL_FONT, TEXTCOLOR, "Boss: {}", BOSSHEALTH)
 
         self.ship.subscribe("alterhealth", self.health_label.update_value)
 

@@ -1,13 +1,23 @@
 #! /usr/bin/env python
-from constants import SCREENW, SCREENH
-from loadstaticres import introscreen
+
+import pygame
+
+# setup audio mixer
+pygame.mixer.pre_init(44100, -16, 2, 512)
+pygame.mixer.init()
+# initialize pygame before dependent imports
+pygame.init()
+
+from constants import SCREENW, SCREENH, PLAYERHEALTH, TEXTCOLOR, VAL_X_LOC, VAL_Y_LOC_START, VAL_TEXT_SIZE, VAL_FONT
+from loadstaticres import introscreen, shipimg
 from levelconfigs import level_configs
 from scene import Scene
 from queue import Queue
 from level import Level
+from player import Player
+from textelement import TextElement
 from endgamesignal import EndLevel
 from splashpage import SplashPage
-import pygame
 import sys
 
 # todo:
@@ -19,11 +29,12 @@ import sys
 # add easy, medium, hard difficulty options
 #
 # add a second level config:
+# bug: double subscription of one up
+#   --- move logic out of Level.__init__ and call before level starts
 # test with changing music between levels
 # fix second level saucers
 # fix second level boss entrance
 # give second level boss own behavior (original boss behavior)
-# copy score between levels
 # show correct victory or failure after last level
 #
 # Ensure initial saucers spawn off screen
@@ -33,15 +44,16 @@ import sys
 # queues for input events
 input_queue = Queue()
 
-# setup audio mixer
-pygame.mixer.pre_init(44100, -16, 2, 512)
-pygame.mixer.init()
-
-pygame.init()
-
 # set up window
 screen = pygame.display.set_mode((SCREENW, SCREENH), pygame.DOUBLEBUF)
 pygame.display.set_caption("KILL THE ALIENS")
+
+# objects which will be shared between levels
+shared_objects = {
+    "ship": Player(shipimg, input_queue),
+    "health_label": TextElement(VAL_X_LOC, VAL_Y_LOC_START, VAL_FONT, TEXTCOLOR, "Health: {}", PLAYERHEALTH),
+    "score_label": TextElement(VAL_X_LOC, VAL_Y_LOC_START+VAL_TEXT_SIZE, VAL_FONT, TEXTCOLOR, "Score: {}", 0)
+}
 
 # list of levels (including splash pages
 levels = [
@@ -50,7 +62,7 @@ levels = [
 
 # append to list of levels for every available level configuration
 for config in level_configs:
-    levels.append(Level(Scene(screen), input_queue, pygame.mixer, config))
+    levels.append(Level(Scene(screen), pygame.mixer, config, shared_objects))
 
 # proceed through the levels
 while len(levels) > 0:
