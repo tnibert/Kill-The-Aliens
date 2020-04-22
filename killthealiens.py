@@ -30,7 +30,7 @@ import sys
 #
 # add a second level config:
 # test with changing music between levels
-# give second level boss own behavior (original boss behavior)
+# add big text upon level change
 #
 # add to score on boss death
 #

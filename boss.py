@@ -176,6 +176,86 @@ class BossL1Behave(Boss):
         # combat move mode
         self.mode = MOVE_MODE_STILL
 
+        self.maxstep = 10
+
+        self.alreadygoing = 0
+
+        self.bullet_start_locs = [-1 * self.width/2, 0, self.width/2]
+
+    def update_combat_mode(self, event):
+        """
+        Event handler for the combat state timer
+        Cycle through combat states
+        :param event:
+        :return:
+        """
+        if self.mode < MOVE_MODE_CHASING:
+            self.mode += 1
+        else:
+            self.mode = MOVE_MODE_STILL
+
+        self.combat_state_timer.startwatch(self.combat_state_change_time)
+
+    def combat_move(self):
+
+        if self.mode == MOVE_MODE_STILL:
+            return
+
+        elif self.mode == MOVE_MODE_AIMLESS:
+            if self.step < self.maxstep:
+                self.step += 1
+            else:
+                self.dir = random.randrange(0, 4)
+                self.step = 0
+                self.maxstep = random.randrange(20, 60)
+
+        elif self.mode == MOVE_MODE_CHASING:
+            test = self.infirerange()
+            if test == -3 and self.alreadygoing == 0:  # if ship is in middle
+                self.dir = random.randrange(0, 2)
+                self.alreadygoing = 1
+            elif test == -1 and self.alreadygoing == 0:
+                self.dir = LEFT
+                self.alreadygoing = 1
+            elif test == -2 and self.alreadygoing == 0:
+                self.dir = RIGHT
+                self.alreadygoing = 1
+            elif test > 0:
+                self.mode = 0
+                self.alreadygoing = 0
+
+        # 1 in 100 chance of shooting
+        # todo: this is currently frame rate dependent
+        if random.randrange(100) == 2:
+            loc = random.randrange(len(self.bullet_start_locs))
+            self.notify("fire", bullet=bullet.Bullet(self.x + self.width/2 + self.bullet_start_locs[loc],
+                                                     self.y + self.height + bulletimg.get_height(),
+                                                     bulletimg,
+                                                     DOWN,
+                                                     self))
+
+        self.adjust_for_boundaries()
+        self.general_motion()
+
+    def infirerange(self):
+        # todo: examine this logic and improve
+        # self.x is left turret, self.x+self.width is right turret
+        # return 1 if left turret, return 2 if right
+        # return -1 if too far left, -2 if too far right, -3 if in center
+        if self.foe.x + self.foe.width >= self.x and self.foe.x <= self.x:
+            return 1
+        if self.foe.x + self.foe.width >= self.x + self.width and self.foe.x <= self.x + self.width:
+            return 2
+        if self.foe.x + self.foe.width <= self.x:
+            return -1
+        if self.foe.x >= self.x + self.width:
+            return -2
+        if self.foe.x + self.foe.width <= self.x + self.width and self.foe.x >= self.x:
+            return -3
+
+        # default to center
+        return -3
+
 
 class BossL2Behave(Boss):
 
