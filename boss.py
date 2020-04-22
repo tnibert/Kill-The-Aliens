@@ -1,6 +1,6 @@
 from moveableobject import MoveableObject
 from timer import Timer
-from constants import *
+from constants import BOSS_DEATH_SCORE_INC, BOSSHEALTH, NUM_BOSS_EXPLOSIONS, UP, DOWN, LEFT, RIGHT, BOSS_SPEED, SCREENW
 from loadstaticres import blank, explosion
 from endgamesignal import EndLevel
 from loadstaticres import bulletimg
@@ -108,6 +108,7 @@ class Boss(MoveableObject):
         elif self.game_state == BOSS_STATE_DYING:
             if not self.exploding:
                 self.start_exploding()
+                self.notify("death", value=BOSS_DEATH_SCORE_INC)
 
             for e in self.boom:
                 e.update()

@@ -39,6 +39,7 @@ NUM_BOSS_EXPLOSIONS = 10
 VAL_TEXT_SIZE = 20
 
 SAUCER_DEATH_SCORE_INC = 5
+BOSS_DEATH_SCORE_INC = 300
 
 # todo: improve font and color
 VAL_FONT = font.SysFont("monospace", VAL_TEXT_SIZE)

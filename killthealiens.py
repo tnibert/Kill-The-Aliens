@@ -29,8 +29,8 @@ import sys
 #
 # find separate music for level 2
 #
-# add to score on boss death
-#
+# there was a bug observed where player did not appear on the second level
+# but was not able to reproduce
 #
 # add easy, medium, hard difficulty options
 # Ensure initial saucers spawn off screen

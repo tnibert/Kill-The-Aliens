@@ -145,6 +145,7 @@ class Level(Strategy):
                                              self.ship)
             boss.subscribe("health_down", self.boss_health_label.update_value)
             boss.subscribe("fire", lambda ev: self.scene.attach(ev.kwargs.get("bullet")))
+            boss.subscribe("death", self.score_label.update_value)
             self.scene.attach(boss)
             self.scene.attach(self.boss_health_label)
 
