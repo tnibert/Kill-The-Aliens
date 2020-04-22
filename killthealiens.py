@@ -29,12 +29,10 @@ import sys
 # add easy, medium, hard difficulty options
 #
 # add a second level config:
-# move logic out of Level.__init__ and call before level starts
 # test with changing music between levels
 # fix second level saucers
 # fix second level boss entrance
 # give second level boss own behavior (original boss behavior)
-# show correct victory or failure after last level
 #
 # Ensure initial saucers spawn off screen
 # normalize ship diagonal movement
@@ -66,6 +64,7 @@ for config in level_configs:
     levels.append(Level(Scene(screen), pygame.mixer, config, shared_objects))
 
 # proceed through the levels
+# NB: setup() call for SplashPage is unnecessary
 while len(levels) > 0:
 
     # process and queue valid input
@@ -84,15 +83,21 @@ while len(levels) > 0:
 
     # EndLevel exception signals end of level
     except EndLevel as e:
-        levels.pop(0)
-        if e.args[0].get("state") == "victory":
-            levels.append(SplashPage(Scene(screen), input_queue, pygame.image.load("assets/victory1.png"), pygame.K_ESCAPE))
-        elif e.args[0].get("state") == "failure":
-            levels.append(SplashPage(Scene(screen), input_queue, pygame.image.load("assets/dead1.png"), pygame.K_ESCAPE))
+        is_splash = isinstance(levels.pop(0), SplashPage)
 
-        score = e.args[0].get("score")
-        if score is not None:
-            print("Score: {}".format(score))
+        if len(levels) > 0:
+            levels[0].setup()
+
+        # handle last level finishing
+        # todo: if we fail on non last level, does not end game
+        elif len(levels) == 0 and not is_splash:
+            if e.args[0].get("state") == "victory":
+                levels.append(SplashPage(Scene(screen), input_queue, pygame.image.load("assets/victory1.png"), pygame.K_ESCAPE))
+            elif e.args[0].get("state") == "failure":
+                levels.append(SplashPage(Scene(screen), input_queue, pygame.image.load("assets/dead1.png"), pygame.K_ESCAPE))
+
+        #score = e.args[0].get("score")
+        print("Score: {}".format(shared_objects["score_label"].get_value()))
 
     # apply double buffer
     pygame.display.flip()

@@ -17,31 +17,22 @@ class Level(Strategy):
     """
     def __init__(self, scene, mixer, config, universal):
         """
+        Declare and assign variables
         :param scene: Scene object to manipulate
         :param mixer: pygame.mixer object
         :param config: dictionary of level specific resources
         :param universal: dictionary of objects that stay in use between levels
         """
+
         super().__init__(scene)
         self.mixer = mixer
         self.config = config
 
-        # load up music
-        self.mixer.music.load(self.config["bg_music_fname"])
-
         # set up player
         self.ship = universal["ship"]
-        self.scene.attach(self.ship)
-        # enable firing of bullets
-        self.ship.subscribe("fire", lambda ev: self.scene.attach(ev.kwargs.get("bullet")))
 
         # set up map
-        map_bg = self.config["background"].convert()
-        self.game_map = GameMap(map_bg)
-        self.scene.attach(self.game_map)
-
-        # so that map speed up resets on player death
-        self.ship.subscribe("player_respawn", self.game_map.reset_speed)
+        self.game_map = GameMap(self.config["background"].convert())
 
         # add health and score labels
         self.health_label = universal["health_label"]
@@ -49,19 +40,39 @@ class Level(Strategy):
         self.boss_health_label = TextElement(VAL_X_LOC, VAL_Y_LOC_START+VAL_TEXT_SIZE*2,
                                              VAL_FONT, TEXTCOLOR, "Boss: {}", BOSSHEALTH)
 
-        self.scene.attach(self.health_label)
-        self.scene.attach(self.score_label)
+        self.saucers = []
+
+        self.saucer_timer = Timer()
+
+    def setup(self):
+        """
+        Attach objects to scene and set up subscriptions
+        """
+        # todo: clear relevant subscriptions on shared objects
+
+        # load up music
+        self.mixer.music.load(self.config["bg_music_fname"])
+
+        # enable firing of bullets
+        self.ship.subscribe("fire", lambda ev: self.scene.attach(ev.kwargs.get("bullet")))
+
+        # so that map speed up resets on player death
+        self.ship.subscribe("player_respawn", self.game_map.reset_speed)
+
+        self.saucer_timer.subscribe("timeout", self.add_saucer)
 
         # create initial enemies
-        self.saucers = []
         for x in range(0, 3):
             newsaucer = Enemy(self.config["enemy_image"])
             newsaucer.subscribe("score_up", self.score_label.update_value)
             self.saucers.append(newsaucer)
             self.scene.attach(newsaucer)
 
-        self.saucer_timer = Timer()
-        self.saucer_timer.subscribe("timeout", self.add_saucer)
+        self.scene.attach(self.ship)
+        self.scene.attach(self.game_map)
+        self.scene.attach(self.health_label)
+        self.scene.attach(self.score_label)
+
         self.saucer_timer.startwatch(NEW_SAUCER_IVAL)
 
     def run_game(self):
