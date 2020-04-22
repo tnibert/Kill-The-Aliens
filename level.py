@@ -48,7 +48,9 @@ class Level(Strategy):
         """
         Attach objects to scene and set up subscriptions
         """
-        # todo: clear relevant subscriptions on shared objects
+        # clear relevant subscriptions on shared objects from previous levels
+        self.ship.remove_event("fire")
+        self.ship.remove_event("player_respawn")
 
         # load up music
         self.mixer.music.load(self.config["bg_music_fname"])
