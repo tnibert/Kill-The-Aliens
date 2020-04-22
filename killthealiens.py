@@ -26,12 +26,13 @@ import sys
 # setup ci
 #
 # add hi scores screen
-# add easy, medium, hard difficulty options
 #
-# test with changing music between levels
+# find separate music for level 2
 #
 # add to score on boss death
 #
+#
+# add easy, medium, hard difficulty options
 # Ensure initial saucers spawn off screen
 # normalize ship diagonal movement
 # Replace health texts with health bars
@@ -98,7 +99,7 @@ while len(levels) > 0:
             if e.args[0].get("state") == "victory":
                 levels.append(SplashPage(Scene(screen), input_queue, pygame.image.load("assets/victory1.png"), pygame.K_ESCAPE))
 
-        print("Score: {}".format(shared_objects["score_label"].get_value()))
+        #print("Score: {}".format(shared_objects["score_label"].get_value()))
 
     # apply double buffer
     pygame.display.flip()
