@@ -29,7 +29,6 @@ import sys
 # add easy, medium, hard difficulty options
 #
 # test with changing music between levels
-# add big text upon level change
 #
 # add to score on boss death
 #

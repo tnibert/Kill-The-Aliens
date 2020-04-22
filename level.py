@@ -7,7 +7,7 @@ from timer import Timer
 from textelement import TextElement
 from endgamesignal import EndLevel
 from loadstaticres import oneupimg, moregunsimg, speedupimg, bombimg
-from constants import NEW_SAUCER_IVAL, SAUCER_THRESHOLD, SCREENW, VAL_TEXT_SIZE, BOSSHEALTH, VAL_X_LOC, VAL_FONT, VAL_Y_LOC_START, TEXTCOLOR, INITIAL_SAUCERS
+from constants import NEW_SAUCER_IVAL, SAUCER_THRESHOLD, SCREENW, SCREENH, VAL_TEXT_SIZE, BOSSHEALTH, VAL_X_LOC, VAL_FONT, VAL_Y_LOC_START, TEXTCOLOR, INITIAL_SAUCERS, LVL_START_FONT, LVL_START_TIME
 import random
 
 
@@ -39,6 +39,9 @@ class Level(Strategy):
         self.score_label = universal["score_label"]
         self.boss_health_label = TextElement(VAL_X_LOC, VAL_Y_LOC_START+VAL_TEXT_SIZE*2,
                                              VAL_FONT, TEXTCOLOR, "Boss: {}", BOSSHEALTH)
+        self.level_start_label = TextElement(SCREENW/4, SCREENH/4, LVL_START_FONT, TEXTCOLOR, self.config["start_text"])
+
+        self.start_text_timer = Timer()
 
         self.saucers = []
 
@@ -63,6 +66,8 @@ class Level(Strategy):
 
         self.saucer_timer.subscribe("timeout", self.add_saucer)
 
+        self.start_text_timer.subscribe("timeout", self.remove_start_text)
+
         # create initial enemies
         for x in range(0, INITIAL_SAUCERS):
             newsaucer = Enemy(self.config["enemy_image"])
@@ -74,14 +79,19 @@ class Level(Strategy):
         self.scene.attach(self.game_map)
         self.scene.attach(self.health_label)
         self.scene.attach(self.score_label)
+        self.scene.attach(self.level_start_label)
 
         self.saucer_timer.startwatch(NEW_SAUCER_IVAL)
+        self.start_text_timer.startwatch(LVL_START_TIME)
 
     def run_game(self):
         try:
             if not self.mixer.music.get_busy():
                 # start music on endless loop
                 self.mixer.music.play(-1)
+
+            if self.start_text_timer.is_timing():
+                self.start_text_timer.tick()
 
             self.saucer_timer.tick()
 
@@ -110,6 +120,9 @@ class Level(Strategy):
             info = e.args[0]
             info['score'] = self.score_label.get_value()
             raise EndLevel(info)
+
+    def remove_start_text(self, event):
+        self.scene.remove(self.level_start_label)
 
     def add_saucer(self, event):
         """

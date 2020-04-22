@@ -47,3 +47,9 @@ TEXTCOLOR = (255, 255, 0)
 
 VAL_X_LOC = 10
 VAL_Y_LOC_START = 20
+
+LEVEL_START_TEXT_SIZE = 72
+LVL_START_FONT = font.SysFont("monospace", LEVEL_START_TEXT_SIZE)
+
+# time in seconds to show level start announcement text
+LVL_START_TIME = 1
