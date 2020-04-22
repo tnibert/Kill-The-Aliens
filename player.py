@@ -15,7 +15,7 @@ PLAYER_RESPAWN_DELAY = 3
 
 class Player(MoveableObject):
     def __init__(self, img, eventqueue):
-        MoveableObject.__init__(self, SCREENW / 2 - img.get_width()/2, SCREENH - img.get_height() -5 , PLAYERSPEED, img)
+        MoveableObject.__init__(self, SCREENW / 2 - img.get_width()/2, SCREENH - img.get_height() - 5, PLAYERSPEED, img)
         self.health = PLAYERHEALTH
         self.spawnX = self.x
         self.spawnY = self.y
@@ -111,7 +111,7 @@ class Player(MoveableObject):
     def respawn(self, event=None):
         if self.health <= 0:
             self.speed = 0
-            raise EndLevel("failure")
+            raise EndLevel({"state": "failure"})
         else:
             self.x = self.spawnX
             self.y = self.spawnY

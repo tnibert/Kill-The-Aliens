@@ -1,112 +1,111 @@
 #! /usr/bin/env python
-from constants import *
-from loadstaticres import BG_MUSIC_FNAME, introscreen
+
+import pygame
+
+# setup audio mixer
+pygame.mixer.pre_init(44100, -16, 2, 512)
+pygame.mixer.init()
+# initialize pygame before dependent imports
+pygame.init()
+
+from constants import SCREENW, SCREENH, PLAYERHEALTH, TEXTCOLOR, VAL_X_LOC, VAL_Y_LOC_START, VAL_TEXT_SIZE, VAL_FONT
+from loadstaticres import introscreen, shipimg
+from levelconfigs import level_configs
 from scene import Scene
 from queue import Queue
 from level import Level
+from player import Player
+from textelement import TextElement
 from endgamesignal import EndLevel
-import pygame
+from splashpage import SplashPage
 import sys
 
 # todo:
-# create levels for static screens + center images vertically
-# move music control to level
-#
 # fix nuitka build, make linux build
 # add unit tests
 # setup ci
 #
 # add hi scores screen
+#
+# find separate music for level 2
+#
+# there was a bug observed where player did not appear on the second level
+# but was not able to reproduce
+#
 # add easy, medium, hard difficulty options
-#
-# load static resources from data structure for
-# multiple level capability
-#
 # Ensure initial saucers spawn off screen
 # normalize ship diagonal movement
 # Replace health texts with health bars
 
 # queues for input events
-player_input_queue = Queue()
-
-# setup audio mixer
-pygame.mixer.pre_init(44100, -16, 2, 512)
-pygame.mixer.init()
-
-pygame.init()
+input_queue = Queue()
 
 # set up window
 screen = pygame.display.set_mode((SCREENW, SCREENH), pygame.DOUBLEBUF)
 pygame.display.set_caption("KILL THE ALIENS")
 
-gamescene = Scene(screen)
+# objects which will be shared between levels
+shared_objects = {
+    "ship": Player(shipimg, input_queue),
+    "health_label": TextElement(VAL_X_LOC, VAL_Y_LOC_START, VAL_FONT, TEXTCOLOR, "Health: {}", PLAYERHEALTH),
+    "score_label": TextElement(VAL_X_LOC, VAL_Y_LOC_START+VAL_TEXT_SIZE, VAL_FONT, TEXTCOLOR, "Score: {}", 0)
+}
 
-# load up music
-pygame.mixer.music.load(BG_MUSIC_FNAME)
+shared_objects["ship"].subscribe("alterhealth", shared_objects["health_label"].update_value)
 
-# flags
-# 0 means play, 1 means user exit, 2 means death, 3 means victory
-endgame = 0
+# list of levels (including splash pages
+levels = [
+    SplashPage(Scene(screen), input_queue, introscreen, pygame.K_RETURN)
+]
 
-intro = 1
+# append to list of levels for every available level configuration
+for config in level_configs:
+    levels.append(Level(Scene(screen), pygame.mixer, config, shared_objects))
 
-# opening screen
-while intro == 1:
-    screen.fill(BLACK)
-    screen.blit(introscreen, (0, 0))
-    pygame.display.flip()
+# proceed through the levels
+# NB: setup() call for SplashPage is unnecessary
+while len(levels) > 0:
+
+    # process and queue valid input
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
-            sys.exit()
-        if not hasattr(event, 'key'): continue
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RETURN:
-                intro = 0
-
-mylevel = Level(gamescene, player_input_queue)
-
-# start music on endless loop
-pygame.mixer.music.play(-1)
-
-# begin main game loop
-while endgame == 0:
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
             sys.exit(0)
         elif not hasattr(event, 'key'):
             continue
-        elif event.key == pygame.K_ESCAPE:
-            sys.exit(0)
         elif event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
-            player_input_queue.put(event)
+            input_queue.put(event)
 
+    # run the level
     try:
-        mylevel.run_game()
+        levels[0].run_game()
+
+    # EndLevel exception signals end of level
     except EndLevel as e:
-        endgame = 1
-        if e.args[0] == "victory":
-            disp = pygame.image.load("assets/victory1.png")
-        else:
-            disp = pygame.image.load("assets/dead1.png")
+        # remove current level from level list
+        is_splash = isinstance(levels.pop(0), SplashPage)
 
-    pygame.display.flip()  # apply double buffer
+        # stop the game if player is out of lives
+        if e.args[0].get("state") == "failure":
+            levels = [SplashPage(Scene(screen), input_queue, pygame.image.load("assets/dead1.png"), pygame.K_ESCAPE)]
+            continue
 
-# todo: move file loads to resource loader
+        # if there are still levels to go, set up the scene
+        if len(levels) > 0:
+            levels[0].setup()
 
-# add loop to get input, continue to high scores, etc
-cont = 0
-while cont == 0:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT: cont = 1
-        if not hasattr(event, 'key'): continue
-        if event.key == pygame.K_ESCAPE: cont = 1
-    screen.fill(BLACK)
-    screen.blit(disp, (0, 0))
+        # handle last level finishing
+        elif len(levels) == 0 and not is_splash:
+            if e.args[0].get("state") == "victory":
+                levels.append(SplashPage(Scene(screen), input_queue, pygame.image.load("assets/victory1.png"), pygame.K_ESCAPE))
+
+        #print("Score: {}".format(shared_objects["score_label"].get_value()))
+
+    # apply double buffer
     pygame.display.flip()
 
-# update and view high scores
+
+# pseudocode to update and view high scores:
 # open file
 # scores = []
 # f = open('scores', 'rw')
@@ -118,4 +117,4 @@ while cont == 0:
 # display high scores
 
 pygame.quit()
-sys.exit()
+sys.exit(0)

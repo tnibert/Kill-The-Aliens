@@ -1,5 +1,5 @@
 Dependencies:
-Python 2.7 (32 bit) - www.python.org
+Python 3 (tested with 3.6) - www.python.org
 pygame - www.pygame.org
 
 To run:
@@ -11,8 +11,7 @@ On Linux
 Controls:
 Space - shoot
 Arrow keys - move a given direction
-Escape - exit game
 
-Code released under MIT license by Iron Lotus Studios
+Code released under Mozilla Public License by Iron Lotus Studios
 
 Art by MagykalMystique

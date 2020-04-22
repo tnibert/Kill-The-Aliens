@@ -1,12 +1,15 @@
 from moveableobject import MoveableObject
 from timer import Timer
-from constants import *
+from constants import BOSS_DEATH_SCORE_INC, BOSSHEALTH, NUM_BOSS_EXPLOSIONS, UP, DOWN, LEFT, RIGHT, BOSS_SPEED, SCREENW
 from loadstaticres import blank, explosion
 from endgamesignal import EndLevel
 from loadstaticres import bulletimg
 import random
 import bullet
 
+"""
+This file defines all boss behaviors
+"""
 
 # overarching boss states
 BOSS_STATE_ENTERING = 0
@@ -32,31 +35,28 @@ RUSH_RECENTER = 4
 class Boss(MoveableObject):
     """
     State machine for the boss behavior
+    Allow for identification of bosses by one type and define base functionality.
+    Combat strategies will differ.
     """
+
     def __init__(self, x, y, img, foe):
         MoveableObject.__init__(self, x, y, BOSS_SPEED, img)
+
         self.health = BOSSHEALTH
-        self.combat_state_timer = Timer()
-        self.combat_state_change_time = 5
-        self.combat_state_timer.subscribe("timeout", self.update_combat_mode)
+        self.foe = foe
+
+        # initial direction
+        self.dir = random.randrange(0, 4)
+
+        # counts number of steps in a given direction
+        self.step = 0
 
         # overarching state
         self.game_state = BOSS_STATE_ENTERING
 
-        # combat move mode
-        self.mode = MOVE_MODE_STILL
-
-        self.foe = foe
-
-        # counts number of steps in a given direction
-        self.step = 0
-        self.maxstep = 10
-        # initial direction
-        self.dir = random.randrange(0, 4)
-
-        self.alreadygoing = 0
-
-        self.rush_phase = RUSH_START
+        self.combat_state_timer = Timer()
+        self.combat_state_change_time = 5
+        self.combat_state_timer.subscribe("timeout", self.update_combat_mode)
 
         # create boss explosions
         self.boom = []
@@ -66,7 +66,29 @@ class Boss(MoveableObject):
                                             random.randrange(self.image.get_height() - explosion[0].get_height()),
                                             0, blank))
 
+    def update_combat_mode(self, event):
+        """
+        interface
+        """
+        pass
+
+    def combat_move(self):
+        """
+        interface
+        """
+        pass
+
+    def detect_foe_loc_relative(self):
+        """
+        interface
+        """
+        pass
+
     def update(self):
+        """
+        All bosses will have the same overarching state changes, but not combat strategies.
+        """
+
         super().update()
         if self.game_state == BOSS_STATE_ENTERING:
             if self.y < 5:
@@ -86,6 +108,7 @@ class Boss(MoveableObject):
         elif self.game_state == BOSS_STATE_DYING:
             if not self.exploding:
                 self.start_exploding()
+                self.notify("death", value=BOSS_DEATH_SCORE_INC)
 
             for e in self.boom:
                 e.update()
@@ -107,12 +130,145 @@ class Boss(MoveableObject):
                 self.exploding = False
 
         elif self.game_state == BOSS_STATE_DEAD:
-            raise EndLevel("victory")
+            raise EndLevel({"state": "victory"})
+
+    def adjust_for_boundaries(self):
+        """
+        Check for boundaries and change direction if necessary
+        """
+
+        if self.y + self.height > self.foe.y - 60:
+            self.dir = UP
+            self.step = 0
+        if self.y < 0:
+            self.dir = DOWN
+            self.step = 0
+        if self.x < -50:
+            self.dir = RIGHT
+            self.step = 0
+        if self.x + self.width - 50 > SCREENW:
+            self.dir = LEFT
+            self.step = 0
+
+    def general_motion(self):
+        """
+        Adjust position based on direction specified
+        """
+
+        if self.dir == DOWN:  # move down
+            self.y += self.speed * self.frame_tick
+        elif self.dir == UP:  # move up
+            self.y -= self.speed * self.frame_tick
+        elif self.dir == LEFT:  # move left
+            self.x -= self.speed * self.frame_tick
+        elif self.dir == RIGHT:  # move right
+            self.x += self.speed * self.frame_tick
 
     def start_exploding(self):
         self.exploding = True
         self.image = self.image.copy()
         self.boom[self.trigger_index].start_exploding()
+
+
+class BossL1Behave(Boss):
+    def __init__(self, x, y, img, foe):
+        super().__init__(x, y, img, foe)
+
+        # combat move mode
+        self.mode = MOVE_MODE_STILL
+
+        self.maxstep = 10
+
+        self.alreadygoing = 0
+
+        self.bullet_start_locs = [-1 * self.width/2, 0, self.width/2]
+
+    def update_combat_mode(self, event):
+        """
+        Event handler for the combat state timer
+        Cycle through combat states
+        :param event:
+        :return:
+        """
+        if self.mode < MOVE_MODE_CHASING:
+            self.mode += 1
+        else:
+            self.mode = MOVE_MODE_STILL
+
+        self.combat_state_timer.startwatch(self.combat_state_change_time)
+
+    def combat_move(self):
+
+        if self.mode == MOVE_MODE_STILL:
+            return
+
+        elif self.mode == MOVE_MODE_AIMLESS:
+            if self.step < self.maxstep:
+                self.step += 1
+            else:
+                self.dir = random.randrange(0, 4)
+                self.step = 0
+                self.maxstep = random.randrange(20, 60)
+
+        elif self.mode == MOVE_MODE_CHASING:
+            test = self.infirerange()
+            if test == -3 and self.alreadygoing == 0:  # if ship is in middle
+                self.dir = random.randrange(0, 2)
+                self.alreadygoing = 1
+            elif test == -1 and self.alreadygoing == 0:
+                self.dir = LEFT
+                self.alreadygoing = 1
+            elif test == -2 and self.alreadygoing == 0:
+                self.dir = RIGHT
+                self.alreadygoing = 1
+            elif test > 0:
+                self.mode = 0
+                self.alreadygoing = 0
+
+        # 1 in 100 chance of shooting
+        # todo: this is currently frame rate dependent
+        if random.randrange(100) == 2:
+            loc = random.randrange(len(self.bullet_start_locs))
+            self.notify("fire", bullet=bullet.Bullet(self.x + self.width/2 + self.bullet_start_locs[loc],
+                                                     self.y + self.height + bulletimg.get_height(),
+                                                     bulletimg,
+                                                     DOWN,
+                                                     self))
+
+        self.adjust_for_boundaries()
+        self.general_motion()
+
+    def infirerange(self):
+        # todo: examine this logic and improve
+        # self.x is left turret, self.x+self.width is right turret
+        # return 1 if left turret, return 2 if right
+        # return -1 if too far left, -2 if too far right, -3 if in center
+        if self.foe.x + self.foe.width >= self.x and self.foe.x <= self.x:
+            return 1
+        if self.foe.x + self.foe.width >= self.x + self.width and self.foe.x <= self.x + self.width:
+            return 2
+        if self.foe.x + self.foe.width <= self.x:
+            return -1
+        if self.foe.x >= self.x + self.width:
+            return -2
+        if self.foe.x + self.foe.width <= self.x + self.width and self.foe.x >= self.x:
+            return -3
+
+        # default to center
+        return -3
+
+
+class BossL2Behave(Boss):
+
+    def __init__(self, x, y, img, foe):
+        super().__init__(x, y, img, foe)
+
+        # combat move mode
+        self.mode = MOVE_MODE_STILL
+
+        self.maxstep = 10
+
+        self.rush_phase = RUSH_START
 
     def update_combat_mode(self, event):
         """
@@ -143,7 +299,8 @@ class Boss(MoveableObject):
             else:
                 self.dir = random.randrange(0, 4)
                 self.step = 0
-                self.maxstep = random.randrange(2, 6)
+                # todo: define a constant here, larger
+                self.maxstep = random.randrange(5, 10)
 
             self.adjust_for_boundaries()
             self.general_motion()
@@ -190,36 +347,6 @@ class Boss(MoveableObject):
                 self.update_combat_mode(None)
 
             self.general_motion()
-
-    def adjust_for_boundaries(self):
-        """
-        Check for boundaries and change direction if necessary
-        """
-        if self.y + self.height > self.foe.y - 60:
-            self.dir = UP
-            self.step = 0
-        if self.y < 0:
-            self.dir = DOWN
-            self.step = 0
-        if self.x < -50:
-            self.dir = RIGHT
-            self.step = 0
-        if self.x + self.width - 50 > SCREENW:
-            self.dir = LEFT
-            self.step = 0
-
-    def general_motion(self):
-        """
-        Adjust position based on direction specified
-        """
-        if self.dir == DOWN:  # move down
-            self.y += self.speed * self.frame_tick
-        elif self.dir == UP:  # move up
-            self.y -= self.speed * self.frame_tick
-        elif self.dir == LEFT:  # move left
-            self.x -= self.speed * self.frame_tick
-        elif self.dir == RIGHT:  # move right
-            self.x += self.speed * self.frame_tick
 
     def detect_foe_loc_relative(self):
         """
