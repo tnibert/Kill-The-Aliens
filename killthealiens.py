@@ -28,7 +28,6 @@ import sys
 # add hi scores screen
 # add easy, medium, hard difficulty options
 #
-# add a second level config:
 # test with changing music between levels
 # add big text upon level change
 #
