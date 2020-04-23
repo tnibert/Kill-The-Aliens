@@ -20,26 +20,6 @@ from endgamesignal import EndLevel
 from splashpage import SplashPage
 import sys
 
-# todo:
-# fix nuitka build, make linux build
-# add unit tests
-# setup ci
-#
-# add hi scores screen
-#
-# find separate music for level 2
-#
-# power up spawn and InvaderBossBehave shooting probabilities are frame rate dependent
-# --- use Timer instead
-#
-# there was a bug observed where player did not appear on the second level
-# but was not able to reproduce
-#
-# add easy, medium, hard difficulty options
-# Ensure initial saucers spawn off screen
-# normalize ship diagonal movement
-# Replace health texts with health bars
-
 # queues for input events
 input_queue = Queue()
 
