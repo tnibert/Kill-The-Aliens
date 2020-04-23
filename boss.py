@@ -170,7 +170,7 @@ class Boss(MoveableObject):
         self.boom[self.trigger_index].start_exploding()
 
 
-class BossL1Behave(Boss):
+class InvaderBossBehave(Boss):
     def __init__(self, x, y, img, foe):
         super().__init__(x, y, img, foe)
 
@@ -258,7 +258,7 @@ class BossL1Behave(Boss):
         return -3
 
 
-class BossL2Behave(Boss):
+class MagykalBossBehave(Boss):
 
     def __init__(self, x, y, img, foe):
         super().__init__(x, y, img, foe)

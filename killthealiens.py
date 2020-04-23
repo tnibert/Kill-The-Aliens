@@ -29,6 +29,9 @@ import sys
 #
 # find separate music for level 2
 #
+# power up spawn and InvaderBossBehave shooting probabilities are frame rate dependent
+# --- use Timer instead
+#
 # there was a bug observed where player did not appear on the second level
 # but was not able to reproduce
 #
