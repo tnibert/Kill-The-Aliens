@@ -1,17 +1,55 @@
-Dependencies:
+Kill The Aliens
+
+An arcade style space shooter.
+Enjoy :)
+
+Code released under Mozilla Public License by Iron Lotus Studios.
+The latest binary builds are available at www.ironlotuscomputer.com.au/kill-the-aliens.
+
+Art for level 1 created by MagykalMystique.
+
+
+** Dependencies **
 Python 3 (tested with 3.6) - www.python.org
 pygame - www.pygame.org
+nuitka (to build binary)
 
-To run:
-On Windows
-- Double click on killthealiens.py
-On Linux
-- from terminal type "python killthealiens.py" without the quotes
 
-Controls:
+** Controls **
 Space - shoot
 Arrow keys - move a given direction
 
-Code released under Mozilla Public License by Iron Lotus Studios
 
-Art by MagykalMystique
+All of the following instructions are for Linux.  For Windows see README-Windows.txt.
+
+
+** To install dependencies **
+
+$ pip3 install -r requirements.txt
+
+
+** To run **
+
+To run from source:
+$ git clone https://github.com/tnibert/Kill-The-Aliens/
+$ cd Kill-The-Aliens
+$ python3 killthealiens.py
+
+To run from binary:
+$ unzip killthealiens-linux.zip
+$ cd killthealiens-linux
+$ ./killthealiens
+
+
+** To compile **
+You must have the chrpath package installed.  On Ubuntu 18.04:
+$ sudo apt install chrpath
+
+To build:
+$ make
+
+To package:
+$ make zip
+
+To remove all artifacts:
+$ make clean

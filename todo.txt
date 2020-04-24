@@ -1,11 +1,10 @@
 These are the outstanding tasks that I'd like to do:
 
-# fix nuitka build, make linux build
+# fix windows nuitka build
 # add unit tests
 # setup ci
 #
 # find separate music for level 2
-# replace art (saucers and background) for level 2 (nasa has free images)
 #
 # power up spawn and InvaderBossBehave shooting probabilities are frame rate dependent
 # --- use Timer instead
@@ -19,5 +18,5 @@ These are the outstanding tasks that I'd like to do:
 # Ensure initial saucers spawn off screen
 # normalize ship diagonal movement
 # Replace health texts with health bars
-# Create 5 levels in total
+# Create 5 levels in total (nasa has free images)
 # Change window icon (to not pygame icon)

@@ -1,2 +1,2 @@
 pygame==1.9.4
-nuitka
+Nuitka==0.6.7
