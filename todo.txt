@@ -5,6 +5,7 @@ These are the outstanding tasks that I'd like to do:
 # setup ci
 #
 # find separate music for level 2
+# replace art (saucers and background) for level 2 (nasa has free images)
 #
 # power up spawn and InvaderBossBehave shooting probabilities are frame rate dependent
 # --- use Timer instead

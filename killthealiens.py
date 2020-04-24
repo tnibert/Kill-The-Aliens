@@ -47,7 +47,7 @@ for config in level_configs:
     levels.append(Level(Scene(screen), pygame.mixer, config, shared_objects))
 
 # proceed through the levels
-# NB: setup() call for SplashPage is unnecessary
+# NB: setup() calls for SplashPage and HiScoreScreen are unnecessary
 while len(levels) > 0:
 
     # process and queue valid input
