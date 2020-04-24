@@ -45,6 +45,7 @@ BOSS_DEATH_SCORE_INC = 300
 VAL_FONT = font.SysFont("monospace", VAL_TEXT_SIZE)
 
 TEXTCOLOR = (255, 255, 0)
+TEXTCOLOR_WHITE = (255, 255, 255)
 
 VAL_X_LOC = 10
 VAL_Y_LOC_START = 20
@@ -54,3 +55,10 @@ LVL_START_FONT = font.SysFont("monospace", LEVEL_START_TEXT_SIZE)
 
 # time in seconds to show level start announcement text
 LVL_START_TIME = 1
+
+SCORE_FILE = "hiscore.txt"
+
+# layers
+TEXT_LAYER = 1
+GAMEOBJ_LAYER = 0
+MAP_LAYER = -1

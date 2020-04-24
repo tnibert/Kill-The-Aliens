@@ -1,4 +1,5 @@
 from gameobject import GameObject
+from constants import TEXT_LAYER, SCREENW
 
 
 class TextElement(GameObject):
@@ -20,7 +21,7 @@ class TextElement(GameObject):
         self.color = color
         self.font = font
 
-        super().__init__(x, y, self.font.render(self.text, 1, self.color), layer=1)
+        super().__init__(x, y, self.font.render(self.text, 1, self.color), layer=TEXT_LAYER)
 
     def update_value(self, event):
         """
@@ -35,3 +36,6 @@ class TextElement(GameObject):
 
     def get_value(self):
         return self.value
+
+    def center(self):
+        self.x = SCREENW / 2 - self.image.get_width() / 2

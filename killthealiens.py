@@ -18,6 +18,7 @@ from player import Player
 from textelement import TextElement
 from endgamesignal import EndLevel
 from splashpage import SplashPage
+from hiscorescreen import HiScoreScreen
 import sys
 
 # queues for input events
@@ -66,38 +67,26 @@ while len(levels) > 0:
     # EndLevel exception signals end of level
     except EndLevel as e:
         # remove current level from level list
-        is_splash = isinstance(levels.pop(0), SplashPage)
+        is_final_screen = isinstance(levels.pop(0), HiScoreScreen)
 
         # stop the game if player is out of lives
         if e.args[0].get("state") == "failure":
-            levels = [SplashPage(Scene(screen), input_queue, pygame.image.load("assets/dead1.png"), pygame.K_ESCAPE)]
+            levels = [HiScoreScreen(Scene(screen), input_queue, pygame.image.load("assets/dead1.png"),
+                                    pygame.K_ESCAPE, shared_objects["score_label"].get_value())]
             continue
 
         # if there are still levels to go, set up the scene
         if len(levels) > 0:
             levels[0].setup()
 
-        # handle last level finishing
-        elif len(levels) == 0 and not is_splash:
+        # handle last playable level finishing
+        elif len(levels) == 0 and not is_final_screen:
             if e.args[0].get("state") == "victory":
-                levels.append(SplashPage(Scene(screen), input_queue, pygame.image.load("assets/victory1.png"), pygame.K_ESCAPE))
-
-        #print("Score: {}".format(shared_objects["score_label"].get_value()))
+                levels.append(HiScoreScreen(Scene(screen), input_queue, pygame.image.load("assets/victory1.png"),
+                                            pygame.K_ESCAPE, shared_objects["score_label"].get_value()))
 
     # apply double buffer
     pygame.display.flip()
-
-
-# pseudocode to update and view high scores:
-# open file
-# scores = []
-# f = open('scores', 'rw')
-# for line in f:
-#	scores.append(line)
-# print scores
-# read scores into list
-# compare score to list
-# display high scores
 
 pygame.quit()
 sys.exit(0)
