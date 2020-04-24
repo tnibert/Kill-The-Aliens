@@ -1,12 +1,11 @@
 from gameobject import GameObject
-from constants import SCREENH, SCREENW, SCROLLSPEED, MAXSCROLLSPEED
-from statusmodifiers import SpeedUp
+from constants import SCREENH, SCREENW, SCROLLSPEED, MAXSCROLLSPEED, MAP_LAYER
 from player import Player
 
 
 class GameMap(GameObject):
     def __init__(self, image):
-        GameObject.__init__(self, 0, 0, image, layer=-1)
+        GameObject.__init__(self, 0, 0, image, layer=MAP_LAYER)
         self.changeover = 0
         self.bgoffset = 0
         self.ychng = 0

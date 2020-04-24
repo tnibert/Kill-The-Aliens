@@ -1,11 +1,12 @@
 from observe import Observable
+from constants import GAMEOBJ_LAYER
 
 
 class GameObject(Observable):
     """
     A renderable object in the game
     """
-    def __init__(self, x, y, img, layer=0):
+    def __init__(self, x, y, img, layer=GAMEOBJ_LAYER):
         Observable.__init__(self)
 
         self.x = x
