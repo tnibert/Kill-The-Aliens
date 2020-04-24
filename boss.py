@@ -1,6 +1,6 @@
 from moveableobject import MoveableObject
 from timer import Timer
-from constants import BOSS_DEATH_SCORE_INC, BOSSHEALTH, NUM_BOSS_EXPLOSIONS, UP, DOWN, LEFT, RIGHT, BOSS_SPEED, SCREENW
+from constants import BOSS_DEATH_SCORE_INC, BOSSHEALTH, NUM_BOSS_EXPLOSIONS, UP, DOWN, LEFT, RIGHT, BOSS_SPEED, SCREENW, SCREENH
 from loadstaticres import blank, explosion
 from endgamesignal import EndLevel
 from loadstaticres import bulletimg
