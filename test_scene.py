@@ -17,7 +17,8 @@ class MockGameObj(MoveableObject):
         self.testlist = []
 
     def on_collide(self, event):
-        self.testlist.append(str(event))
+        if event.kwargs.get("who") == self:
+            self.testlist.append(str(event) + " " + str(event.source))
 
     def on_tick(self, event):
         super().on_tick(event)
@@ -53,8 +54,16 @@ def test_remove(PopulatedScene):
 
 
 def test_check_collisions(PopulatedScene):
+    # attach an object with no collision
+    coordx = shipimg.get_width() * 2 + 1
+    coordy = shipimg.get_height() * 2 + 1
+    g = MockGameObj(coordx, coordy, shipimg)
+    PopulatedScene.attach(g)
+
     PopulatedScene.check_collisions()
+
     assert len(PopulatedScene.children[0].testlist) == 1
-    assert PopulatedScene.children[0].testlist[0] == "collision"
+    assert "collision" in PopulatedScene.children[0].testlist[0]
     assert len(PopulatedScene.children[1].testlist) == 1
-    assert PopulatedScene.children[1].testlist[0] == "collision"
+    assert "collision" in PopulatedScene.children[1].testlist[0]
+    assert len(PopulatedScene.children[2].testlist) == 0
