@@ -6,16 +6,17 @@ Enjoy :)
 Code released under Mozilla Public License by Iron Lotus Studios.
 The latest binary builds are available at www.ironlotuscomputer.com.au/kill-the-aliens.
 
-Art for level 1 created by MagykalMystique.
-
 
 ** Dependencies **
-Python 3 (tested with 3.6) - www.python.org
-pygame - www.pygame.org
+
+Python 3 (tested with 3.6)
+pygame
 nuitka (to build binary)
+pytest (to run unit tests)
 
 
 ** Controls **
+
 Space - shoot
 Arrow keys - move a given direction
 
@@ -42,6 +43,7 @@ $ ./killthealiens
 
 
 ** To compile **
+
 You must have the chrpath package installed.  On Ubuntu 18.04:
 $ sudo apt install chrpath
 
@@ -53,3 +55,14 @@ $ make zip
 
 To remove all artifacts:
 $ make clean
+
+
+** Contribution Credits **
+
+Art for level 1 created by MagykalMystique.
+
+Music provided by NoCopyrightSounds:
+Jarico - Island
+Jarico - Landscape
+https://www.youtube.com/watch?v=Srqs4CitU2U
+https://www.youtube.com/watch?v=kcNpXMxOo48

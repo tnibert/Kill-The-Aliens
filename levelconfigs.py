@@ -11,7 +11,7 @@ the various levels.
 level_configs = [
     {
         "background": pygame.image.load("assets/magykal_level/map.png"),
-        "bg_music_fname": "assets/spectre.mp3",
+        "bg_music_fname": "assets/JaricoIsland.ogg",
         "boss_image": pygame.image.load("assets/magykal_level/boss.png"),
         "enemy_image": pygame.image.load("assets/magykal_level/saucer.png"),
         "boss_class": boss.MagykalBossBehave,
@@ -19,7 +19,7 @@ level_configs = [
     },
     {
         "background": pygame.image.load("assets/simple_level/map.png"),
-        "bg_music_fname": "assets/spectre.mp3",
+        "bg_music_fname": "assets/JaricoLandscape.ogg",
         "boss_image": pygame.image.load("assets/simple_level/invader.png"),
         "enemy_image": pygame.image.load("assets/simple_level/saucer.png"),
         "boss_class": boss.InvaderBossBehave,

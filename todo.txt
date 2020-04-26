@@ -1,10 +1,6 @@
 These are the outstanding tasks that I'd like to do:
 
 # fix windows nuitka build
-# add unit tests
-# setup ci
-#
-# find separate music for level 2
 #
 # power up spawn and InvaderBossBehave shooting probabilities are frame rate dependent
 # --- use Timer instead
@@ -17,6 +13,7 @@ These are the outstanding tasks that I'd like to do:
 # add easy, medium, hard difficulty options
 # Ensure initial saucers spawn off screen
 # normalize ship diagonal movement
+# --- this is causing us to overtake bullets when we have both more guns and speed up statmod enabled
 # Replace health texts with health bars
 # Create 5 levels in total (nasa has free images)
 # Change window icon (to not pygame icon)
