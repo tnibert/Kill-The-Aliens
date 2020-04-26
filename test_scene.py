@@ -19,6 +19,10 @@ class MockGameObj(MoveableObject):
     def on_collide(self, event):
         self.testlist.append(str(event))
 
+    def on_tick(self, event):
+        super().on_tick(event)
+        self.testlist.append(event.source)
+
 
 @pytest.fixture
 def PopulatedScene():
