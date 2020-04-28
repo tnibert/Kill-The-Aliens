@@ -1,6 +1,7 @@
 These are the outstanding tasks that I'd like to do:
 
 # fix windows nuitka build
+# test on Linux with pygame 1.9.6
 #
 # power up spawn and InvaderBossBehave shooting probabilities are frame rate dependent
 # --- use Timer instead
@@ -17,3 +18,4 @@ These are the outstanding tasks that I'd like to do:
 # Replace health texts with health bars
 # Create 5 levels in total (nasa has free images)
 # Change window icon (to not pygame icon)
+# adjust window height smaller if resolution doesn't give us enough space

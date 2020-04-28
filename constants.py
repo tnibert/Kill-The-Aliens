@@ -1,7 +1,12 @@
 from pygame import font
 
+# todo: consider resizing window if height of resolution is less than sufficient:
+# from pygame import display
+# RES_WIDTH, RES_HEIGHT = display.Info().current_w, display.Info().current_h
+
 SCREENH = 800
 SCREENW = 640
+
 LEFT = 0
 RIGHT = 1
 UP = 2
