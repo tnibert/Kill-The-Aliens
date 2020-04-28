@@ -2,7 +2,6 @@ import pygame
 
 
 # from activestate cookbook recipe
-# made a nice algorithm, then realized python has no switch/case
 class switch(object):
     def __init__(self, value):
         self.value = value
@@ -11,7 +10,10 @@ class switch(object):
     def __iter__(self):
         """Return the match method once, then stop"""
         yield self.match
-        raise StopIteration
+
+        # this was raise StopIteration before
+        # but apparently as of python 3.7, that causes a RuntimeError
+        return
 
     def match(self, *args):
         """Indicate whether or not to enter a case suite"""
@@ -27,12 +29,11 @@ class switch(object):
 def toframes(img, numframes, xstep):
     """
     Divide an image into frames
-    :param img:
-    :param numframes:
-    :param xstep:
-    :return:
+    :param img: the pygame image to divide
+    :param numframes: the number of frames to divide into
+    :param xstep: the number of pixels wide each frame should be
+    :return: list of images
     """
-    # img to divide up, number of frames to generate, step size on x axis to split on
     frames = []  # list of images
     for i in range(0, numframes):
         workimg = pygame.Surface((xstep, img.get_height()), pygame.SRCALPHA, 32)
@@ -49,7 +50,4 @@ def collide(rect1, rect2):
     :param rect2: a GameObject
     :return: True if the sprites have collided, False if not
     """
-    if rect1.x < rect2.x + rect2.width and rect1.x + rect1.width > rect2.x and rect1.y < rect2.y + rect2.height and rect1.y + rect1.height > rect2.y:
-        return True
-    else:
-        return False
+    return rect1.x < rect2.x + rect2.width and rect1.x + rect1.width > rect2.x and rect1.y < rect2.y + rect2.height and rect1.y + rect1.height > rect2.y
