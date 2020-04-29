@@ -56,10 +56,20 @@ $ make zip
 To remove all artifacts:
 $ make clean
 
+** To run unit tests **
+
+$ make test
+
+** To compile on Windows **
+
+Run buildforwindows.bat (after running pip -r requirements.txt).
+You must have python 3.6 and mingw64 installed, both 64 bit.
+It should work with visual studio compiler, but hasn't been tested.
+You must manually adjust the paths to python and mingw at the beginning of the build script.
 
 ** Contribution Credits **
 
-Art for level 1 created by MagykalMystique.
+Art for level 1 and player ship created by MagykalMystique.
 
 Music provided by NoCopyrightSounds:
 Jarico - Island

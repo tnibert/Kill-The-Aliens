@@ -1,8 +1,5 @@
 These are the outstanding tasks that I'd like to do:
 
-# fix windows nuitka build
-# test on Linux with pygame 1.9.6
-#
 # power up spawn and InvaderBossBehave shooting probabilities are frame rate dependent
 # --- use Timer instead
 #
