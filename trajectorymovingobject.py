@@ -10,6 +10,7 @@ class TrajectoryMovingObject(MoveableObject):
     """
     def __init__(self, x, y, speed, img):
         MoveableObject.__init__(self, x, y, speed, img)
+        # angle randomly ranges from 100 degrees to 260, 0 degrees is vertical axis
         self.degreeangle = random.randrange(100, 260)
 
     def move(self):

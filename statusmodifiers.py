@@ -13,8 +13,6 @@ import random
 class StatusModifier(TrajectoryMovingObject):
     def __init__(self, img):
         TrajectoryMovingObject.__init__(self, random.randrange(0, SCREENW), -1 * img.get_height(), STATMOD_SPEED, img)
-        # angle randomly ranges from 100 degrees to 260, 0 degrees is vertical axis
-        self.timer = Timer(self)
 
     def payload(self, target):
         self.notify("remove")
@@ -25,13 +23,22 @@ class StatusModifier(TrajectoryMovingObject):
             self.notify("remove")
 
 
+class TimeableStatmod(StatusModifier):
+    def __init__(self, img):
+        super().__init__(img)
+        self.timer = Timer(self)
+
+    def payload(self, target):
+        self.timer.startwatch(STATMOD_DURATION)
+        super().payload(target)
+
+
 # +1 life
 class OneUp(StatusModifier):
     def payload(self, target):
         # add some sort of happy animation
         target.oneup()
         super().payload(target)
-        return 0
 
 
 # bomb booby trap, -1 life
@@ -39,29 +46,23 @@ class Bomb(StatusModifier):
     def payload(self, target):
         target.die()  # initiate explosion
         super().payload(target)
-        return 0
 
 
-# double background and ship speed, need a way to undo after time
-class SpeedUp(StatusModifier):
+# double background and ship speed
+class SpeedUp(TimeableStatmod):
     def payload(self, target):
         target.speed = PLAYERMAXSPEED
-        self.timer.startwatch(STATMOD_DURATION)
         super().payload(target)
-        return 1
 
     def reverse(self, target):
         target.speed = PLAYERSPEED
 
 
-# shoot from 3 locations, need a way to undo after time
-class MoreGuns(StatusModifier):
+# shoot from 3 locations
+class MoreGuns(TimeableStatmod):
     def payload(self, target):
-        # print "MOAR GUNS"
         target.bamfmode = True
-        self.timer.startwatch(STATMOD_DURATION)
         super().payload(target)
-        return 2
 
     def reverse(self, target):
         target.bamfmode = False

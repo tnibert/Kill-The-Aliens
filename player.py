@@ -1,7 +1,7 @@
 from moveableobject import MoveableObject
 from bullet import Bullet
 from constants import SCREENW, SCREENH, PLAYERHEALTH, UP, LEFT, RIGHT, PLAYERSPEED
-from statusmodifiers import StatusModifier
+from statusmodifiers import StatusModifier, TimeableStatmod
 from loadstaticres import bulletimg
 from boss import Boss
 from endgamesignal import EndLevel
@@ -143,9 +143,9 @@ class Player(MoveableObject):
         if event.kwargs.get("who") == self:
             if isinstance(event.source, StatusModifier):
                 event.source.payload(self)
-                event.source.subscribe("timeout", self.receive_signals)
-                # todo: non timed status modifiers will never be removed
-                self.statmods.append(event.source)
+                if isinstance(event.source, TimeableStatmod):
+                    event.source.subscribe("timeout", self.receive_signals)
+                    self.statmods.append(event.source)
             elif "Enemy" in str(event.source) and not self.exploding:
                 self.die()
             elif isinstance(event.source, Boss) and not self.exploding:
@@ -155,6 +155,6 @@ class Player(MoveableObject):
                     self.die()
 
     def receive_signals(self, event):
-        if event.name == "timeout" and isinstance(event.source, StatusModifier):
+        if event.name == "timeout" and isinstance(event.source, TimeableStatmod):
             event.source.reverse(self)
             self.statmods.remove(event.source)
