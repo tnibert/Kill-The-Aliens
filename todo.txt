@@ -4,7 +4,6 @@ These are the outstanding tasks that I'd like to do:
 # --- use Timer instead
 #
 # yield points for getting status modifiers
-# no oneup and bomb statmods in player statmod list
 # add ability for some saucers to shoot
 # add easy, medium, hard difficulty options
 # Ensure initial saucers spawn off screen
