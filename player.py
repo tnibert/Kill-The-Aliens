@@ -75,13 +75,13 @@ class Player(MoveableObject):
         # for smoothness and border checks
         # todo: normalize diagonals
         distance = self.speed * self.frame_tick
-        if self.goright == True and self.x + self.width <= SCREENW:
+        if self.goright is True and self.x + self.width <= SCREENW:
             self.x += distance
-        elif self.goleft == True and self.x >= 0:
+        elif self.goleft is True and self.x >= 0:
             self.x -= distance
-        if self.goup == True and self.y >= 0:
+        if self.goup is True and self.y >= 0:
             self.y -= distance
-        elif self.godown == True and self.y + self.height <= SCREENH:
+        elif self.godown is True and self.y + self.height <= SCREENH:
             self.y += distance
 
         # handle status modifiers
@@ -98,6 +98,19 @@ class Player(MoveableObject):
             bullet = Bullet(self.x + (self.image.get_width() / 2), self.y - 10, img, UP, self)
 
         self.notify("fire", bullet=bullet)
+
+    def stop_motion(self):
+        """
+        Stop all momentum of  player.
+        This should be called when ship changes scenes to prevent
+        frame_tick value from launching ship off screen (since it
+        is a time diff between ticks).
+        """
+        self.frame_tick = 0
+        self.goright = False
+        self.goleft = False
+        self.goup = False
+        self.godown = False
 
     def die(self):
         self.health -= 1

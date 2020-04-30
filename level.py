@@ -55,6 +55,9 @@ class Level(Strategy):
         self.ship.remove_event("fire")
         self.ship.remove_event("player_respawn")
 
+        # ensure ship is positioned correctly
+        self.ship.respawn()
+
         # load up music
         self.mixer.music.load(self.config["bg_music_fname"])
 
@@ -85,6 +88,7 @@ class Level(Strategy):
         self.start_text_timer.startwatch(LVL_START_TIME)
 
     def run_game(self):
+
         try:
             if not self.mixer.music.get_busy():
                 # start music on endless loop
@@ -117,6 +121,7 @@ class Level(Strategy):
         # intercept the EndLevel signal, stop music, and attach score
         except EndLevel as e:
             self.mixer.music.stop()
+            self.ship.stop_motion()
             info = e.args[0]
             info['score'] = self.score_label.get_value()
             raise EndLevel(info)
