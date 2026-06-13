@@ -4,6 +4,6 @@ ordered-set==4.1.0
 packaging==26.0
 pluggy==1.6.0
 pygame==2.6.1
-Pygments==2.19.2
+Pygments==2.20.0
 pytest==9.0.2
 zstandard==0.25.0
